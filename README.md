@@ -36,8 +36,6 @@ pass: Au3%!vRJ$I
 Kibana:
 https://kibana.novicell.london/app/kibana#/dev_tools/console?_g=()
 
-NuGet Package
-NuGet Package is available on private NuGet repository of Novicell UK : https://nuget.novicell.london
 
 # Installation:
 Prerequiments:

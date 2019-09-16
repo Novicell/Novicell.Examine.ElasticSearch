@@ -45,7 +45,7 @@ deploy:
   server: https://nuget.novicell.london/nuget
   api_key:
     secure: A/xkn1/+F9+HTwGVLEPRFDwDSDMZLJ2zl1AnqsKOoE9tlYio2wrFBUN9BJkZw5aTmNsKy7Yjn6lbS61KSnuXHQ==
-  artifact: .*\.nupkg
+  artifact: /.*\.nupkg/
 - provider: GitHub
   tag: GH Pre-Release
   auth_token:

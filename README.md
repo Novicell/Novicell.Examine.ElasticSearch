@@ -1,6 +1,6 @@
 # Novicell.Examine.ElasticSearch
 [![Build status](https://ci.appveyor.com/api/projects/status/qrkvmx8jnxg8n2up/branch/master?svg=true)](https://ci.appveyor.com/project/bielu/novicell-examine-elasticsearch/branch/master)
-
+[![Build status](https://img.shields.io/nuget/vpre/Novicell.Examine.ElasticSearch)](https://www.nuget.org/packages/Novicell.Examine.ElasticSearch/)
 
 # Introduction:
 Umbraco comes with Examine.  This is an abstraction around Lucene.net and it makes indexing and searching with Lucene alot easier.  However there are limitations:

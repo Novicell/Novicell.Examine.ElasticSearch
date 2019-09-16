@@ -41,43 +41,14 @@ artifacts:
 
 
 deploy:
-    # MyGet Deployment for builds
-  - provider: NuGet
-    server: https://www.myget.org/F/nupickers/
-    symbol_server: https://www.myget.org/F/nupickers/symbols/api/v2/package
-    api_key:
-      secure: SASQGWG/4zNns7bwSSsJ5RPvKcKfJsBeEPuw69wsVPA3PO739QmzVtc5VwQwgvbr
-    artifact: /.*\.nupkg/
-    on:
-      branch: develop
-
-    # MyGet Deployment for releases
-  - provider: NuGet
-    server: https://www.myget.org/F/nupickers/
-    symbol_server: https://www.myget.org/F/nupickers/symbols/api/v2/package
-    api_key:
-      secure: SASQGWG/4zNns7bwSSsJ5RPvKcKfJsBeEPuw69wsVPA3PO739QmzVtc5VwQwgvbr
-    artifact: /.*\.nupkg/
-    on:
-      branch: master
-
-     # NuGet Deployment for releases
-  - provider: NuGet
-    server:
-    api_key:
-      secure: adk3pI9HCByZg2VRxplX9UR6qHf97bA3as6dusxLswCKI8BQQE8DO5a0frLrI+EO
-    artifact: /.*\.nupkg/
-    on:
-      branch: master
-      appveyor_repo_tag: true        # deploy on tag push only
-
-     # GitHub Deployment for releases
-  - provider: GitHub
-    auth_token:
-      secure: c0LwOGqoFZIieyy8CHrUtYQOD0HL0rG5tV2DS+8FHv34BKs/LSGGtmWWep5O7GbV
-    artifact: /.*\.zip/            # upload all Zip packages to release assets
-    draft: false
-    prerelease: false
-    on:
-      branch: master
-      appveyor_repo_tag: true        # deploy on tag push only
+- provider: NuGet
+  server: https://nuget.novicell.london/nuget
+  api_key:
+    secure: A/xkn1/+F9+HTwGVLEPRFDwDSDMZLJ2zl1AnqsKOoE9tlYio2wrFBUN9BJkZw5aTmNsKy7Yjn6lbS61KSnuXHQ==
+notifications:
+- provider: Slack
+  incoming_webhook: https://hooks.slack.com/services/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
+  channel: tech-nuget-london
+  on_build_success: true
+  on_build_failure: true
+  on_build_status_changed: true

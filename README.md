@@ -59,7 +59,10 @@ Step 4: Be Happy with using Elasticsearch instead of LuceneIndexes (smile)
 (Screenshots here)
 
 # Configuration:
-<add key="examine:ElasticSearch[InternalIndex].Url" value="http://localhost:9200" /> //Used only when Debug is false
-<add key="examine:ElasticSearch[ExternalIndex].Url" value="http://localhost:9200" /> //Used only when Debug is false
-<add key="examine:ElasticSearch[MemberIndex].Url" value="http://localhost:9200" /> //Used only when Debug is false
-<add key="examine:ElasticSearch.Debug" value="True" /> //Determine if package should use Embed ElasticSearch or no
+```xml <add key="examine:ElasticSearch[InternalIndex].Url" value="http://localhost:9200" />``` //Used only when Debug is false
+
+```xml<add key="examine:ElasticSearch[ExternalIndex].Url" value="http://localhost:9200" />``` //Used only when Debug is false
+
+```xml<add key="examine:ElasticSearch[MemberIndex].Url" value="http://localhost:9200" />``` //Used only when Debug is false
+
+```xml<add key="examine:ElasticSearch.Debug" value="True" />``` //Determine if package should use Embed ElasticSearch or no

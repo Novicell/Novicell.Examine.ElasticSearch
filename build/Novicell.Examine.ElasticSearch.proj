@@ -27,11 +27,11 @@
   <!-- NUGET ONLY PROPERTIES -->
   <PropertyGroup>
     <PackageId>Novicell.Examine.ElasticSearch</PackageId>
-    <Copyright>The Umbraco Community</Copyright>
+    <Copyright>Novicell</Copyright>
     <Owners>Arkadiusz Biel</Owners>
     <Description>Novicell.Examine.ElasticSearch is a Custom Search Provider for Umbraco v8</Description>
     <IconUrl>https://raw.githubusercontent.com/elastic/elasticsearch/master/server/src/main/resources/config/favicon.ico</IconUrl>
-    <Tags>Umbraco, uComponents, Novicell.Examine.ElasticSearch</Tags>
+    <Tags>Umbraco, Novicell,Examine,ElasticSearch</Tags>
     <Language>en-GB</Language>
     <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
   </PropertyGroup>

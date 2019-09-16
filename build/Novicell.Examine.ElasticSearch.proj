@@ -28,7 +28,7 @@
   <PropertyGroup>
     <PackageId>Novicell.Examine.ElasticSearch</PackageId>
     <Copyright>Novicell</Copyright>
-    <Owners>Arkadiusz Biel</Owners>
+    <Owners>Novicell,Arkadiusz Biel</Owners>
     <Description>Novicell.Examine.ElasticSearch is a Custom Search Provider for Umbraco v8</Description>
     <IconUrl>https://raw.githubusercontent.com/elastic/elasticsearch/master/server/src/main/resources/config/favicon.ico</IconUrl>
     <Tags>Umbraco, Novicell,Examine,ElasticSearch</Tags>

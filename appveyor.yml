@@ -28,7 +28,7 @@ assembly_info:
   assembly_version: '$(appveyor_file_version)'
   assembly_file_version: '$(appveyor_file_version)'
   assembly_informational_version: '$(mssemver)'
-
+    artifact: /.*\.nupkg/
 build_script:
 - cmd: >-
     build-appveyor.cmd
@@ -45,6 +45,24 @@ deploy:
   server: https://nuget.novicell.london/nuget
   api_key:
     secure: A/xkn1/+F9+HTwGVLEPRFDwDSDMZLJ2zl1AnqsKOoE9tlYio2wrFBUN9BJkZw5aTmNsKy7Yjn6lbS61KSnuXHQ==
+  artifact: .*\.nupkg
+- provider: GitHub
+  tag: GH Pre-Release
+  auth_token:
+    secure: CnPbSuXiCJXBzQur6JGaYPrx/HCnLJljBT3hpyGrBlxK7vTKPWhnG+dlr2H/4f2Q
+  repository: Novicell/Novicell.Examine.ElasticSearch
+  artifact: .*\*
+  draft: true
+  prerelease: true
+  on:
+    branch: development
+- provider: GitHub
+  tag: GH Pre-Release
+  auth_token:
+    secure: CnPbSuXiCJXBzQur6JGaYPrx/HCnLJljBT3hpyGrBlxK7vTKPWhnG+dlr2H/4f2Q
+  repository: Novicell/Novicell.Examine.ElasticSearch
+  on:
+    branch: master
 notifications:
 - provider: Slack
   incoming_webhook: https://hooks.slack.com/services/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

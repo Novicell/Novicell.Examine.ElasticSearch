@@ -1,0 +1,8 @@
+.idea/
+bin
+packages/
+Novicell.Examine.ElasticSearch/obj/
+*.nupkg
+source/Novicell.Examine.ElasticSearch/obj/
+artifacts/
+build/_temp/

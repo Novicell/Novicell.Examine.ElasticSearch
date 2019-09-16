@@ -28,7 +28,9 @@ assembly_info:
   assembly_version: '$(appveyor_file_version)'
   assembly_file_version: '$(appveyor_file_version)'
   assembly_informational_version: '$(mssemver)'
-    artifact: /.*\.nupkg/
+
+
+
 build_script:
 - cmd: >-
     build-appveyor.cmd

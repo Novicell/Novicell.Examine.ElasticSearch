@@ -1,6 +1,6 @@
 # Novicell.Examine.ElasticSearch
 [![Build status](https://ci.appveyor.com/api/projects/status/qrkvmx8jnxg8n2up/branch/master?svg=true)](https://ci.appveyor.com/project/bielu/novicell-examine-elasticsearch/branch/master)
-
+[![Build status](https://img.shields.io/nuget/vpre/Novicell.Examine.ElasticSearch)](https://www.nuget.org/packages/Novicell.Examine.ElasticSearch/)
 
 # Introduction:
 Umbraco comes with Examine.  This is an abstraction around Lucene.net and it makes indexing and searching with Lucene alot easier.  However there are limitations:
@@ -59,7 +59,10 @@ Step 4: Be Happy with using Elasticsearch instead of LuceneIndexes (smile)
 (Screenshots here)
 
 # Configuration:
-<add key="examine:ElasticSearch[InternalIndex].Url" value="http://localhost:9200" /> //Used only when Debug is false
-<add key="examine:ElasticSearch[ExternalIndex].Url" value="http://localhost:9200" /> //Used only when Debug is false
-<add key="examine:ElasticSearch[MemberIndex].Url" value="http://localhost:9200" /> //Used only when Debug is false
-<add key="examine:ElasticSearch.Debug" value="True" /> //Determine if package should use Embed ElasticSearch or no
+```<add key="examine:ElasticSearch[InternalIndex].Url" value="http://localhost:9200" />``` //Used only when Debug is false
+
+```<add key="examine:ElasticSearch[ExternalIndex].Url" value="http://localhost:9200" />``` //Used only when Debug is false
+
+```<add key="examine:ElasticSearch[MemberIndex].Url" value="http://localhost:9200" />``` //Used only when Debug is false
+
+```<add key="examine:ElasticSearch.Debug" value="True" />``` //Determine if package should use Embed ElasticSearch or no

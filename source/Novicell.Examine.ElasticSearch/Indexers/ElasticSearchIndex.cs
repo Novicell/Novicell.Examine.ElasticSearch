@@ -9,7 +9,9 @@ using Examine.Providers;
 using Nest;
 using Novicell.Examine.ElasticSearch.Model;
 using Umbraco.Core;
+using Umbraco.Core.Logging;
 using Umbraco.Core.Services;
+using Umbraco.Web.Search;
 
 namespace Novicell.Examine.ElasticSearch
 {
@@ -27,6 +29,7 @@ namespace Novicell.Examine.ElasticSearch
         public const string NodeKeyFieldName = SpecialFieldPrefix + "Key";
         public const string IconFieldName = SpecialFieldPrefix + "Icon";
         public const string PublishedFieldName = SpecialFieldPrefix + "Published";
+        private readonly IProfilingLogger _logger;
         public string indexName { get; set; }
         public string ElasticURL { get; set; }
 
@@ -38,6 +41,7 @@ namespace Novicell.Examine.ElasticSearch
         public ElasticSearchIndex(string name,
             ElasticSearchConfig connectionConfiguration,
             IPublicAccessService publicAccessService,
+            IProfilingLogger profilingLogger,
             FieldDefinitionCollection fieldDefinitions = null,
             string analyzer = null,
             IValueSetValidator validator = null)
@@ -45,6 +49,7 @@ namespace Novicell.Examine.ElasticSearch
                 fieldDefinitions ?? new FieldDefinitionCollection(), validator)
         {
             _connectionConfiguration = connectionConfiguration;
+            _logger = profilingLogger;
             Analyzer = analyzer;
             ElasticURL = ConfigurationManager.AppSettings[$"examine:ElasticSearch[{name}].Url"];
             _searcher = new Lazy<ElasticSearchSearcher>(CreateSearcher);
@@ -221,9 +226,13 @@ namespace Novicell.Examine.ElasticSearch
 
         protected override void PerformIndexItems(IEnumerable<ValueSet> op, Action<IndexOperationEventArgs> onComplete)
         {
+            var indexesMappedToAlias = _client.Value.GetAlias(descriptor => descriptor.Name(Name))
+                .Indices.Select(x => x.Key).ToList();
+            
             var indexTarget = isReindexing ? indexName : Name;
             if (isReindexing)
             {
+            
                 var index = _client.Value.CreateIndex(indexName
                     , c => c
                         .Mappings(ms => ms.Map<Document>(
@@ -242,21 +251,23 @@ namespace Novicell.Examine.ElasticSearch
 
 
                 var indexResult = indexer.Bulk(e => batch);
-                //TODO: Do we need to check for errors in any of the results?
+               
                 totalResults += indexResult.Items.Count;
 
                 if (indexResult.Errors)
                 {
                     foreach (var itemWithError in indexResult.ItemsWithErrors)
                     {
-                        Console.WriteLine("Failed to index document {0}: {1}", itemWithError.Id, itemWithError.Error);
+                        _logger.Error<ElasticSearchIndex>("Failed to index document {NodeID}: {Error}", itemWithError.Id, itemWithError.Error);
+                      
                     }
                 }
             }
-
+            indexesMappedToAlias.ForEach(e=>_client.Value.DeleteIndex(e));
             var bulkAliasResponse = indexer.Alias(ba => ba
                 .Add(add => add.Alias(Name).Index(indexName))
                 .Remove(remove => remove.Alias(Name).Index("*")));
+            
             onComplete(new IndexOperationEventArgs(this, totalResults));
         }
 
@@ -275,7 +286,7 @@ namespace Novicell.Examine.ElasticSearch
             {
                 foreach (var itemWithError in response.ItemsWithErrors)
                 {
-                    Console.WriteLine("Failed to index document {0}: {1}", itemWithError.Id, itemWithError.Error);
+                    _logger.Error<ElasticSearchIndex>("Failed to remove from index document {NodeID}: {Error}", itemWithError.Id, itemWithError.Error);
                 }
             }
         }

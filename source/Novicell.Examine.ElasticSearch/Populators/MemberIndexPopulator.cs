@@ -17,6 +17,7 @@ namespace Novicell.Examine.ElasticSearch.Populators
             _memberService = memberService;
             _valueSetBuilder = valueSetBuilder;
         }
+
         protected override void PopulateIndexes(IReadOnlyList<IIndex> indexes)
         {
             if (indexes.Count == 0) return;

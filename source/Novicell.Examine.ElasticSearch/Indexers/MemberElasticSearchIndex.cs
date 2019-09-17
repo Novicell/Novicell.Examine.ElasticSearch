@@ -6,7 +6,11 @@ namespace Novicell.Examine.ElasticSearch
 {
     public class MemberElasticSearchIndex : ElasticSearchIndex
     {
-        public MemberElasticSearchIndex(string name, ElasticSearchConfig connectionConfiguration, IPublicAccessService publicAccessService,IProfilingLogger profilingLogger, FieldDefinitionCollection fieldDefinitions = null, string analyzer = null, IValueSetValidator validator = null) : base(name, connectionConfiguration, publicAccessService,profilingLogger, fieldDefinitions, analyzer, validator)
+        public MemberElasticSearchIndex(string name, ElasticSearchConfig connectionConfiguration,
+            IPublicAccessService publicAccessService, IProfilingLogger profilingLogger,
+            FieldDefinitionCollection fieldDefinitions = null, string analyzer = null,
+            IValueSetValidator validator = null) : base(name, connectionConfiguration, publicAccessService,
+            profilingLogger, fieldDefinitions, analyzer, validator)
         {
         }
     }

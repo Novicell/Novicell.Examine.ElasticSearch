@@ -228,11 +228,10 @@ namespace Novicell.Examine.ElasticSearch
         {
             var indexesMappedToAlias = _client.Value.GetAlias(descriptor => descriptor.Name(Name))
                 .Indices.Select(x => x.Key).ToList();
-            
+
             var indexTarget = isReindexing ? indexName : Name;
             if (isReindexing)
             {
-            
                 var index = _client.Value.CreateIndex(indexName
                     , c => c
                         .Mappings(ms => ms.Map<Document>(
@@ -251,23 +250,24 @@ namespace Novicell.Examine.ElasticSearch
 
 
                 var indexResult = indexer.Bulk(e => batch);
-               
+
                 totalResults += indexResult.Items.Count;
 
                 if (indexResult.Errors)
                 {
                     foreach (var itemWithError in indexResult.ItemsWithErrors)
                     {
-                        _logger.Error<ElasticSearchIndex>("Failed to index document {NodeID}: {Error}", itemWithError.Id, itemWithError.Error);
-                      
+                        _logger.Error<ElasticSearchIndex>("Failed to index document {NodeID}: {Error}",
+                            itemWithError.Id, itemWithError.Error);
                     }
                 }
             }
-            indexesMappedToAlias.ForEach(e=>_client.Value.DeleteIndex(e));
+
+            indexesMappedToAlias.ForEach(e => _client.Value.DeleteIndex(e));
             var bulkAliasResponse = indexer.Alias(ba => ba
                 .Add(add => add.Alias(Name).Index(indexName))
                 .Remove(remove => remove.Alias(Name).Index("*")));
-            
+
             onComplete(new IndexOperationEventArgs(this, totalResults));
         }
 
@@ -286,7 +286,8 @@ namespace Novicell.Examine.ElasticSearch
             {
                 foreach (var itemWithError in response.ItemsWithErrors)
                 {
-                    _logger.Error<ElasticSearchIndex>("Failed to remove from index document {NodeID}: {Error}", itemWithError.Id, itemWithError.Error);
+                    _logger.Error<ElasticSearchIndex>("Failed to remove from index document {NodeID}: {Error}",
+                        itemWithError.Id, itemWithError.Error);
                 }
             }
         }

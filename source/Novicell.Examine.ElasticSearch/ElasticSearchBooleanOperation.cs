@@ -29,6 +29,7 @@ namespace Novicell.Examine.ElasticSearch
         protected override INestedQuery NotNested() => new ElasticSearchQuery(_search, BooleanOperation.Not);
 
         public override ISearchResults Execute(int maxResults = 500) => _search.Execute(maxResults);
+
         #region IOrdering
 
         public override IOrdering OrderBy(params SortableField[] fields)
@@ -45,6 +46,4 @@ namespace Novicell.Examine.ElasticSearch
 
         #endregion
     }
-
-   
 }

@@ -12,9 +12,7 @@ namespace Novicell.Examine.ElasticSearch
         public static ElasticSearchConfig DebugConnectionConfiguration;
         public static ElasticsearchInside.Elasticsearch ElasticSearch;
 
-        private string prefix = ConfigurationManager.AppSettings.AllKeys.Any(s => s == "examine:ElasticSearch.Prefix")
-            ? ConfigurationManager.AppSettings["examine:ElasticSearch.Prefix"]
-            : "";
+    
         public static ElasticSearchConfig GetConfig(string indexName)
         {
           
@@ -37,7 +35,7 @@ namespace Novicell.Examine.ElasticSearch
 
         public ElasticSearchConfig(string indexName)
         {
-            var connectionUrl = new Uri(ConfigurationManager.AppSettings[$"examine:ElasticSearch[{prefix}{indexName}].Url"]);
+            var connectionUrl = new Uri(ConfigurationManager.AppSettings[$"examine:ElasticSearch[{indexName}].Url"]);
             ConnectionConfiguration= new ConnectionSettings(connectionUrl);
         }
         public ElasticSearchConfig()

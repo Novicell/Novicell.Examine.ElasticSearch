@@ -20,12 +20,14 @@ namespace Novicell.Examine.ElasticSearch
         private IProperties _fieldsMapping;
         private bool? _exists;
         private string _indexName;
+        private string _prefix;
         private static readonly string[] EmptyFields = new string[0];
-        public ElasticSearchSearcher(ElasticSearchConfig connectionConfiguration, string name) : base(name)
+        public ElasticSearchSearcher(ElasticSearchConfig connectionConfiguration, string name, string prefix = "") : base(name)
         {
             _connectionConfiguration = connectionConfiguration;
             _indexName = name;
             _client = new Lazy<ElasticClient>(CreateElasticSearchClient);
+            _prefix = prefix;
         }
         private ElasticClient CreateElasticSearchClient()
         {
@@ -38,7 +40,7 @@ namespace Novicell.Examine.ElasticSearch
             {
                 if (_exists == null || !_exists.Value)
                 {
-                    _exists = _client.Value.IndexExists(_indexName).Exists;
+                    _exists = _client.Value.IndexExists(_prefix+_indexName).Exists;
                 }
                 return _exists.Value;
             }
@@ -47,9 +49,9 @@ namespace Novicell.Examine.ElasticSearch
         {
             get
             {
-
-                if (_allFields != null) return _allFields;
                 if (!IndexExists) return EmptyFields;
+                if (_allFields != null) return _allFields;
+               
            
                 IEnumerable<PropertyName> keys = AllProperties.Keys;
 
@@ -62,12 +64,12 @@ namespace Novicell.Examine.ElasticSearch
         {
             get
             {
-
-                if (_fieldsMapping != null) return _fieldsMapping;
                 if (!IndexExists) return null;
-                var indexesMappedToAlias = _client.Value.GetAlias(descriptor => descriptor.Name(Name))
+                if (_fieldsMapping != null) return _fieldsMapping;
+               
+                var indexesMappedToAlias = _client.Value.GetAlias(descriptor => descriptor.Name(_prefix+Name))
                     .Indices.Select(x => x.Key).ToList();
-                var response = _client.Value.GetMapping<Document>(mapping => mapping.Index(Name).AllTypes());
+                var response = _client.Value.GetMapping<Document>(mapping => mapping.Index(_prefix+Name).AllTypes());
                 _fieldsMapping = response.GetMappingFor(indexesMappedToAlias[0]).Properties;
              
                 return _fieldsMapping;
@@ -87,16 +89,16 @@ namespace Novicell.Examine.ElasticSearch
                 Name = "named_query",
                 Query = "nelly the elephant not as a"
             };
-            return new ElasticSearchSearchResults(_client.Value, query, _indexName,maxResults);
+            return new ElasticSearchSearchResults(_client.Value, query, _prefix+_indexName,maxResults);
         }
         public ISearchResults Search(QueryContainer queryContainer, int maxResults = 500)
         {
-            return new ElasticSearchSearchResults(_client.Value, queryContainer, _indexName,maxResults);
+            return new ElasticSearchSearchResults(_client.Value, queryContainer, _prefix+_indexName,maxResults);
         }
         public override IQuery CreateQuery(string category = null,
             BooleanOperation defaultOperation = BooleanOperation.And)
         {  
-        return new ElasticSearchQuery(this, category, AllFields, defaultOperation,_indexName);
+        return new ElasticSearchQuery(this, category, AllFields, defaultOperation,_prefix+_indexName);
         }
 
         public void Dispose()

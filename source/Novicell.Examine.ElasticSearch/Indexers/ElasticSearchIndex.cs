@@ -38,6 +38,9 @@ namespace Novicell.Examine.ElasticSearch
         public event EventHandler<DocumentWritingEventArgs> DocumentWriting;
 
         public string indexName { get; set; }
+        private string prefix = ConfigurationManager.AppSettings.AllKeys.Any(s => s == "examine:ElasticSearch.Prefix")
+            ? ConfigurationManager.AppSettings["examine:ElasticSearch.Prefix"]
+            : "";
         public string ElasticURL { get; set; }
 
         /// <summary>
@@ -179,14 +182,22 @@ namespace Novicell.Examine.ElasticSearch
         {
             lock (ExistsLocker)
             {
-                indexName = Name + "_" +
+               
+                indexName =  prefix+Name + "_" +
                             DateTime.Now.ToString("dd_MM_yyyy_HH_mm_ss");
                 var index = _client.Value.CreateIndex(indexName, c => c
                     .Mappings(ms => ms.Map<Document>(
                         m => m.AutoMap()
                             .Properties(ps => CreateFieldsMapping(ps, FieldDefinitionCollection))
-                    )).Aliases(a => a.Alias(Name))
+                    ))
                 );
+                if (!indexExists)
+                {
+                    var bulkAliasResponse = _client.Value.Alias(ba => ba
+                     
+                        .Add(add => add.Index(indexName).Alias(prefix + Name))
+                    );
+                }
                 isReindexing = true;
                 _exists = true;
             }
@@ -194,7 +205,7 @@ namespace Novicell.Examine.ElasticSearch
 
         private ElasticSearchSearcher CreateSearcher()
         {
-            return new ElasticSearchSearcher(_connectionConfiguration, Name);
+            return new ElasticSearchSearcher(_connectionConfiguration, Name,prefix);
         }
 
         private ElasticClient GetIndexClient()
@@ -238,10 +249,10 @@ namespace Novicell.Examine.ElasticSearch
 
         protected override void PerformIndexItems(IEnumerable<ValueSet> op, Action<IndexOperationEventArgs> onComplete)
         {
-            var indexesMappedToAlias = _client.Value.GetAlias(descriptor => descriptor.Name(Name))
+            var indexesMappedToAlias = _client.Value.GetAlias(descriptor => descriptor.Name(prefix+Name))
                 .Indices.Select(x => x.Key).ToList();
 
-            var indexTarget = isReindexing ? indexName : Name;
+            var indexTarget = isReindexing ? indexName : prefix+Name;
             if (isReindexing)
             {
                 var index = _client.Value.CreateIndex(indexName
@@ -276,9 +287,13 @@ namespace Novicell.Examine.ElasticSearch
             }
 
             indexesMappedToAlias.ForEach(e => _client.Value.DeleteIndex(e));
-            var bulkAliasResponse = indexer.Alias(ba => ba
-                .Add(add => add.Alias(Name).Index(indexName))
-                .Remove(remove => remove.Alias(Name).Index("*")));
+            if (isReindexing)
+            {
+                var bulkAliasResponse = indexer.Alias(ba => ba
+                    .Remove(remove => remove.Index("*").Alias(prefix + Name))
+                    .Add(add => add.Index(indexName).Alias(prefix + Name))
+                );
+            }
 
             onComplete(new IndexOperationEventArgs(this, totalResults));
         }
@@ -289,7 +304,7 @@ namespace Novicell.Examine.ElasticSearch
             var descriptor = new BulkDescriptor();
 
             foreach (var id in itemIds.Where(x => !string.IsNullOrWhiteSpace(x)))
-                descriptor.Delete<Document>(x => x
+                descriptor.Index(indexName).Delete<Document>(x => x
                         .Id(id))
                     .Refresh(Refresh.WaitFor);
 
@@ -316,7 +331,7 @@ namespace Novicell.Examine.ElasticSearch
 
         public override bool IndexExists()
         {
-            return _client.Value.IndexExists(Name).Exists;
+            return _client.Value.IndexExists(prefix+Name).Exists;
         }
 
         public void Dispose()
@@ -326,7 +341,7 @@ namespace Novicell.Examine.ElasticSearch
                 _client.Value.DisposeIfDisposable();
         }
 
-        public long DocumentCount => _client.Value.Count<Document>(e => e.Index(Name)).Count;
+        public long DocumentCount => _client.Value.Count<Document>(e => e.Index(prefix+Name)).Count;
         public int FieldCount => _searcher.Value.AllFields.Length;
     }
 }

@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
 using Examine;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
@@ -11,7 +13,9 @@ namespace Novicell.Examine.ElasticSearch
     public class ElasticIndexCreator : LuceneIndexCreator, IUmbracoIndexesCreator
     {
         private readonly IPublicAccessService _publicAccessService;
-
+        private string prefix = ConfigurationManager.AppSettings.AllKeys.Any(s => s == "examine:ElasticSearch.Prefix")
+            ? ConfigurationManager.AppSettings["examine:ElasticSearch.Prefix"]
+            : "";
         public ElasticIndexCreator(IProfilingLogger profilingLogger,
             ILocalizationService languageService,
             IPublicAccessService publicAccessService)
@@ -41,6 +45,7 @@ namespace Novicell.Examine.ElasticSearch
                 ElasticSearchConfig.GetConfig(Constants.UmbracoIndexes.InternalIndexName),
                 _publicAccessService,
                 ProfilingLogger,
+                
                 new UmbracoFieldDefinitionCollection(),
                 "whitespace",
                 GetContentValueSetValidator());
@@ -48,10 +53,12 @@ namespace Novicell.Examine.ElasticSearch
 
         private IIndex CreateExternalIndex()
         {
+            
             return new ContentElasticSearchIndex(Constants.UmbracoIndexes.ExternalIndexName,
                 ElasticSearchConfig.GetConfig(Constants.UmbracoIndexes.ExternalIndexName),
                 _publicAccessService,
                 ProfilingLogger,
+                
                 new UmbracoFieldDefinitionCollection(),
                 "standard",
                 GetPublishedContentValueSetValidator());
@@ -63,6 +70,7 @@ namespace Novicell.Examine.ElasticSearch
                 ElasticSearchConfig.GetConfig(Constants.UmbracoIndexes.ExternalIndexName),
                 _publicAccessService,
                 ProfilingLogger,
+               
                 new UmbracoFieldDefinitionCollection(),
                 "standard",
                 GetMemberValueSetValidator());

@@ -6,10 +6,10 @@ namespace Novicell.Examine.ElasticSearch.Populators
 {
     public class PublishedContentIndexPopulator : ContentIndexPopulator
     {
-        public PublishedContentIndexPopulator(IContentService contentService, ISqlContext sqlContext, IPublishedContentValueSetBuilder contentValueSetBuilder) :
+        public PublishedContentIndexPopulator(IContentService contentService, ISqlContext sqlContext,
+            IPublishedContentValueSetBuilder contentValueSetBuilder) :
             base(true, null, contentService, sqlContext, contentValueSetBuilder)
-        {   
+        {
         }
-    
     }
 }

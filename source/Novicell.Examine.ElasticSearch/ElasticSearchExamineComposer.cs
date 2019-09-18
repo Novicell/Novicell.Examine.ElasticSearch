@@ -22,13 +22,14 @@ namespace Novicell.Examine.ElasticSearch
                 if (ElasticSearchConfig.DebugConnectionConfiguration == null)
                     ElasticSearchConfig.DebugConnectionConfiguration = new ElasticSearchConfig();
             }
+
             base.Compose(composition);
             //composition.Register(typeof(ElasticIndexCreator));
             composition.Components().Remove<ExamineComponent>();
-                composition.Register<Novicell.Examine.ElasticSearch.Populators.ContentIndexPopulator>(Lifetime.Singleton);
+            composition.Register<Novicell.Examine.ElasticSearch.Populators.ContentIndexPopulator>(Lifetime.Singleton);
 
-                composition.Register<Novicell.Examine.ElasticSearch.Populators.PublishedContentIndexPopulator>(
-                    Lifetime.Singleton);
+            composition.Register<Novicell.Examine.ElasticSearch.Populators.PublishedContentIndexPopulator>(
+                Lifetime.Singleton);
 
             composition.Register<Novicell.Examine.ElasticSearch.Populators.MediaIndexPopulator>(Lifetime.Singleton);
             // the container can inject IEnumerable<IIndexPopulator> and get them all
@@ -53,7 +54,7 @@ namespace Novicell.Examine.ElasticSearch
                     false));
             composition.RegisterUnique<IValueSetBuilder<IMedia>, MediaValueSetBuilder>();
             composition.RegisterUnique<IValueSetBuilder<IMember>, MemberValueSetBuilder>();
-            
+
 
             //We want to manage Examine's AppDomain shutdown sequence ourselves so first we'll disable Examine's default behavior
             //and then we'll use MainDom to control Examine's shutdown - this MUST be done in Compose ie before ExamineManager

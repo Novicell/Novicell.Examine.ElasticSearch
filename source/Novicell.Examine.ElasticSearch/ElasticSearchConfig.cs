@@ -1,5 +1,6 @@
 using System;
 using System.Configuration;
+using System.Linq;
 using ElasticsearchInside.Config;
 using Nest;
 
@@ -10,11 +11,15 @@ namespace Novicell.Examine.ElasticSearch
         public ConnectionSettings ConnectionConfiguration { get; }
         public static ElasticSearchConfig DebugConnectionConfiguration;
         public static ElasticsearchInside.Elasticsearch ElasticSearch;
+
+        private string prefix = ConfigurationManager.AppSettings.AllKeys.Any(s => s == "examine:ElasticSearch.Prefix")
+            ? ConfigurationManager.AppSettings["examine:ElasticSearch.Prefix"]
+            : "";
         public static ElasticSearchConfig GetConfig(string indexName)
         {
           
             if (string.IsNullOrWhiteSpace(indexName)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(indexName));
-            if (ConfigurationManager.AppSettings["examine:ElasticSearch.Debug"] == "True")
+            if (ConfigurationManager.AppSettings.AllKeys.Any(s=>s=="examine:ElasticSearch.Debug") &&  Convert.ToBoolean(ConfigurationManager.AppSettings["examine:ElasticSearch.Debug"] ))
             {
               
                 return new ElasticSearchConfig(DebugConnectionConfiguration.ConnectionConfiguration);
@@ -32,7 +37,7 @@ namespace Novicell.Examine.ElasticSearch
 
         public ElasticSearchConfig(string indexName)
         {
-            var connectionUrl = new Uri(ConfigurationManager.AppSettings[$"examine:ElasticSearch[{indexName}].Url"]);
+            var connectionUrl = new Uri(ConfigurationManager.AppSettings[$"examine:ElasticSearch[{prefix}{indexName}].Url"]);
             ConnectionConfiguration= new ConnectionSettings(connectionUrl);
         }
         public ElasticSearchConfig()

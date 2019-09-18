@@ -17,9 +17,8 @@ namespace Novicell.Examine.ElasticSearch
         public ElasticSearchExamineComponent(IExamineManager examineManager,
             ElasticIndexCreator indexCreator,
             IProfilingLogger profilingLogger
-           )
+        )
         {
-
             _examineManager = examineManager;
             _indexCreator = indexCreator;
             _logger = profilingLogger;
@@ -28,29 +27,27 @@ namespace Novicell.Examine.ElasticSearch
 
         public void Initialize()
         {
-
             foreach (var index in _indexCreator.Create())
             {
                 _examineManager.AddIndex(index);
-                ElasticSearchIndex luceneIndex = (ElasticSearchIndex)index;
+                ElasticSearchIndex luceneIndex = (ElasticSearchIndex) index;
             }
-            
+
             _logger.Debug<ExamineComponent>("Examine shutdown registered with MainDom");
 
             var registeredIndexers = _examineManager.Indexes.OfType<IIndex>().Count();
 
-            _logger.Info<ExamineComponent>("Adding examine event handlers for {RegisteredIndexers} index providers.", registeredIndexers);
+            _logger.Info<ExamineComponent>("Adding examine event handlers for {RegisteredIndexers} index providers.",
+                registeredIndexers);
 
             // don't bind event handlers if we're not suppose to listen
             if (registeredIndexers == 0)
                 return;
         }
 
-       
 
         public void Terminate()
         {
-
         }
 
         public void Dispose()

@@ -11,7 +11,7 @@ using Umbraco.Examine;
 
 namespace Novicell.Examine.ElasticSearch.Populators
 {
-   public class ContentIndexPopulator : IndexPopulator<ContentElasticSearchIndex>
+    public class ContentIndexPopulator : IndexPopulator<ContentElasticSearchIndex>
     {
         private readonly IContentService _contentService;
         private readonly IValueSetBuilder<IContent> _contentValueSetBuilder;
@@ -30,7 +30,8 @@ namespace Novicell.Examine.ElasticSearch.Populators
         /// <param name="contentService"></param>
         /// <param name="sqlContext"></param>
         /// <param name="contentValueSetBuilder"></param>
-        public ContentIndexPopulator(IContentService contentService, ISqlContext sqlContext, IContentValueSetBuilder contentValueSetBuilder)
+        public ContentIndexPopulator(IContentService contentService, ISqlContext sqlContext,
+            IContentValueSetBuilder contentValueSetBuilder)
             : this(false, null, contentService, sqlContext, contentValueSetBuilder)
         {
         }
@@ -43,11 +44,13 @@ namespace Novicell.Examine.ElasticSearch.Populators
         /// <param name="contentService"></param>
         /// <param name="sqlContext"></param>
         /// <param name="contentValueSetBuilder"></param>
-        public ContentIndexPopulator(bool publishedValuesOnly, int? parentId, IContentService contentService, ISqlContext sqlContext, IValueSetBuilder<IContent> contentValueSetBuilder)
+        public ContentIndexPopulator(bool publishedValuesOnly, int? parentId, IContentService contentService,
+            ISqlContext sqlContext, IValueSetBuilder<IContent> contentValueSetBuilder)
         {
             if (sqlContext == null) throw new ArgumentNullException(nameof(sqlContext));
             _contentService = contentService ?? throw new ArgumentNullException(nameof(contentService));
-            _contentValueSetBuilder = contentValueSetBuilder ?? throw new ArgumentNullException(nameof(contentValueSetBuilder));
+            _contentValueSetBuilder =
+                contentValueSetBuilder ?? throw new ArgumentNullException(nameof(contentValueSetBuilder));
             if (_publishedQuery != null)
                 _publishedQuery = sqlContext.Query<IContent>().Where(x => x.Published);
             _publishedValuesOnly = publishedValuesOnly;
@@ -66,13 +69,15 @@ namespace Novicell.Examine.ElasticSearch.Populators
             {
                 contentParentId = _parentId.Value;
             }
+
             IContent[] content;
 
             do
             {
                 if (!_publishedValuesOnly)
                 {
-                    content = _contentService.GetPagedDescendants(contentParentId, pageIndex, pageSize, out _).ToArray();
+                    content = _contentService.GetPagedDescendants(contentParentId, pageIndex, pageSize, out _)
+                        .ToArray();
                 }
                 else
                 {

@@ -29,7 +29,8 @@ namespace Novicell.Examine.ElasticSearch.Populators
         /// <param name="parentId"></param>
         /// <param name="mediaService"></param>
         /// <param name="mediaValueSetBuilder"></param>
-        public MediaIndexPopulator(int? parentId, IMediaService mediaService, IValueSetBuilder<IMedia> mediaValueSetBuilder)
+        public MediaIndexPopulator(int? parentId, IMediaService mediaService,
+            IValueSetBuilder<IMedia> mediaValueSetBuilder)
         {
             _parentId = parentId;
             _mediaService = mediaService;
@@ -66,6 +67,5 @@ namespace Novicell.Examine.ElasticSearch.Populators
                 pageIndex++;
             } while (media.Length == pageSize);
         }
-        
     }
 }

@@ -1,22 +1,20 @@
 # Novicell.Examine.ElasticSearch
+
 [![Build status](https://ci.appveyor.com/api/projects/status/qrkvmx8jnxg8n2up/branch/master?svg=true)](https://ci.appveyor.com/project/bielu/novicell-examine-elasticsearch/branch/master)
 
-| Nuget Packages    | Version  |
-| ---      | ---       |
-| Release |   [![Build status](https://img.shields.io/nuget/vpre/Novicell.Examine.ElasticSearch)](https://www.nuget.org/packages/Novicell.Examine.ElasticSearch/)       |
-| Pre-release     |   soon      |
+| Nuget Packages | Version                                                                                                                                             |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Release        | [![Build status](https://img.shields.io/nuget/vpre/Novicell.Examine.ElasticSearch)](https://www.nuget.org/packages/Novicell.Examine.ElasticSearch/) |
+| Pre-release    | soon                                                                                                                                                |
 
-| Umbraco Packages    | Version  |
-| ---      | ---       |
-| Release |   soon      |
-| Pre-release     |   soon     |
-
-
+| Umbraco Packages | Version |
+| ---------------- | ------- |
+| Release          | soon    |
+| Pre-release      | soon    |
 
 # Introduction:
+
 Umbraco comes with Examine.  This is an abstraction around Lucene.net and it makes indexing and searching with Lucene alot easier.  However there are limitations:
-
-
 
 Umbraco 7 uses Lucene.net 2.9.4 and Umbraco 8 uses Lucene.net 3.0.1 both released before 2012 
 Examine does not have ability to support replication for resiliance. Elastic does.
@@ -27,9 +25,8 @@ The lucene version of current examine cannot handle CJK (chinese, japanese and k
 Want latest version of Lucene.  The java version of lucene is currently at 8.2.0 and latest elastic uses lucene > 7
 Keeping in mind the above, we needed something to index into elastic using examine.  Hence the creation of this provider.
 
-
-
 # Basic Information:
+
 Dependencies:
 Umbraco 8.1.2
 
@@ -51,12 +48,14 @@ NuGet Package
 NuGet Package is available on private NuGet repository of Novicell UK : https://nuget.novicell.london
 
 # Installation:
+
 Prerequiments:
 Installed Umbraco v8 in version
 
 Instance of ElasticSearch
 
 # Steps:
+
 Step 1: Install Nuget Package
 (Screenshots here)
 
@@ -70,6 +69,7 @@ Step 4: Be Happy with using Elasticsearch instead of LuceneIndexes (smile)
 (Screenshots here)
 
 # Configuration:
+
 ```<add key="examine:ElasticSearch[InternalIndex].Url" value="http://localhost:9200" />``` //Used only when Debug is false
 
 ```<add key="examine:ElasticSearch[ExternalIndex].Url" value="http://localhost:9200" />``` //Used only when Debug is false
@@ -77,3 +77,9 @@ Step 4: Be Happy with using Elasticsearch instead of LuceneIndexes (smile)
 ```<add key="examine:ElasticSearch[MemberIndex].Url" value="http://localhost:9200" />``` //Used only when Debug is false
 
 ```<add key="examine:ElasticSearch.Debug" value="True" />``` //Determine if package should use Embed ElasticSearch or no
+
+# Features:
+
+- 0 downtime reindexing
+
+- 

@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Linq;
 using Elasticsearch.Net;
 using Examine;
+using Examine.LuceneEngine;
 using Examine.LuceneEngine.Providers;
 using Examine.Providers;
 using Nest;
@@ -30,6 +31,12 @@ namespace Novicell.Examine.ElasticSearch
         public const string IconFieldName = SpecialFieldPrefix + "Icon";
         public const string PublishedFieldName = SpecialFieldPrefix + "Published";
         private readonly IProfilingLogger _logger;
+        
+        /// <summary>
+        /// Occurs when [document writing].
+        /// </summary>
+        public event EventHandler<DocumentWritingEventArgs> DocumentWriting;
+
         public string indexName { get; set; }
         public string ElasticURL { get; set; }
 
@@ -103,7 +110,10 @@ namespace Novicell.Examine.ElasticSearch
                     break;
             }
         }
-
+        protected virtual void OnDocumentWriting(DocumentWritingEventArgs docArgs)
+        {
+            DocumentWriting?.Invoke(this, docArgs);
+        }
         private static string FromLuceneAnalyzer(string analyzer)
         {
             //not fully qualified, just return the type
@@ -212,6 +222,8 @@ namespace Novicell.Examine.ElasticSearch
                     [FormatFieldName(LuceneIndex.ItemTypeFieldName)] = d.ItemType,
                     [FormatFieldName(LuceneIndex.CategoryFieldName)] = d.Category
                 };
+                var docArgs = new DocumentWritingEventArgs(d, ad);
+                OnDocumentWriting(docArgs);
                 foreach (var i in d.Values)
                 {
                     if (i.Value.Count > 0)

@@ -309,6 +309,7 @@
       <None Include="packages.config" />
     </ItemGroup>
     <ItemGroup>
+      <Compile Include="DocumentWritingEventArgs.cs" />
       <Compile Include="ElasticSearchBooleanOperation.cs" />
       <Compile Include="ElasticSearchExamineComponent.cs" />
       <Compile Include="ElasticSearchExamineComposer.cs" />

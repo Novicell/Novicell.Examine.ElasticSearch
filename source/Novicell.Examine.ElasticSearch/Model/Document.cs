@@ -8,7 +8,7 @@ namespace Novicell.Examine.ElasticSearch.Model
 {
     public class Document : Dictionary<string, object>
     {
-        public object GetField(string FieldName)
+        public Field GetField(string FieldName)
         {
             if (this.ContainsKey(FieldName))
             {

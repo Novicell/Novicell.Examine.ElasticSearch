@@ -237,14 +237,14 @@ namespace Novicell.Examine.ElasticSearch
                     [FormatFieldName(LuceneIndex.ItemTypeFieldName)] = d.ItemType,
                     [FormatFieldName(LuceneIndex.CategoryFieldName)] = d.Category
                 };
-                var docArgs = new DocumentWritingEventArgs(d, ad);
-                OnDocumentWriting(docArgs);
+               
                 foreach (var i in d.Values)
                 {
                     if (i.Value.Count > 0)
                         ad[FormatFieldName(i.Key)] = i.Value;
                 }
-
+                var docArgs = new DocumentWritingEventArgs(d, ad);
+                OnDocumentWriting(docArgs);
                 descriptor.Index<Document>(op => op.Index(indexTarget).Document(ad).Id(d.Id));
             }
 

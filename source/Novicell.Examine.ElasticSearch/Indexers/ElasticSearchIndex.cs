@@ -21,6 +21,7 @@ namespace Novicell.Examine.ElasticSearch
         private readonly ElasticSearchConfig _connectionConfiguration;
         private bool? _exists;
         private bool isReindexing = false;
+
         private readonly Lazy<ElasticClient> _client;
         private ElasticClient _indexer;
         private static readonly object ExistsLocker = new object();
@@ -31,16 +32,18 @@ namespace Novicell.Examine.ElasticSearch
         public const string IconFieldName = SpecialFieldPrefix + "Icon";
         public const string PublishedFieldName = SpecialFieldPrefix + "Published";
         private readonly IProfilingLogger _logger;
-        
+
         /// <summary>
         /// Occurs when [document writing].
         /// </summary>
         public event EventHandler<DocumentWritingEventArgs> DocumentWriting;
 
         public string indexName { get; set; }
+
         private string prefix = ConfigurationManager.AppSettings.AllKeys.Any(s => s == "examine:ElasticSearch.Prefix")
             ? ConfigurationManager.AppSettings["examine:ElasticSearch.Prefix"]
             : "";
+
         public string ElasticURL { get; set; }
 
         /// <summary>
@@ -113,10 +116,12 @@ namespace Novicell.Examine.ElasticSearch
                     break;
             }
         }
+
         protected virtual void OnDocumentWriting(DocumentWritingEventArgs docArgs)
         {
             DocumentWriting?.Invoke(this, docArgs);
         }
+
         private static string FromLuceneAnalyzer(string analyzer)
         {
             //not fully qualified, just return the type
@@ -172,8 +177,8 @@ namespace Novicell.Examine.ElasticSearch
             if (!forceOverwrite && _exists.HasValue && _exists.Value) return;
 
             var indexExists = IndexExists();
-            if (indexExists && !forceOverwrite) return;
 
+            if (indexExists && !forceOverwrite) return;
 
             CreateNewIndex(indexExists);
         }
@@ -182,8 +187,7 @@ namespace Novicell.Examine.ElasticSearch
         {
             lock (ExistsLocker)
             {
-               
-                indexName =  prefix+Name + "_" +
+                indexName = prefix + Name + "_" +
                             DateTime.Now.ToString("dd_MM_yyyy_HH_mm_ss");
                 var index = _client.Value.CreateIndex(indexName, c => c
                     .Mappings(ms => ms.Map<Document>(
@@ -194,10 +198,10 @@ namespace Novicell.Examine.ElasticSearch
                 if (!indexExists)
                 {
                     var bulkAliasResponse = _client.Value.Alias(ba => ba
-                     
                         .Add(add => add.Index(indexName).Alias(prefix + Name))
                     );
                 }
+
                 isReindexing = true;
                 _exists = true;
             }
@@ -205,7 +209,7 @@ namespace Novicell.Examine.ElasticSearch
 
         private ElasticSearchSearcher CreateSearcher()
         {
-            return new ElasticSearchSearcher(_connectionConfiguration, Name,prefix);
+            return new ElasticSearchSearcher(_connectionConfiguration, Name, prefix);
         }
 
         private ElasticClient GetIndexClient()
@@ -249,10 +253,10 @@ namespace Novicell.Examine.ElasticSearch
 
         protected override void PerformIndexItems(IEnumerable<ValueSet> op, Action<IndexOperationEventArgs> onComplete)
         {
-            var indexesMappedToAlias = _client.Value.GetAlias(descriptor => descriptor.Name(prefix+Name))
+            var indexesMappedToAlias = _client.Value.GetAlias(descriptor => descriptor.Name(prefix + Name))
                 .Indices.Select(x => x.Key).ToList();
 
-            var indexTarget = isReindexing ? indexName : prefix+Name;
+            var indexTarget = isReindexing ? indexName : prefix + Name;
             if (isReindexing)
             {
                 var index = _client.Value.CreateIndex(indexName
@@ -286,14 +290,17 @@ namespace Novicell.Examine.ElasticSearch
                 }
             }
 
-            indexesMappedToAlias.ForEach(e => _client.Value.DeleteIndex(e));
+
             if (isReindexing)
             {
-                var bulkAliasResponse = indexer.Alias(ba => ba
+                indexer.Alias(ba => ba
                     .Remove(remove => remove.Index("*").Alias(prefix + Name))
                     .Add(add => add.Index(indexName).Alias(prefix + Name))
                 );
+             
+                    indexesMappedToAlias.Where(e=>e.Name != indexName).ToList().ForEach(e => _client.Value.DeleteIndex(e));
             }
+
 
             onComplete(new IndexOperationEventArgs(this, totalResults));
         }
@@ -331,7 +338,7 @@ namespace Novicell.Examine.ElasticSearch
 
         public override bool IndexExists()
         {
-            return _client.Value.IndexExists(prefix+Name).Exists;
+            return _client.Value.IndexExists(prefix + Name).Exists;
         }
 
         public void Dispose()
@@ -341,7 +348,7 @@ namespace Novicell.Examine.ElasticSearch
                 _client.Value.DisposeIfDisposable();
         }
 
-        public long DocumentCount => _client.Value.Count<Document>(e => e.Index(prefix+Name)).Count;
+        public long DocumentCount => _client.Value.Count<Document>(e => e.Index(prefix + Name)).Count;
         public int FieldCount => _searcher.Value.AllFields.Length;
     }
 }

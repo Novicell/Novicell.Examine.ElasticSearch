@@ -54,41 +54,10 @@ Installed Umbraco v8 in version
 
 Instance of ElasticSearch
 
-# Steps:
-
-Step 1: Install Nuget Package
-(Screenshots here)
-
-Step 2: Add ElasticSearch configuration to web config
-(Screenshots here)
-
-Step 3: Reindex Umbraco Indexes
-(Screenshots here)
-
-Step 4: Be Happy with using Elasticsearch instead of LuceneIndexes (smile) 
-(Screenshots here)
-
-# Configuration:
-
-``<add key="examine:ElasticSearch[internalindex].Url" value="http://localhost:9200" />`` Used only when Debug is false or not exists
-
-``<add key="examine:ElasticSearch[externalindex].Url" value="http://localhost:9200" />`` Used only when Debug is false or not exists
-
-``<add key="examine:ElasticSearch[memberindex].Url" value="http://localhost:9200" />``Used only when Debug is false or not exists
-
-``<add key="examine:ElasticSearch.Debug" value="True" />`` Determine if package should use Embed ElasticSearch or no, not required
-``<add key="examine:ElasticSearch.Prefix" value="MyAmazing_prefix_" />`` Add custom prefix to name of indexes, not required
+Instruction of instalation and configuration is available on wiki:
+[Instalation Instruction](https://github.com/Novicell/Novicell.Examine.ElasticSearch/wiki/Installation)
 
 # Features:
 
 - 0 downtime reindexing
 
-# Know Issues:
-
-- [ ] If index populator doesn't contain any content package will create 2 indexes
-
-- [ ] Reindex from backoffice will be successfull but umbraco will get stuck on reindexing as umbraco forgets to merge one of those important changes:
-  https://github.com/umbraco/Umbraco-CMS/issues/6364 
-  This will be fixed with umbraco 8.1.5
-
-- [ ] 

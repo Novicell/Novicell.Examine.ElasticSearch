@@ -4,8 +4,8 @@
 
 | Nuget Packages | Version                                                                                                                                             |
 | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Release        | [![Build status](https://img.shields.io/nuget/vpre/Novicell.Examine.ElasticSearch)](https://www.nuget.org/packages/Novicell.Examine.ElasticSearch/) |
-| Pre-release    | soon                                                                                                                                                |
+| Release        | Soon                                                                                                                                                |
+| Pre-release    | [![Build status](https://img.shields.io/nuget/vpre/Novicell.Examine.ElasticSearch)](https://www.nuget.org/packages/Novicell.Examine.ElasticSearch/) |
 
 | Umbraco Packages | Version |
 | ---------------- | ------- |
@@ -79,10 +79,16 @@ Step 4: Be Happy with using Elasticsearch instead of LuceneIndexes (smile)
 ``<add key="examine:ElasticSearch.Debug" value="True" />`` Determine if package should use Embed ElasticSearch or no, not required
 ``<add key="examine:ElasticSearch.Prefix" value="MyAmazing_prefix_" />`` Add custom prefix to name of indexes, not required
 
-
-
 # Features:
 
 - 0 downtime reindexing
 
-- 
+# Know Issues:
+
+- [ ] If index populator doesn't contain any content package will create 2 indexes
+
+- [ ] Reindex from backoffice will be successfull but umbraco will get stuck on reindexing as umbraco forgets to merge one of those important changes:
+  https://github.com/umbraco/Umbraco-CMS/issues/6364 
+  This will be fixed with umbraco 8.1.5
+
+- [ ] 

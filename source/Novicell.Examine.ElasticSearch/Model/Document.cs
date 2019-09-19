@@ -12,7 +12,7 @@ namespace Novicell.Examine.ElasticSearch.Model
         {
             if (this.ContainsKey(FieldName))
             {
-                return this[FieldName];
+                return new Field(FieldName,ToByteArray(this[FieldName]), Lucene.Net.Documents.Field.Store.YES);
             }
 
             return null;
@@ -36,6 +36,17 @@ namespace Novicell.Examine.ElasticSearch.Model
             Object obj = (Object) binForm.Deserialize(memStream);
 
             return obj;
+        }
+        private byte[] ToByteArray<T>(T obj)
+        {
+            if(obj == null)
+                return null;
+            BinaryFormatter bf = new BinaryFormatter();
+            using(MemoryStream ms = new MemoryStream())
+            {
+                bf.Serialize(ms, obj);
+                return ms.ToArray();
+            }
         }
     }
 }

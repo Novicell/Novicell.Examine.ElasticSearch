@@ -309,7 +309,6 @@
       <None Include="packages.config" />
     </ItemGroup>
     <ItemGroup>
-      <Compile Include="DocumentWritingEventArgs.cs" />
       <Compile Include="ElasticSearchBooleanOperation.cs" />
       <Compile Include="ElasticSearchExamineComponent.cs" />
       <Compile Include="ElasticSearchExamineComposer.cs" />
@@ -317,6 +316,7 @@
       <Compile Include="ElasticSearchConfig.cs" />
       <Compile Include="ElasticSearchSearcher.cs" />
       <Compile Include="ElasticSearchSearchResults.cs" />
+      <Compile Include="EventArgs\DocumentWritingEventArgs.cs" />
       <Compile Include="Indexers\ContentElasticSearchIndex.cs" />
       <Compile Include="Indexers\ElasticSearchIndex.cs" />
       <Compile Include="Indexers\MemberElasticSearchIndex.cs" />

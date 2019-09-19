@@ -83,12 +83,3 @@ Step 4: Be Happy with using Elasticsearch instead of LuceneIndexes (smile)
 
 - 0 downtime reindexing
 
-# Know Issues:
-
-- [ ] If index populator doesn't contain any content package will create 2 indexes
-
-- [ ] Reindex from backoffice will be successfull but umbraco will get stuck on reindexing as umbraco forgets to merge one of those important changes:
-  https://github.com/umbraco/Umbraco-CMS/issues/6364 
-  This will be fixed with umbraco 8.1.5
-
-- [ ] 

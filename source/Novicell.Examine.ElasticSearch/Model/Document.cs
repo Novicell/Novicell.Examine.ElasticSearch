@@ -10,9 +10,9 @@ namespace Novicell.Examine.ElasticSearch.Model
     {
         public Field GetField(string FieldName)
         {
-            if (this.ContainsKey(FieldName))
+            if (ContainsKey(FieldName))
             {
-                return new Field(FieldName,ToByteArray(this[FieldName]), Lucene.Net.Documents.Field.Store.YES);
+                return new Field(FieldName,Convert.ToString(this[FieldName]), Field.Store.YES, Field.Index.ANALYZED);
             }
 
             return null;
@@ -21,9 +21,9 @@ namespace Novicell.Examine.ElasticSearch.Model
 
         public void Add(Field field)
         {
-            if (this.ContainsKey(field.Name))
+            if (ContainsKey(field.Name))
             {
-                this[field.Name] = ByteArrayToObject(field.GetBinaryValue());
+                this[field.Name] = field.StringValue;
             }
 
         }
@@ -33,7 +33,7 @@ namespace Novicell.Examine.ElasticSearch.Model
             BinaryFormatter binForm = new BinaryFormatter();
             memStream.Write(arrBytes, 0, arrBytes.Length);
             memStream.Seek(0, SeekOrigin.Begin);
-            Object obj = (Object) binForm.Deserialize(memStream);
+            Object obj = binForm.Deserialize(memStream);
 
             return obj;
         }

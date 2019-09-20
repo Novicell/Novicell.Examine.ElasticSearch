@@ -241,7 +241,7 @@ namespace Novicell.Examine.ElasticSearch
                 foreach (var i in d.Values)
                 {
                     if (i.Value.Count > 0)
-                        ad[FormatFieldName(i.Key)] = i.Value;
+                        ad[FormatFieldName(i.Key)] = i.Value.Count == 1 ? i.Value[0]: i.Value;
                 }
                 var docArgs = new DocumentWritingEventArgs(d, ad);
                 OnDocumentWriting(docArgs);

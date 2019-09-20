@@ -21,11 +21,7 @@ namespace Novicell.Examine.ElasticSearch.Model
 
         public void Add(Field field)
         {
-            if (ContainsKey(field.Name))
-            {
-                this[field.Name] = field.StringValue;
-            }
-
+               this[field.Name] = field.StringValue;
         }
         private Object ByteArrayToObject(byte[] arrBytes)
         {

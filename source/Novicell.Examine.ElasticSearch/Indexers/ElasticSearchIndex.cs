@@ -12,11 +12,12 @@ using Novicell.Examine.ElasticSearch.Model;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Services;
+using Umbraco.Examine;
 using Umbraco.Web.Search;
 
 namespace Novicell.Examine.ElasticSearch
 {
-    public class ElasticSearchIndex : BaseIndexProvider, IDisposable
+    public class ElasticSearchIndex : BaseIndexProvider, IUmbracoIndex, IDisposable
     {
         private readonly ElasticSearchConfig _connectionConfiguration;
         private bool? _exists;
@@ -350,5 +351,12 @@ namespace Novicell.Examine.ElasticSearch
 
         public long DocumentCount => _client.Value.Count<Document>(e => e.Index(prefix + Name)).Count;
         public int FieldCount => _searcher.Value.AllFields.Length;
+        public IEnumerable<string> GetFields()
+        {
+            return _searcher.Value.AllFields;
+        }
+
+        public bool EnableDefaultEventHandler { get; }
+        public bool PublishedValuesOnly { get; }
     }
 }

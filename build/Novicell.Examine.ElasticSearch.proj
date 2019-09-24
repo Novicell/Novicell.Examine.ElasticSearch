@@ -15,7 +15,7 @@
   <!-- SHARED PROPERTIES -->
   <PropertyGroup>
     <PackageName>Novicell.Examine.ElasticSearch</PackageName>
-    <MinUmbracoVersion>8.1.2</MinUmbracoVersion>
+    <MinUmbracoVersion>8.1.5</MinUmbracoVersion>
     <Readme>Novicell.Examine.ElasticSearch is a Custom Search Provider for Umbraco v8</Readme>
     <AuthorName>Arkadiusz Biel</AuthorName>
     <AuthorUrl>https://github.com/novicell/Novicell.Examine.ElasticSearch/graphs/contributors</AuthorUrl>

@@ -34,14 +34,13 @@ namespace Novicell.Examine.ElasticSearch
 
         public override IOrdering OrderBy(params SortableField[] fields)
         {
-            throw new NotImplementedException();
-            //return _search.OrderBy(fields);
+         
+            return _search.OrderBy(fields);
         }
 
         public override IOrdering OrderByDescending(params SortableField[] fields)
         {
-            throw new NotImplementedException();
-            //return _search.OrderByDescending(fields);
+            return _search.OrderByDescending(fields);
         }
 
         #endregion

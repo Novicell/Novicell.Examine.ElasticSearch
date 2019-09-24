@@ -33,6 +33,7 @@ namespace Novicell.Examine.ElasticSearch
         public const string IconFieldName = SpecialFieldPrefix + "Icon";
         public const string PublishedFieldName = SpecialFieldPrefix + "Published";
         private readonly IProfilingLogger _logger;
+        public bool EnableDefaultEventHandler { get; set; } = true;
 
         /// <summary>
         /// Occurs when [document writing].
@@ -356,7 +357,6 @@ namespace Novicell.Examine.ElasticSearch
             return _searcher.Value.AllFields;
         }
 
-        public bool EnableDefaultEventHandler { get; }
         public bool PublishedValuesOnly { get; }
     }
 }

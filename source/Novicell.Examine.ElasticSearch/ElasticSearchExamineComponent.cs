@@ -57,7 +57,7 @@ namespace Novicell.Examine.ElasticSearch
 
         }
 
-
+//ToDo: Refactor after reimplement CacheRefresher events
         public void Initialize()
         {
             foreach (var index in _indexCreator.Create())

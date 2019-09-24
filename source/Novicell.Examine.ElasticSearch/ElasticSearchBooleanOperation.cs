@@ -9,10 +9,10 @@ namespace Novicell.Examine.ElasticSearch
     public class ElasticSearchBooleanOperation : LuceneBooleanOperationBase
     {
         private readonly ElasticSearchQuery _search;
-
         internal ElasticSearchBooleanOperation(ElasticSearchQuery search)
             : base(search)
         {
+           
             _search = search;
         }
 

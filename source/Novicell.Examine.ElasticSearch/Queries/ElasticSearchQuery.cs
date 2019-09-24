@@ -22,17 +22,17 @@ namespace Novicell.Examine.ElasticSearch.Queries
         public string _indexName;
         internal Analyzer DefaultAnalyzer { get; } = new StandardAnalyzer(Version.LUCENE_29);
         internal static readonly LuceneSearchOptions EmptyOptions = new LuceneSearchOptions();
-
         public ElasticSearchQuery(ElasticSearchSearcher searcher, string category, string[] fields, BooleanOperation op,
             string indexName) : base(category, new StandardAnalyzer(Version.LUCENE_29), fields,
             EmptyOptions, op)
         {
             _searcher = searcher;
             _indexName = indexName;
+           
         }
 
         public ElasticSearchQuery(ElasticSearchQuery previous, BooleanOperation op)
-            : base(previous.Category, previous.DefaultAnalyzer, null, EmptyOptions, op)
+            : base(previous.Category, previous.DefaultAnalyzer, previous._searcher.AllFields, EmptyOptions, op)
         {
             _searcher = previous._searcher;
             _indexName = previous._indexName;

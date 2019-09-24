@@ -45,6 +45,8 @@ namespace Novicell.Examine.ElasticSearch
                 return _exists.Value;
             }
         }
+
+     
         public string[] AllFields
         {
             get

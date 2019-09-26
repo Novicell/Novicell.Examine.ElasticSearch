@@ -25,7 +25,7 @@ namespace Novicell.Examine.ElasticSearch
 
             base.Compose(composition);
             //composition.Register(typeof(ElasticIndexCreator));
-            composition.Components().Remove<ExamineComponent>();
+           
             composition.Register<Novicell.Examine.ElasticSearch.Populators.ContentIndexPopulator>(Lifetime.Singleton);
 
             composition.Register<Novicell.Examine.ElasticSearch.Populators.PublishedContentIndexPopulator>(
@@ -38,7 +38,7 @@ namespace Novicell.Examine.ElasticSearch
             composition.Register<IndexRebuilder>(Lifetime.Singleton);
 
             //   composition.RegisterUnique<IUmbracoIndexesCreator, UmbracoIndexesCreator>();
-            composition.RegisterUnique<ElasticIndexCreator>();
+            composition.RegisterUnique<IUmbracoIndexesCreator,ElasticIndexCreator>();
 
             composition.RegisterUnique<IPublishedContentValueSetBuilder>(factory =>
                 new ContentValueSetBuilder(

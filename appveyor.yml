@@ -1,5 +1,5 @@
 # version format
-version: 0.2.6.{build}
+version: 0.2.7.{build}
 
 image: Visual Studio 2019
 

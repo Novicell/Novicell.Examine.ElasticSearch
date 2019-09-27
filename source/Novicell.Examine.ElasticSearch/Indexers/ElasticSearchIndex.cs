@@ -55,7 +55,6 @@ namespace Novicell.Examine.ElasticSearch
 
         public ElasticSearchIndex(string name,
             ElasticSearchConfig connectionConfiguration,
-            IPublicAccessService publicAccessService,
             IProfilingLogger profilingLogger,
             FieldDefinitionCollection fieldDefinitions = null,
             string analyzer = null,

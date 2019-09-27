@@ -43,7 +43,6 @@ namespace Novicell.Examine.ElasticSearch
         {
             return new ContentElasticSearchIndex(Constants.UmbracoIndexes.InternalIndexName,
                 ElasticSearchConfig.GetConfig(Constants.UmbracoIndexes.InternalIndexName),
-                _publicAccessService,
                 ProfilingLogger,
                 new UmbracoFieldDefinitionCollection(),
                 "whitespace",
@@ -55,7 +54,6 @@ namespace Novicell.Examine.ElasticSearch
             
             return new ContentElasticSearchIndex(Constants.UmbracoIndexes.ExternalIndexName,
                 ElasticSearchConfig.GetConfig(Constants.UmbracoIndexes.ExternalIndexName),
-                _publicAccessService,
                 ProfilingLogger,
                 new UmbracoFieldDefinitionCollection(),
                 "standard",
@@ -66,7 +64,6 @@ namespace Novicell.Examine.ElasticSearch
         {
             return new MemberElasticSearchIndex(Constants.UmbracoIndexes.MembersIndexName,
                 ElasticSearchConfig.GetConfig(Constants.UmbracoIndexes.ExternalIndexName),
-                _publicAccessService,
                 ProfilingLogger,
                 new UmbracoFieldDefinitionCollection(),
                 "standard",

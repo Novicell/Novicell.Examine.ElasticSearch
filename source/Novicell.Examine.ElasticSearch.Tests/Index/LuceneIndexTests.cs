@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ElasticsearchInside;
 using Examine;
 using Examine.LuceneEngine;
 using Examine.LuceneEngine.Indexing;
@@ -18,7 +19,6 @@ using NUnit.Framework;
 
 namespace Novicell.Examine.ElasticSearch.Tests.Index
 {
-
     /// <summary>
     /// Tests the standard indexing capabilities
     /// </summary>
@@ -28,13 +28,15 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
         [Test]
         public void Rebuild_Index()
         {
-            using (var d = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(d, new StandardAnalyzer(Version.LUCENE_30)))
+            using (var elasticsearch = new Elasticsearch())
             {
-                indexer.CreateIndex();
-                indexer.IndexItems(indexer.AllData());
+                using (var indexer = new TestIndex())
+                {
+                    indexer.CreateIndex();
+                    indexer.IndexItems(indexer.AllData());
 
-                Assert.AreEqual(100, reader.NumDocs());
+                    Assert.AreEqual(100, reader.NumDocs());
+                }
             }
         }
 
@@ -42,105 +44,108 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
         [Test]
         public void Index_Exists()
         {
-            using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(luceneDir, new StandardAnalyzer(Version.LUCENE_30)))
+            using (var elasticsearch = new Elasticsearch())
             {
-                indexer.EnsureIndex(true);
-                Assert.IsTrue(indexer.IndexExists());
+                using (var indexer = new TestIndex(luceneDir, new StandardAnalyzer(Version.LUCENE_30)))
+                {
+                    indexer.EnsureIndex(true);
+                    Assert.IsTrue(indexer.IndexExists());
+                }
             }
         }
-
+/*
         [Test]
         public void Can_Add_One_Document()
         {
-            using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(luceneDir, new StandardAnalyzer(Version.LUCENE_30)))
+            using (var elasticsearch = new Elasticsearch())
             {
-                
+                using (var indexer = new TestIndex(luceneDir, new StandardAnalyzer(Version.LUCENE_30)))
+                {
+                    indexer.IndexItem(new ValueSet(1.ToString(), "content",
+                        new Dictionary<string, IEnumerable<object>>
+                        {
+                            {"item1", new List<object>(new[] {"value1"})},
+                            {"item2", new List<object>(new[] {"value2"})}
+                        }));
 
-                indexer.IndexItem(new ValueSet(1.ToString(), "content",
-                    new Dictionary<string, IEnumerable<object>>
-                    {
-                        {"item1", new List<object>(new[] {"value1"})},
-                        {"item2", new List<object>(new[] {"value2"})}
-                    }));
-
-                var indexWriter = indexer.GetIndexWriter();
-                var reader = indexWriter.GetReader();
-                Assert.AreEqual(1, reader.NumDocs());
+                    var indexWriter = indexer.GetIndexWriter();
+                    var reader = indexWriter.GetReader();
+                    Assert.AreEqual(1, reader.NumDocs());
+                }
             }
         }
 
         [Test]
         public void Can_Add_Same_Document_Twice_Without_Duplication()
         {
-            using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(luceneDir, new StandardAnalyzer(Version.LUCENE_30)))
+            using (var elasticsearch = new Elasticsearch())
             {
-                
+                using (var indexer = new TestIndex(luceneDir, new StandardAnalyzer(Version.LUCENE_30)))
+                {
+                    var value = new ValueSet(1.ToString(), "content",
+                        new Dictionary<string, IEnumerable<object>>
+                        {
+                            {"item1", new List<object>(new[] {"value1"})},
+                            {"item2", new List<object>(new[] {"value2"})}
+                        });
 
-                var value = new ValueSet(1.ToString(), "content",
-                    new Dictionary<string, IEnumerable<object>>
-                    {
-                        {"item1", new List<object>(new[] {"value1"})},
-                        {"item2", new List<object>(new[] {"value2"})}
-                    });
+                    indexer.IndexItem(value);
+                    indexer.IndexItem(value);
 
-                indexer.IndexItem(value);
-                indexer.IndexItem(value);
-
-                var indexWriter = indexer.GetIndexWriter();
-                var reader = indexWriter.GetReader();
-                Assert.AreEqual(1, reader.NumDocs());
+                    var indexWriter = indexer.GetIndexWriter();
+                    var reader = indexWriter.GetReader();
+                    Assert.AreEqual(1, reader.NumDocs());
+                }
             }
         }
 
         [Test]
         public void Can_Add_Multiple_Docs()
         {
-            using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(luceneDir, new StandardAnalyzer(Version.LUCENE_30)))
+            using (var elasticsearch = new Elasticsearch())
             {
-                
-
-                for (var i = 0; i < 10; i++)
+                using (var indexer = new TestIndex(luceneDir, new StandardAnalyzer(Version.LUCENE_30)))
                 {
-                    indexer.IndexItem(new ValueSet(i.ToString(), "content",
-                        new Dictionary<string, IEnumerable<object>>
-                        {
-                            {"item1", new List<object>(new[] {"value1"})},
-                            {"item2", new List<object>(new[] {"value2"})}
-                        }));
-                }
+                    for (var i = 0; i < 10; i++)
+                    {
+                        indexer.IndexItem(new ValueSet(i.ToString(), "content",
+                            new Dictionary<string, IEnumerable<object>>
+                            {
+                                {"item1", new List<object>(new[] {"value1"})},
+                                {"item2", new List<object>(new[] {"value2"})}
+                            }));
+                    }
 
-                var indexWriter = indexer.GetIndexWriter();
-                var reader = indexWriter.GetReader();
-                Assert.AreEqual(10, reader.NumDocs());
+                    var indexWriter = indexer.GetIndexWriter();
+                    var reader = indexWriter.GetReader();
+                    Assert.AreEqual(10, reader.NumDocs());
+                }
             }
         }
 
         [Test]
         public void Can_Delete()
         {
-            using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(luceneDir, new StandardAnalyzer(Version.LUCENE_30)))
+            using (var elasticsearch = new Elasticsearch())
             {
-                
-
-                for (var i = 0; i < 10; i++)
+                using (var indexer = new TestIndex(luceneDir, new StandardAnalyzer(Version.LUCENE_30)))
                 {
-                    indexer.IndexItem(new ValueSet(i.ToString(), "content",
-                        new Dictionary<string, IEnumerable<object>>
-                        {
-                            {"item1", new List<object>(new[] {"value1"})},
-                            {"item2", new List<object>(new[] {"value2"})}
-                        }));
-                }
-                indexer.DeleteFromIndex("9");
+                    for (var i = 0; i < 10; i++)
+                    {
+                        indexer.IndexItem(new ValueSet(i.ToString(), "content",
+                            new Dictionary<string, IEnumerable<object>>
+                            {
+                                {"item1", new List<object>(new[] {"value1"})},
+                                {"item2", new List<object>(new[] {"value2"})}
+                            }));
+                    }
 
-                var indexWriter = indexer.GetIndexWriter();
-                var reader = indexWriter.GetReader();
-                Assert.AreEqual(9, reader.NumDocs());
+                    indexer.DeleteFromIndex("9");
+
+                    var indexWriter = indexer.GetIndexWriter();
+                    var reader = indexWriter.GetReader();
+                    Assert.AreEqual(9, reader.NumDocs());
+                }
             }
         }
 
@@ -148,34 +153,36 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
         [Test]
         public void Can_Add_Doc_With_Fields()
         {
-            using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(luceneDir, new StandardAnalyzer(Version.LUCENE_30)))
+            using (var elasticsearch = new Elasticsearch())
             {
-                
-
-                indexer.IndexItem(new ValueSet(1.ToString(), "content", "test",
-                    new Dictionary<string, IEnumerable<object>>
-                    {
-                        {"item1", new List<object>(new[] {"value1"})},
-                        {"item2", new List<object>(new[] {"value2"})}
-                    }));
-
-
-                using (var s = (LuceneSearcher)indexer.GetSearcher())
+                using (var indexer = new TestIndex(luceneDir, new StandardAnalyzer(Version.LUCENE_30)))
                 {
-                    var luceneSearcher = s.GetLuceneSearcher();
-                    var fields = luceneSearcher.Doc(0).GetFields().ToArray();
-                    Assert.IsNotNull(fields.SingleOrDefault(x => x.Name == "item1"));
-                    Assert.IsNotNull(fields.SingleOrDefault(x => x.Name == "item2"));
-                    Assert.IsNotNull(fields.SingleOrDefault(x => x.Name == LuceneIndex.ItemTypeFieldName));
-                    Assert.IsNotNull(fields.SingleOrDefault(x => x.Name == LuceneIndex.ItemIdFieldName));
-                    Assert.IsNotNull(fields.SingleOrDefault(x => x.Name == LuceneIndex.CategoryFieldName));
+                    indexer.IndexItem(new ValueSet(1.ToString(), "content", "test",
+                        new Dictionary<string, IEnumerable<object>>
+                        {
+                            {"item1", new List<object>(new[] {"value1"})},
+                            {"item2", new List<object>(new[] {"value2"})}
+                        }));
 
-                    Assert.AreEqual("value1", fields.Single(x => x.Name == "item1").StringValue);
-                    Assert.AreEqual("value2", fields.Single(x => x.Name == "item2").StringValue);
-                    Assert.AreEqual("test", fields.Single(x => x.Name == LuceneIndex.ItemTypeFieldName).StringValue);
-                    Assert.AreEqual("1", fields.Single(x => x.Name == LuceneIndex.ItemIdFieldName).StringValue);
-                    Assert.AreEqual("content", fields.Single(x => x.Name == LuceneIndex.CategoryFieldName).StringValue);
+
+                    using (var s = (LuceneSearcher) indexer.GetSearcher())
+                    {
+                        var luceneSearcher = s.GetLuceneSearcher();
+                        var fields = luceneSearcher.Doc(0).GetFields().ToArray();
+                        Assert.IsNotNull(fields.SingleOrDefault(x => x.Name == "item1"));
+                        Assert.IsNotNull(fields.SingleOrDefault(x => x.Name == "item2"));
+                        Assert.IsNotNull(fields.SingleOrDefault(x => x.Name == LuceneIndex.ItemTypeFieldName));
+                        Assert.IsNotNull(fields.SingleOrDefault(x => x.Name == LuceneIndex.ItemIdFieldName));
+                        Assert.IsNotNull(fields.SingleOrDefault(x => x.Name == LuceneIndex.CategoryFieldName));
+
+                        Assert.AreEqual("value1", fields.Single(x => x.Name == "item1").StringValue);
+                        Assert.AreEqual("value2", fields.Single(x => x.Name == "item2").StringValue);
+                        Assert.AreEqual("test",
+                            fields.Single(x => x.Name == LuceneIndex.ItemTypeFieldName).StringValue);
+                        Assert.AreEqual("1", fields.Single(x => x.Name == LuceneIndex.ItemIdFieldName).StringValue);
+                        Assert.AreEqual("content",
+                            fields.Single(x => x.Name == LuceneIndex.CategoryFieldName).StringValue);
+                    }
                 }
             }
         }
@@ -186,12 +193,10 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
             using (var luceneDir = new RandomIdRAMDirectory())
             using (var indexer = new TestIndex(luceneDir, new StandardAnalyzer(Version.LUCENE_30)))
             {
-                
-
                 indexer.IndexItem(ValueSet.FromObject(1.ToString(), "content",
-                    new { item1 = "value1", item2 = "value2" }));
+                    new {item1 = "value1", item2 = "value2"}));
 
-                using (var s = (LuceneSearcher)indexer.GetSearcher())
+                using (var s = (LuceneSearcher) indexer.GetSearcher())
                 {
                     var luceneSearcher = s.GetLuceneSearcher();
                     var fields = luceneSearcher.Doc(0).GetFields().ToArray();
@@ -209,8 +214,6 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
             using (var luceneDir = new RandomIdRAMDirectory())
             using (var indexer = new TestIndex(luceneDir, new StandardAnalyzer(Version.LUCENE_30)))
             {
-                
-
                 indexer.IndexItem(new ValueSet(1.ToString(), "content",
                     new Dictionary<string, IEnumerable<object>>
                     {
@@ -222,7 +225,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
                         }
                     }));
 
-                using (var s = (LuceneSearcher)indexer.GetSearcher())
+                using (var s = (LuceneSearcher) indexer.GetSearcher())
                 {
                     var luceneSearcher = s.GetLuceneSearcher();
                     var fields = luceneSearcher.Doc(0).GetFields().ToArray();
@@ -245,15 +248,13 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
             using (var luceneDir = new RandomIdRAMDirectory())
             using (var indexer = new TestIndex(luceneDir, new StandardAnalyzer(Version.LUCENE_30)))
             {
-                
+                indexer.IndexItem(ValueSet.FromObject(1.ToString(), "content",
+                    new {item1 = "value1", item2 = "value2"}));
 
                 indexer.IndexItem(ValueSet.FromObject(1.ToString(), "content",
-                    new { item1 = "value1", item2 = "value2" }));
+                    new {item1 = "value3", item2 = "value4"}));
 
-                indexer.IndexItem(ValueSet.FromObject(1.ToString(), "content",
-                    new { item1 = "value3", item2 = "value4" }));
-
-                using (var s = (LuceneSearcher)indexer.GetSearcher())
+                using (var s = (LuceneSearcher) indexer.GetSearcher())
                 {
                     var luceneSearcher = s.GetLuceneSearcher();
                     var fields = luceneSearcher.Doc(luceneSearcher.MaxDoc - 1).GetFields().ToArray();
@@ -274,8 +275,6 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
                 luceneDir,
                 new StandardAnalyzer(Version.LUCENE_30)))
             {
-                
-
                 indexer.IndexItem(new ValueSet(1.ToString(), "content",
                     new Dictionary<string, IEnumerable<object>>
                     {
@@ -283,7 +282,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
                         {"item2", new List<object>(new object[] {123456})}
                     }));
 
-                using (var s = (LuceneSearcher)indexer.GetSearcher())
+                using (var s = (LuceneSearcher) indexer.GetSearcher())
                 {
                     var luceneSearcher = s.GetLuceneSearcher();
                     var fields = luceneSearcher.Doc(luceneSearcher.MaxDoc - 1).GetFields().ToArray();
@@ -293,7 +292,6 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
                     Assert.IsNotNull(fields.SingleOrDefault(x => x.Name == "item2"));
                 }
             }
-
         }
 
         /// <summary>
@@ -303,11 +301,11 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
         public void Can_Overwrite_Index_During_Indexing_Operation()
         {
             using (var d = new RandomIdRAMDirectory())
-            using (var writer = new IndexWriter(d, new CultureInvariantStandardAnalyzer(Version.LUCENE_30), IndexWriter.MaxFieldLength.LIMITED))
+            using (var writer = new IndexWriter(d, new CultureInvariantStandardAnalyzer(Version.LUCENE_30),
+                IndexWriter.MaxFieldLength.LIMITED))
             using (var customIndexer = new TestIndex(writer))
-            using (var customSearcher = (LuceneSearcher)customIndexer.GetSearcher())
+            using (var customSearcher = (LuceneSearcher) customIndexer.GetSearcher())
             {
-
                 var waitHandle = new ManualResetEvent(false);
 
                 void OperationComplete(object sender, IndexOperationEventArgs e)
@@ -332,7 +330,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
                     .First();
 
                 //get the id for th node we're re-indexing.
-                var id = (int)node.Attribute("id");
+                var id = (int) node.Attribute("id");
 
                 //spawn a bunch of threads to perform some reading
                 var tasks = new List<Task>();
@@ -368,6 +366,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
                     {
                         sb.Append(v.Message + "; ");
                     }
+
                     Assert.Fail(sb.ToString());
                 }
 
@@ -381,8 +380,9 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
                 writer.WaitForMerges();
 
                 //ensure no data since it's a new index
-                var results = customSearcher.CreateQuery().Field("nodeName", (IExamineValue) new ExamineValue(Examineness.Explicit, "Home")).Execute();
-                    
+                var results = customSearcher.CreateQuery()
+                    .Field("nodeName", (IExamineValue) new ExamineValue(Examineness.Explicit, "Home")).Execute();
+
                 //should be less than the total inserted because we overwrote it in the middle of processing
                 Debug.WriteLine("TOTAL RESULTS: " + results.TotalItemCount);
                 Assert.Less(results.Count(), 1000);
@@ -397,11 +397,11 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
         public void Index_Ensure_No_Duplicates_In_Async()
         {
             using (var d = new RandomIdRAMDirectory())
-            using (var writer = new IndexWriter(d, new CultureInvariantStandardAnalyzer(Version.LUCENE_30), IndexWriter.MaxFieldLength.LIMITED))
+            using (var writer = new IndexWriter(d, new CultureInvariantStandardAnalyzer(Version.LUCENE_30),
+                IndexWriter.MaxFieldLength.LIMITED))
             using (var customIndexer = new TestIndex(writer))
-            //using (var customSearcher = (LuceneSearcher)customIndexer.GetSearcher())
+                //using (var customSearcher = (LuceneSearcher)customIndexer.GetSearcher())
             {
-
                 var waitHandle = new ManualResetEvent(false);
 
                 void OperationComplete(object sender, IndexOperationEventArgs e)
@@ -438,7 +438,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
                         var cloned = new XElement(node);
                         cloned.Attribute("id").Value = docId.ToString(CultureInfo.InvariantCulture);
                         Debug.WriteLine("Indexing {0}", docId);
-                        customIndexer.IndexItems(new[] { cloned.ConvertToValueSet(IndexTypes.Content) });
+                        customIndexer.IndexItems(new[] {cloned.ConvertToValueSet(IndexTypes.Content)});
                         Thread.Sleep(100);
                     }
                 }
@@ -455,7 +455,8 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
                 //ensure no duplicates
 
                 var customSearcher = (LuceneSearcher) customIndexer.GetSearcher();
-                var results = customSearcher.CreateQuery().Field("nodeName", (IExamineValue)new ExamineValue(Examineness.Explicit, "Home")).Execute();
+                var results = customSearcher.CreateQuery()
+                    .Field("nodeName", (IExamineValue) new ExamineValue(Examineness.Explicit, "Home")).Execute();
                 Assert.AreEqual(3, results.Count());
             }
         }
@@ -464,11 +465,11 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
         public void Index_Read_And_Write_Ensure_No_Errors_In_Async()
         {
             using (var d = new RandomIdRAMDirectory())
-            using (var writer = new IndexWriter(d, new CultureInvariantStandardAnalyzer(Version.LUCENE_30), IndexWriter.MaxFieldLength.LIMITED))
+            using (var writer = new IndexWriter(d, new CultureInvariantStandardAnalyzer(Version.LUCENE_30),
+                IndexWriter.MaxFieldLength.LIMITED))
             using (var customIndexer = new TestIndex(writer))
-            using (var customSearcher = (LuceneSearcher)customIndexer.GetSearcher())
+            using (var customSearcher = (LuceneSearcher) customIndexer.GetSearcher())
             {
-
                 var waitHandle = new ManualResetEvent(false);
 
                 void OperationComplete(object sender, IndexOperationEventArgs e)
@@ -515,7 +516,8 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
                             {
                                 idQueue.Enqueue(docId);
                                 var r = s.CreateQuery().Id(docId.ToString()).Execute();
-                                Debug.WriteLine("searching thread: {0}, id: {1}, found: {2}", Thread.CurrentThread.ManagedThreadId, docId, r.Count());
+                                Debug.WriteLine("searching thread: {0}, id: {1}, found: {2}",
+                                    Thread.CurrentThread.ManagedThreadId, docId, r.Count());
                                 Thread.Sleep(50);
                             }
                         }
@@ -543,7 +545,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
                                 var cloned = new XElement(node);
                                 cloned.Attribute("id").Value = docId.ToString(CultureInfo.InvariantCulture);
                                 Debug.WriteLine("Indexing {0}", docId);
-                                ind.IndexItems(new[] { cloned.ConvertToValueSet(IndexTypes.Content) });
+                                ind.IndexItems(new[] {cloned.ConvertToValueSet(IndexTypes.Content)});
                                 Thread.Sleep(100);
                             }
                         }
@@ -581,6 +583,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
                     {
                         sb.Append(v.Message + "; ");
                     }
+
                     Assert.Fail(sb.ToString());
                 }
 
@@ -593,14 +596,14 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
 
                 writer.WaitForMerges();
 
-                var results = customSearcher.CreateQuery().Field("nodeName", (IExamineValue) new ExamineValue(Examineness.Explicit, "Home")).Execute();
+                var results = customSearcher.CreateQuery()
+                    .Field("nodeName", (IExamineValue) new ExamineValue(Examineness.Explicit, "Home")).Execute();
                 Assert.AreEqual(10, results.Count());
             }
         }
-        
 
-
+ */
         private readonly TestContentService _contentService = new TestContentService();
-
     }
+   
 }

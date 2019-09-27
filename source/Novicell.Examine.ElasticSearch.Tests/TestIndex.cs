@@ -2,27 +2,21 @@
 using System.IO;
 using Examine;
 using Examine.LuceneEngine;
+using Umbraco.Core.Logging;
 
 namespace Novicell.Examine.ElasticSearch.Tests
 {
     public class TestIndex : ElasticSearchIndex
     {
-        public TestIndex(FieldDefinitionCollection fieldDefinitions, Directory luceneDirectory, Analyzer analyzer, IValueSetValidator validator = null, IReadOnlyDictionary<string, IFieldValueTypeFactory> indexValueTypesFactory = null)
-            : base("testIndexer", luceneDirectory, fieldDefinitions, analyzer, validator, indexValueTypesFactory)
+        public TestIndex(ElasticSearchConfig connectionConfiguration,
+            IProfilingLogger profilingLogger,
+            FieldDefinitionCollection fieldDefinitions = null,
+            string analyzer = null,
+            IValueSetValidator validator = null)
+            : base("testIndexer", connectionConfiguration, profilingLogger,fieldDefinitions, analyzer, validator)
         {
-            RunAsync = false;
         }
 
-        public TestIndex(Directory luceneDirectory, Analyzer defaultAnalyzer, IValueSetValidator validator = null)
-            : base("testIndexer", luceneDirectory, new FieldDefinitionCollection(), defaultAnalyzer, validator)
-        {
-            RunAsync = false;
-        }
-
-        public TestIndex(IndexWriter writer, IValueSetValidator validator = null)
-            : base("testIndexer", new FieldDefinitionCollection(), writer, validator)
-        {
-        }
 
         public IEnumerable<ValueSet> AllData()
         {

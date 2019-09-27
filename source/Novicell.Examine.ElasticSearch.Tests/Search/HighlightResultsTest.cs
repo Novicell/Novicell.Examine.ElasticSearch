@@ -1,15 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
-using Examine.LuceneEngine;
-
-using Lucene.Net.Search;
-using Lucene.Net.Store;
-using NUnit.Framework;
-
-namespace Examine.Test.Search
+﻿namespace Novicell.Examine.ElasticSearch.Tests.Search
 {
     //[TestFixture]
     //public class HighlightResultsTest : AbstractPartialTrustFixture<HighlightResultsTest>

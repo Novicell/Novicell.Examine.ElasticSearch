@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Text;
-using System.Collections.Generic;
 using System.Linq;
+using Examine;
 using Examine.LuceneEngine.Providers;
-using System.IO;
-using Examine.LuceneEngine;
-using Lucene.Net.Analysis.Standard;
-using Lucene.Net.Store;
 using NUnit.Framework;
-using Version = Lucene.Net.Util.Version;
 
-namespace Examine.Test.Search
+namespace Novicell.Examine.ElasticSearch.Tests.Search
 {
 
     [TestFixture]

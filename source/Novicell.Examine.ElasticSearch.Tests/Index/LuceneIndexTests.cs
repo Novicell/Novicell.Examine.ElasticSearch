@@ -1,32 +1,22 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using Lucene.Net.Analysis.Standard;
-using Lucene.Net.Documents;
-using Lucene.Net.Store;
-using NUnit.Framework;
-using Lucene.Net.Search;
-using Lucene.Net.Index;
 using System.Diagnostics;
-using Examine.LuceneEngine;
-using Examine.LuceneEngine.Providers;
+using System.Globalization;
+using System.Linq;
+using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
+using Examine;
+using Examine.LuceneEngine;
 using Examine.LuceneEngine.Indexing;
-using Examine.LuceneEngine.Search;
+using Examine.LuceneEngine.Providers;
 using Examine.Search;
-using Examine.Test.DataServices;
-using Examine.Test.UmbracoExamine;
 using Novicell.Examine.ElasticSearch.Tests.DataServices;
-using Version = Lucene.Net.Util.Version;
+using Novicell.Examine.ElasticSearch.Tests.UmbracoExamine;
+using NUnit.Framework;
 
-namespace Examine.Test.Index
+namespace Novicell.Examine.ElasticSearch.Tests.Index
 {
 
     /// <summary>
@@ -44,8 +34,6 @@ namespace Examine.Test.Index
                 indexer.CreateIndex();
                 indexer.IndexItems(indexer.AllData());
 
-                var indexWriter = indexer.GetIndexWriter();
-                var reader = indexWriter.GetReader();
                 Assert.AreEqual(100, reader.NumDocs());
             }
         }

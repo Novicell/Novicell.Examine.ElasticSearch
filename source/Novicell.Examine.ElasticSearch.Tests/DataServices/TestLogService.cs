@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UmbracoExamine.DataServices;
-using System.Diagnostics;
-using UmbracoExamine;
+﻿using System.Diagnostics;
 
-namespace Examine.Test.DataServices
+namespace Novicell.Examine.ElasticSearch.Tests.DataServices
 {
     public class TestLogService : ILogService
     {

@@ -1,12 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using NUnit.Framework;
 
-namespace Examine.Test
+namespace Novicell.Examine.ElasticSearch.Tests
 {
     [TestFixture]
     public class OrderedDictionaryTests
@@ -92,8 +89,8 @@ namespace Examine.Test
             Assert.AreEqual(26, alphabetDict.Count);
             Assert.AreEqual(26, alphabetList.Count);
 
-            var keys = alphabetDict.Keys.ToList();
-            var values = alphabetDict.Values.ToList();
+            var keys = Enumerable.ToList<string>(alphabetDict.Keys);
+            var values = Enumerable.ToList<string>(alphabetDict.Values);
 
             for (var i = 0; i < 26; i++)
             {
@@ -113,9 +110,9 @@ namespace Examine.Test
         {
             var alphabetDict = GetAlphabetDictionary();
             string result = null;
-            Assert.IsFalse(alphabetDict.TryGetValue("abc", out result));
+            Assert.IsFalse((bool) alphabetDict.TryGetValue("abc", out result));
             Assert.IsNull(result);
-            Assert.IsTrue(alphabetDict.TryGetValue("z", out result));
+            Assert.IsTrue((bool) alphabetDict.TryGetValue("z", out result));
             Assert.AreEqual("Z", result);
         }
 
@@ -124,7 +121,7 @@ namespace Examine.Test
         {
             var alphabetDict = GetAlphabetDictionary();
 
-            var keys = alphabetDict.Keys.ToList();
+            var keys = Enumerable.ToList<string>(alphabetDict.Keys);
             Assert.AreEqual(26, keys.Count);
 
             var i = 0;
@@ -176,26 +173,26 @@ namespace Examine.Test
         public void TestInsertValue()
         {
             var alphabetDict = GetAlphabetDictionary();
-            Assert.IsTrue(alphabetDict.ContainsKey("c"));
+            Assert.IsTrue((bool) alphabetDict.ContainsKey("c"));
             Assert.AreEqual(2, alphabetDict.IndexOf("c"));
             Assert.AreEqual(alphabetDict[2].Value, "C");
             Assert.AreEqual(26, alphabetDict.Count);
-            Assert.IsFalse(alphabetDict.Values.Contains("ABC"));
+            Assert.IsFalse((bool) alphabetDict.Values.Contains("ABC"));
 
             alphabetDict.Insert(2, new KeyValuePair<string, string>("abc", "ABC"));
-            Assert.IsTrue(alphabetDict.ContainsKey("c"));
+            Assert.IsTrue((bool) alphabetDict.ContainsKey("c"));
             Assert.AreEqual(2, alphabetDict.IndexOf("abc"));
             Assert.AreEqual(alphabetDict[2].Value, "ABC");
             Assert.AreEqual(27, alphabetDict.Count);
-            Assert.IsTrue(alphabetDict.Values.Contains("ABC"));
+            Assert.IsTrue((bool) alphabetDict.Values.Contains("ABC"));
         }
 
         [Test]
         public void TestValueComparer()
         {
             var alphabetDict = GetAlphabetDictionary();
-            Assert.IsFalse(alphabetDict.Values.Contains("a"));
-            Assert.IsTrue(alphabetDict.Values.Contains("a", StringComparer.OrdinalIgnoreCase));
+            Assert.IsFalse((bool) alphabetDict.Values.Contains("a"));
+            Assert.IsTrue(Enumerable.Contains(alphabetDict.Values, "a", StringComparer.OrdinalIgnoreCase));
         }
 
         //[Test]

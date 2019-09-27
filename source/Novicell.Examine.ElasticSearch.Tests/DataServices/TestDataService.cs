@@ -1,6 +1,4 @@
 ﻿using System.IO;
-using Examine.Test;
-using Examine.Test.DataServices;
 
 namespace Novicell.Examine.ElasticSearch.Tests.DataServices
 {

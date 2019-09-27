@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+using Examine;
 using Examine.LuceneEngine;
-using Examine.LuceneEngine.Indexing;
-using Examine.LuceneEngine.Providers;
-using Lucene.Net.Analysis;
-using Lucene.Net.Index;
-using Lucene.Net.Store;
-using Novicell.Examine.ElasticSearch;
 
-namespace Examine.Test
+namespace Novicell.Examine.ElasticSearch.Tests
 {
     public class TestIndex : ElasticSearchIndex
     {

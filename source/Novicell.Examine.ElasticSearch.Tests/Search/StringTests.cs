@@ -1,7 +1,8 @@
 ﻿
+using Examine;
 using NUnit.Framework;
 
-namespace Examine.Test.Search
+namespace Novicell.Examine.ElasticSearch.Tests.Search
 {
     [TestFixture]
 	public class StringTests //: AbstractPartialTrustFixture<StringTests>

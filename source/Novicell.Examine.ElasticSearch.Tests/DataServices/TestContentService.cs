@@ -1,6 +1,10 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
-using Examine.Test;
+using System.Xml.Linq;
+using System.Xml.XPath;
 
 namespace Novicell.Examine.ElasticSearch.Tests.DataServices
 {

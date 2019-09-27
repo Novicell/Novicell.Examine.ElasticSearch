@@ -1,7 +1,6 @@
 ﻿using System;
-using Lucene.Net.Store;
 
-namespace Examine.Test
+namespace Novicell.Examine.ElasticSearch.Tests
 {
     public class RandomIdRAMDirectory : RAMDirectory
     {

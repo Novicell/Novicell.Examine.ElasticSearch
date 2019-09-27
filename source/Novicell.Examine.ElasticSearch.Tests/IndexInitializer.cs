@@ -1,6 +1,7 @@
 ﻿using System;
+using Examine;
 
-namespace Examine.Test
+namespace Novicell.Examine.ElasticSearch.Tests
 {
     /// <summary>
     /// Used internally by test classes to initialize a new index from the template

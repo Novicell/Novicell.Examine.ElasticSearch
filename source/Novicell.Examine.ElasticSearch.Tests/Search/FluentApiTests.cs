@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Examine;
 using Examine.LuceneEngine.Providers;
 using Examine.LuceneEngine.Search;
 using Examine.Search;
-using Lucene.Net.Analysis.Standard;
 using NUnit.Framework;
 
-using Version = Lucene.Net.Util.Version;
-
-namespace Examine.Test.Search
+namespace Novicell.Examine.ElasticSearch.Tests.Search
 {
     [TestFixture]
 	public class FluentApiTests

@@ -19,10 +19,10 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
             using (var luceneDir2 = new RandomIdRAMDirectory())
             using (var luceneDir3 = new RandomIdRAMDirectory())
             using (var luceneDir4 = new RandomIdRAMDirectory())
-            using (var indexer1 = new TestIndex(luceneDir1, analyzer))
-            using (var indexer2 = new TestIndex(luceneDir2, analyzer))
-            using (var indexer3 = new TestIndex(luceneDir3, analyzer))
-            using (var indexer4 = new TestIndex(luceneDir4, analyzer))
+            using (var indexer1 = new TestBaseIndex(luceneDir1, analyzer))
+            using (var indexer2 = new TestBaseIndex(luceneDir2, analyzer))
+            using (var indexer3 = new TestBaseIndex(luceneDir3, analyzer))
+            using (var indexer4 = new TestBaseIndex(luceneDir4, analyzer))
 
             {
                 indexer1.IndexItem(ValueSet.FromObject(1.ToString(), "content", new { item1 = "value1", item2 = "The agitated zebras gallop back and forth in short, panicky dashes, then skitter off into the absolute darkness." }));
@@ -55,10 +55,10 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
             using (var luceneDir2 = new RandomIdRAMDirectory())
             using (var luceneDir3 = new RandomIdRAMDirectory())
             using (var luceneDir4 = new RandomIdRAMDirectory())
-            using (var indexer1 = new TestIndex(luceneDir1, analyzer) { RunAsync = false })
-            using (var indexer2 = new TestIndex(luceneDir2, analyzer) { RunAsync = false })
-            using (var indexer3 = new TestIndex(luceneDir3, analyzer) { RunAsync = false })
-            using (var indexer4 = new TestIndex(luceneDir4, analyzer) { RunAsync = false })
+            using (var indexer1 = new TestBaseIndex(luceneDir1, analyzer) { RunAsync = false })
+            using (var indexer2 = new TestBaseIndex(luceneDir2, analyzer) { RunAsync = false })
+            using (var indexer3 = new TestBaseIndex(luceneDir3, analyzer) { RunAsync = false })
+            using (var indexer4 = new TestBaseIndex(luceneDir4, analyzer) { RunAsync = false })
             {
                 indexer1.IndexItem(ValueSet.FromObject(1.ToString(), "content", new { item1 = "hello", item2 = "The agitated zebras gallop back and forth in short, panicky dashes, then skitter off into the absolute darkness." }));
                 indexer2.IndexItem(ValueSet.FromObject(1.ToString(), "content", new { item1 = "world", item2 = "The festival lasts five days and celebrates the victory of good over evil, light over darkness, and knowledge over ignorance." }));

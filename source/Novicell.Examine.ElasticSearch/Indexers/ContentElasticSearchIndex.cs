@@ -4,7 +4,7 @@ using Umbraco.Core.Services;
 
 namespace Novicell.Examine.ElasticSearch
 {
-    public class ContentElasticSearchIndex : ElasticSearchIndex
+    public class ContentElasticSearchIndex : ElasticSearchUmbracoIndex
     {
         public ContentElasticSearchIndex(string name, ElasticSearchConfig connectionConfiguration, IProfilingLogger profilingLogger,  
             FieldDefinitionCollection fieldDefinitions = null, string analyzer = null,

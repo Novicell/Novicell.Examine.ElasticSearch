@@ -30,7 +30,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
         {
             using (var elasticsearch = new Elasticsearch())
             {
-                using (var indexer = new TestIndex())
+                using (var indexer = new TestBaseIndex())
                 {
                     indexer.CreateIndex();
                     indexer.IndexItems(indexer.AllData());
@@ -46,7 +46,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
         {
             using (var elasticsearch = new Elasticsearch())
             {
-                using (var indexer = new TestIndex(luceneDir, new StandardAnalyzer(Version.LUCENE_30)))
+                using (var indexer = new TestBaseIndex(luceneDir, new StandardAnalyzer(Version.LUCENE_30)))
                 {
                     indexer.EnsureIndex(true);
                     Assert.IsTrue(indexer.IndexExists());

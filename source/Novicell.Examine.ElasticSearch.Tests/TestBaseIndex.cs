@@ -6,9 +6,9 @@ using Umbraco.Core.Logging;
 
 namespace Novicell.Examine.ElasticSearch.Tests
 {
-    public class TestIndex : ElasticSearchIndex
+    public class TestBaseIndex : ElasticSearchBaseIndex
     {
-        public TestIndex(ElasticSearchConfig connectionConfiguration,
+        public TestBaseIndex(ElasticSearchConfig connectionConfiguration,
             IProfilingLogger profilingLogger,
             FieldDefinitionCollection fieldDefinitions = null,
             string analyzer = null,

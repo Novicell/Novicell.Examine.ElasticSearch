@@ -63,7 +63,7 @@ namespace Novicell.Examine.ElasticSearch
             foreach (var index in _indexCreator.Create())
             {
                 _examineManager.AddIndex(index);
-                ElasticSearchIndex luceneIndex = (ElasticSearchIndex) index;
+                ElasticSearchBaseIndex luceneBaseIndex = (ElasticSearchBaseIndex) index;
             }
 
             _logger.Debug<ExamineComponent>("Examine shutdown registered with MainDom");

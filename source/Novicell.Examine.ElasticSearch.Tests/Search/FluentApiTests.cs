@@ -17,7 +17,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             var analyzer = new StandardAnalyzer(Version.LUCENE_30);
             using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(
+            using (var indexer = new TestBaseIndex(
                 new FieldDefinitionCollection(new FieldDefinition("created", "datetime")), 
                 luceneDir, analyzer))
             {
@@ -66,7 +66,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
             var analyzer = new StandardAnalyzer(Version.LUCENE_30);
 
             using (var luceneDir1 = new RandomIdRAMDirectory())
-            using (var indexer1 = new TestIndex(luceneDir1, analyzer))
+            using (var indexer1 = new TestBaseIndex(luceneDir1, analyzer))
             {
                 indexer1.IndexItem(ValueSet.FromObject("1", "content", new { item1 = "value1", item2 = "The agitated zebras gallop back and forth in short, panicky dashes, then skitter off into the total absolute darkness." }));
                 indexer1.IndexItem(ValueSet.FromObject("2", "content", new { item1 = "value2", item2 = "The festival lasts five days and celebrates the victory of good over evil, light over darkness, and knowledge over ignorance." }));
@@ -102,7 +102,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
             var analyzer = new StandardAnalyzer(Version.LUCENE_30);
 
             using (var luceneDir1 = new RandomIdRAMDirectory())
-            using (var indexer1 = new TestIndex(luceneDir1, analyzer))
+            using (var indexer1 = new TestBaseIndex(luceneDir1, analyzer))
             {
                 indexer1.IndexItem(ValueSet.FromObject("1", "content", new { item1 = "value1", item2 = "The agitated zebras gallop back and forth in short, panicky dashes, then skitter off into the total absolute darkness." }));
                 indexer1.IndexItem(ValueSet.FromObject("2", "content", new { item1 = "value2", item2 = "The festival lasts five days and celebrates the victory of good over evil, light over darkness, and knowledge over ignorance." }));
@@ -143,7 +143,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             var analyzer = new StandardAnalyzer(Version.LUCENE_30);
             using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(
+            using (var indexer = new TestBaseIndex(
                 new FieldDefinitionCollection(new FieldDefinition("parentID", "number")),
                 luceneDir, analyzer))
             {
@@ -190,7 +190,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             var analyzer = new StandardAnalyzer(Version.LUCENE_30);
             using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(
+            using (var indexer = new TestBaseIndex(
                 new FieldDefinitionCollection(new FieldDefinition("parentID", "number")),
                 luceneDir, analyzer))
             {
@@ -240,7 +240,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             var analyzer = new StandardAnalyzer(Version.LUCENE_30);
             using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(luceneDir, analyzer))
+            using (var indexer = new TestBaseIndex(luceneDir, analyzer))
             {
                 
 
@@ -289,7 +289,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             var analyzer = new StandardAnalyzer(Version.LUCENE_30);
             using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(luceneDir, analyzer))
+            using (var indexer = new TestBaseIndex(luceneDir, analyzer))
 
             {
                 var searcher = indexer.GetSearcher();
@@ -344,7 +344,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             var analyzer = new StandardAnalyzer(Version.LUCENE_30);
             using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(luceneDir, analyzer))
+            using (var indexer = new TestBaseIndex(luceneDir, analyzer))
 
             {
 
@@ -397,7 +397,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             var analyzer = new StandardAnalyzer(Version.LUCENE_30);
             using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(luceneDir, analyzer))
+            using (var indexer = new TestBaseIndex(luceneDir, analyzer))
 
             {
                 var searcher = indexer.GetSearcher();
@@ -444,7 +444,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             var analyzer = new StandardAnalyzer(Version.LUCENE_30);
             using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(
+            using (var indexer = new TestBaseIndex(
 
                 //TODO: Making this a number makes the query fail - i wonder how to make it work correctly?
                 // It's because the searching is NOT using a managed search
@@ -477,7 +477,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
             var analyzer = new StandardAnalyzer(Version.LUCENE_30);
 
             using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(
+            using (var indexer = new TestBaseIndex(
                 new FieldDefinitionCollection(new FieldDefinition("__Path", "raw")),
                 luceneDir, analyzer))
             {
@@ -537,7 +537,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             var analyzer = new StandardAnalyzer(Version.LUCENE_30);
             using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(
+            using (var indexer = new TestBaseIndex(
                 new FieldDefinitionCollection(new FieldDefinition("parentID", "number")),
                 luceneDir, analyzer))
             
@@ -572,7 +572,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             var analyzer = new StandardAnalyzer(Version.LUCENE_30);
             using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(
+            using (var indexer = new TestBaseIndex(
                 new FieldDefinitionCollection(new FieldDefinition("nodeTypeAlias", "raw")),
                 luceneDir, analyzer))
             {
@@ -621,7 +621,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             var analyzer = new StandardAnalyzer(Version.LUCENE_30);
             using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(luceneDir, analyzer))
+            using (var indexer = new TestBaseIndex(luceneDir, analyzer))
             
 
             {
@@ -653,7 +653,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             var analyzer = new StandardAnalyzer(Version.LUCENE_30);
             using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(luceneDir, analyzer))
+            using (var indexer = new TestBaseIndex(luceneDir, analyzer))
             
 
             {
@@ -700,7 +700,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             var analyzer = new StandardAnalyzer(Version.LUCENE_30);
             using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(luceneDir, analyzer))
+            using (var indexer = new TestBaseIndex(luceneDir, analyzer))
             
 
             {
@@ -731,7 +731,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             var analyzer = new StandardAnalyzer(Version.LUCENE_30);
             using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(luceneDir, analyzer))
+            using (var indexer = new TestBaseIndex(luceneDir, analyzer))
             
 
             {
@@ -767,7 +767,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             var analyzer = new StandardAnalyzer(Version.LUCENE_30);
             using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(
+            using (var indexer = new TestBaseIndex(
                 //Ensure it's set to a number, otherwise it's not sortable
                 new FieldDefinitionCollection(new FieldDefinition("sortOrder", "number"), new FieldDefinition("parentID", "number")),
                 luceneDir, analyzer))
@@ -810,7 +810,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             var analyzer = new StandardAnalyzer(Version.LUCENE_30);
             using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(
+            using (var indexer = new TestBaseIndex(
                 //Ensure it's set to a date, otherwise it's not sortable
                 new FieldDefinitionCollection(new FieldDefinition("updateDate", "date"), new FieldDefinition("parentID", "number")),
                 luceneDir, analyzer))
@@ -855,7 +855,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             var analyzer = new StandardAnalyzer(Version.LUCENE_30);
             using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(
+            using (var indexer = new TestBaseIndex(
                 //Ensure it's set to a fulltextsortable, otherwise it's not sortable
                 new FieldDefinitionCollection(new FieldDefinition("nodeName", "fulltextsortable")),
                 luceneDir, analyzer))
@@ -901,7 +901,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             var analyzer = new StandardAnalyzer(Version.LUCENE_30);
             using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(luceneDir, analyzer))
+            using (var indexer = new TestBaseIndex(luceneDir, analyzer))
             
 
             {
@@ -946,7 +946,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             var analyzer = new StandardAnalyzer(Version.LUCENE_30);
             using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(luceneDir, analyzer))
+            using (var indexer = new TestBaseIndex(luceneDir, analyzer))
             
 
             {
@@ -983,7 +983,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             var analyzer = new StandardAnalyzer(Version.LUCENE_30);
             using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(luceneDir, analyzer))
+            using (var indexer = new TestBaseIndex(luceneDir, analyzer))
             
 
             {
@@ -1022,7 +1022,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             var analyzer = new StandardAnalyzer(Version.LUCENE_30);
             using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(luceneDir, analyzer))
+            using (var indexer = new TestBaseIndex(luceneDir, analyzer))
             
 
             {
@@ -1063,7 +1063,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             var analyzer = new StandardAnalyzer(Version.LUCENE_30);
             using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(luceneDir, analyzer))
+            using (var indexer = new TestBaseIndex(luceneDir, analyzer))
             
 
             {
@@ -1107,7 +1107,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
 
             var analyzer = new StandardAnalyzer(Version.LUCENE_30);
             using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(
+            using (var indexer = new TestBaseIndex(
                 //Ensure it's set to a float
                 new FieldDefinitionCollection(new FieldDefinition("SomeFloat", "float")),
                 luceneDir, analyzer))
@@ -1156,7 +1156,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             var analyzer = new StandardAnalyzer(Version.LUCENE_30);
             using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(
+            using (var indexer = new TestBaseIndex(
                 //Ensure it's set to a float
                 new FieldDefinitionCollection(new FieldDefinition("SomeNumber", "number")),
                 luceneDir, analyzer))
@@ -1203,7 +1203,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             var analyzer = new StandardAnalyzer(Version.LUCENE_30);
             using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(
+            using (var indexer = new TestBaseIndex(
                 //Ensure it's set to a float
                 new FieldDefinitionCollection(new FieldDefinition("SomeDouble", "double")),
                 luceneDir, analyzer))
@@ -1250,7 +1250,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             var analyzer = new StandardAnalyzer(Version.LUCENE_30);
             using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(
+            using (var indexer = new TestBaseIndex(
                 //Ensure it's set to a float
                 new FieldDefinitionCollection(new FieldDefinition("SomeLong", "long")),
                 luceneDir, analyzer))
@@ -1559,7 +1559,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
 
             var analyzer = new StandardAnalyzer(Version.LUCENE_30);
             using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(
+            using (var indexer = new TestBaseIndex(
 
                 new FieldDefinitionCollection(new FieldDefinition("DateCreated", "datetime")),
                 luceneDir, analyzer))
@@ -1604,7 +1604,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             var analyzer = new StandardAnalyzer(Version.LUCENE_30);
             using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(luceneDir, analyzer))
+            using (var indexer = new TestBaseIndex(luceneDir, analyzer))
             
 
             {
@@ -1648,7 +1648,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             var analyzer = new StandardAnalyzer(Version.LUCENE_30);
             using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(luceneDir, analyzer))
+            using (var indexer = new TestBaseIndex(luceneDir, analyzer))
 
 
             {
@@ -1690,7 +1690,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             var analyzer = new StandardAnalyzer(Version.LUCENE_30);
             using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(luceneDir, analyzer))
+            using (var indexer = new TestBaseIndex(luceneDir, analyzer))
             
 
             {
@@ -1730,7 +1730,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             var analyzer = new StandardAnalyzer(Version.LUCENE_30);
             using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(luceneDir, analyzer))
+            using (var indexer = new TestBaseIndex(luceneDir, analyzer))
             
 
             {
@@ -1772,7 +1772,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             var analyzer = new StandardAnalyzer(Version.LUCENE_30);
             using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(luceneDir, analyzer))
+            using (var indexer = new TestBaseIndex(luceneDir, analyzer))
             
 
             {
@@ -1814,7 +1814,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             var analyzer = new StandardAnalyzer(Version.LUCENE_30);
             using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(luceneDir, analyzer))
+            using (var indexer = new TestBaseIndex(luceneDir, analyzer))
             
 
             {

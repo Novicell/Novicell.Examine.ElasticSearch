@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Novicell.Examine.ElasticSearch", "Novicell.Examine.ElasticSearch\Novicell.Examine.ElasticSearch.csproj", "{DCFCB1D2-9614-4B87-AB44-4A77B7E0AC12}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Novicell.Examine.ElasticSearch.Tests", "Novicell.Examine.ElasticSearch.Tests\Novicell.Examine.ElasticSearch.Tests.csproj", "{E5A3666B-3361-4062-B1D5-D896A77B5C85}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{DCFCB1D2-9614-4B87-AB44-4A77B7E0AC12}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DCFCB1D2-9614-4B87-AB44-4A77B7E0AC12}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DCFCB1D2-9614-4B87-AB44-4A77B7E0AC12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5A3666B-3361-4062-B1D5-D896A77B5C85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5A3666B-3361-4062-B1D5-D896A77B5C85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5A3666B-3361-4062-B1D5-D896A77B5C85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5A3666B-3361-4062-B1D5-D896A77B5C85}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

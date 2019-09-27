@@ -318,6 +318,7 @@
       <Compile Include="ElasticSearchSearcher.cs" />
       <Compile Include="ElasticSearchSearchResults.cs" />
       <Compile Include="EventArgs\DocumentWritingEventArgs.cs" />
+      <Compile Include="Helpers\ElasticHelpers.cs" />
       <Compile Include="Indexers\ContentElasticSearchIndex.cs" />
       <Compile Include="Indexers\ElasticSearchIndex.cs" />
       <Compile Include="Indexers\MemberElasticSearchIndex.cs" />

@@ -7,6 +7,7 @@ using Examine;
 using Examine.LuceneEngine.Providers;
 using Lucene.Net.Search;
 using Nest;
+using Novicell.Examine.ElasticSearch.Helpers;
 using Novicell.Examine.ElasticSearch.Model;
 
 namespace Novicell.Examine.ElasticSearch
@@ -43,7 +44,7 @@ namespace Novicell.Examine.ElasticSearch
         public IEnumerator<ISearchResult> GetEnumerator()
         {
             var result = DoSearch(null);
-            return ConvertResult(result).GetEnumerator();
+            return result.ConvertResult().GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -51,23 +52,7 @@ namespace Novicell.Examine.ElasticSearch
             return GetEnumerator();
         }
 
-        private static IEnumerable<ISearchResult> ConvertResult(ISearchResponse<Document> result)
-        {
-            return result.Hits.OrderByDescending(x => x.Score).Select(x =>
-            {
-                var id = x.Source[LuceneIndex.ItemIdFieldName].ToString();
-                IDictionary<string, List<string>> results = new Dictionary<string, List<string>>();
-                foreach (var d in x.Source)
-                {
-                    if (d.Key == null || d.Value == null) continue;
-                    results[d.Key] = new List<string> {d.Value.ToString()};
-                }
-
-                var r = new SearchResult(id, Convert.ToInt64(x.Score), () => results);
-
-                return r;
-            });
-        }
+       
 
         private ISearchResponse<Document> DoSearch(int? skip)
         {

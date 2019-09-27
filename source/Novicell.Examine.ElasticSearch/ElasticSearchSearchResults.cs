@@ -88,7 +88,7 @@ namespace Novicell.Examine.ElasticSearch
         public IEnumerable<ISearchResult> Skip(int skip)
         {
             var result = DoSearch(skip);
-            return ConvertResult(result);
+            return result.ConvertResult();
         }
     }
 }

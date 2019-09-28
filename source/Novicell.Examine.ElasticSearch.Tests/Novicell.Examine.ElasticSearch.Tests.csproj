@@ -35,9 +35,11 @@
     <ItemGroup>
         <Reference Include="Elasticsearch.Net, Version=6.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d">
           <HintPath>..\packages\Elasticsearch.Net.6.7.0\lib\net461\Elasticsearch.Net.dll</HintPath>
+          <Private>True</Private>
         </Reference>
         <Reference Include="ElasticsearchInside, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\packages\elasticsearch-inside.6.6.1\lib\net461\ElasticsearchInside.dll</HintPath>
+          <Private>True</Private>
         </Reference>
         <Reference Include="Examine, Version=1.0.1.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\packages\Examine.1.0.1\lib\net452\Examine.dll</HintPath>
@@ -45,6 +47,7 @@
         </Reference>
         <Reference Include="Nest, Version=6.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d">
           <HintPath>..\packages\NEST.6.7.0\lib\net461\Nest.dll</HintPath>
+          <Private>True</Private>
         </Reference>
         <Reference Include="System" />
         <Reference Include="System.Core" />

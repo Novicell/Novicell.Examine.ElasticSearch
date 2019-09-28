@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ElasticsearchInside;
+using ElasticsearchInside.Config;
 using Examine;
 using Examine.LuceneEngine;
 using Examine.LuceneEngine.Indexing;
@@ -29,7 +30,10 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
         [Test]
         public void Rebuild_Index()
         {
-            using (var elasticsearch = new ElasticsearchInside.Elasticsearch())
+            using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
+                .EnableLogging()
+                .SetPort(9200)
+                .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
                 using (var indexer = new TestBaseIndex(config,  new FieldDefinitionCollection(new FieldDefinition("item2", "number"))))
@@ -46,7 +50,10 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
         [Test]
         public void Index_Exists()
         {
-            using (var elasticsearch = new ElasticsearchInside.Elasticsearch())
+            using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
+                .EnableLogging()
+                .SetPort(9200)
+                .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
                 using (var indexer = new TestBaseIndex(config,  new FieldDefinitionCollection(new FieldDefinition("item2", "number"))))
@@ -608,7 +615,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
         }
 
  */
-        private readonly TestContentService _contentService = new TestContentService();
+      //  private readonly TestContentService _contentService = new TestContentService();
     }
    
 }

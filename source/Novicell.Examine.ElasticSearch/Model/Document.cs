@@ -18,9 +18,21 @@ namespace Novicell.Examine.ElasticSearch.Model
             return null;
 
         }
+        
+        public IList<IFieldable> GetFields()
+        {
+            var results = new List<IFieldable>();
+
+            foreach(var f in this)
+            {
+                results.Add(new Field(f.Key, Convert.ToString(f.Value), Field.Store.YES, Field.Index.ANALYZED));
+            }
+
+            return results;
+        }
 
         public void Add(Field field)
-        {
+        {            
                this[field.Name] = field.StringValue;
         }
         private Object ByteArrayToObject(byte[] arrBytes)

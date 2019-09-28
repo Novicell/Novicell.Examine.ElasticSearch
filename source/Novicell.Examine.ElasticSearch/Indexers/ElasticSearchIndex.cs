@@ -69,7 +69,7 @@ namespace Novicell.Examine.ElasticSearch
             ElasticURL = ConfigurationManager.AppSettings[$"examine:ElasticSearch[{name}].Url"];
             _searcher = new Lazy<ElasticSearchSearcher>(CreateSearcher);
             _client = new Lazy<ElasticClient>(CreateElasticSearchClient);
-            indexAlias = prefix + indexName;
+            indexAlias = prefix + name.ToLower();
         }
 
         private ElasticClient CreateElasticSearchClient()

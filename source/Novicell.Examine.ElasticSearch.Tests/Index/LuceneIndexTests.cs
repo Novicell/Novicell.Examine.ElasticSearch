@@ -13,6 +13,7 @@ using Examine.LuceneEngine;
 using Examine.LuceneEngine.Indexing;
 using Examine.LuceneEngine.Providers;
 using Examine.Search;
+using Nest;
 using Novicell.Examine.ElasticSearch.Tests.DataServices;
 using Novicell.Examine.ElasticSearch.Tests.UmbracoExamine;
 using NUnit.Framework;
@@ -30,12 +31,13 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
         {
             using (var elasticsearch = new Elasticsearch())
             {
-                using (var indexer = new TestBaseIndex())
+                ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
+                using (var indexer = new TestBaseIndex(config,))
                 {
                     indexer.CreateIndex();
                     indexer.IndexItems(indexer.AllData());
 
-                    Assert.AreEqual(100, reader.NumDocs());
+                    Assert.AreEqual(100, indexer.DocumentCount);
                 }
             }
         }

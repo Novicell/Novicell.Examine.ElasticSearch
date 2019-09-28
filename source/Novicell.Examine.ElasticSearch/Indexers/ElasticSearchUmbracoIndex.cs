@@ -1,11 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Elasticsearch.Net;
 using Examine;
 using Examine.LuceneEngine.Providers;
 using Lucene.Net.Index;
 using Lucene.Net.Store;
+using Nest;
+using Novicell.Examine.ElasticSearch.Model;
 using Umbraco.Core;
+using Umbraco.Core.Composing;
 using Umbraco.Core.Logging;
 using Umbraco.Examine;
 
@@ -43,15 +47,9 @@ namespace Novicell.Examine.ElasticSearch
             FieldDefinitionCollection fieldDefinitions = null,
             string analyzer = null,
             IValueSetValidator validator = null)
-            : base(name, luceneDirectory, fieldDefinitions, defaultAnalyzer, validator, indexValueTypes)
+            : base(name,connectionConfiguration,  fieldDefinitions, analyzer, validator)
         {
-            ProfilingLogger = profilingLogger ?? throw new ArgumentNullException(nameof(profilingLogger));
-
-            //try to set the value of `LuceneIndexFolder` for diagnostic reasons
-            if (luceneDirectory is FSDirectory fsDir)
-                LuceneIndexFolder = fsDir.Directory;
-
-            _diagnostics = new UmbracoExamineIndexDiagnostics(this, ProfilingLogger);
+           
         }
 
         private readonly bool _configBased = false;
@@ -61,7 +59,6 @@ namespace Novicell.Examine.ElasticSearch
         /// <summary>
         /// When set to true Umbraco will keep the index in sync with Umbraco data automatically
         /// </summary>
-        public bool EnableDefaultEventHandler { get; set; } = true;
 
         public bool PublishedValuesOnly { get; protected set; } = false;
 
@@ -79,16 +76,7 @@ namespace Novicell.Examine.ElasticSearch
         /// <remarks>
         /// This check is required since the base examine lib will try to rebuild on startup
         /// </remarks>
-        protected override void PerformDeleteFromIndex(IEnumerable<string> itemIds, Action<IndexOperationEventArgs> onComplete)
-        {
-            if (CanInitialize())
-            {
-                using (new SafeCallContext())
-                {
-                    base.PerformDeleteFromIndex(itemIds, onComplete);
-                }
-            }
-        }
+       
 
         /// <summary>
         /// Returns true if the Umbraco application is in a state that we can initialize the examine indexes
@@ -110,47 +98,27 @@ namespace Novicell.Examine.ElasticSearch
             ProfilingLogger.Error(GetType(), ex.InnerException, ex.Message);
             base.OnIndexingError(ex);
         }
-
-        /// <summary>
-        /// This ensures that the special __Raw_ fields are indexed correctly
-        /// </summary>
-        /// <param name="docArgs"></param>
-        protected override void OnDocumentWriting(DocumentWritingEventArgs docArgs)
+        protected override void PerformDeleteFromIndex(IEnumerable<string> itemIds,
+            Action<IndexOperationEventArgs> onComplete)
         {
-            var d = docArgs.Document;
+            var descriptor = new BulkDescriptor();
 
-            foreach (var f in docArgs.ValueSet.Values.Where(x => x.Key.StartsWith(RawFieldPrefix)).ToList())
+            foreach (var id in itemIds.Where(x => !string.IsNullOrWhiteSpace(x)))
+                descriptor.Index(indexName).Delete<Document>(x => x
+                        .Id(id))
+                    .Refresh(Refresh.WaitFor);
+
+            var response = _client.Value.Bulk(descriptor);
+            if (response.Errors)
             {
-                if (f.Value.Count > 0)
+                foreach (var itemWithError in response.ItemsWithErrors)
                 {
-                    //remove the original value so we can store it the correct way
-                    d.RemoveField(f.Key);
-
-                    d.Add(new Field(
-                        f.Key,
-                        f.Value[0].ToString(),
-                        Field.Store.YES,
-                        Field.Index.NO, //don't index this field, we never want to search by it
-                        Field.TermVector.NO));
+                    _logger.Error<ElasticSearchBaseIndex>("Failed to remove from index document {NodeID}: {Error}",
+                        itemWithError.Id, itemWithError.Error);
                 }
             }
-
-            base.OnDocumentWriting(docArgs);
         }
-
-        /// <summary>
-        /// Overridden for logging.
-        /// </summary>
-        protected override void AddDocument(Document doc, ValueSet valueSet, IndexWriter writer)
-        {
-            ProfilingLogger.Debug(GetType(),
-                "Write lucene doc id:{DocumentId}, category:{DocumentCategory}, type:{DocumentItemType}",
-                valueSet.Id,
-                valueSet.Category,
-                valueSet.ItemType);
-
-            base.AddDocument(doc, valueSet, writer);
-        }
+      
 
         protected override void OnTransformingIndexValues(IndexingItemEventArgs e)
         {
@@ -170,12 +138,6 @@ namespace Novicell.Examine.ElasticSearch
             }
         }
         
-        #region IIndexDiagnostics
-
-
-        public int DocumentCount => _diagnostics.DocumentCount;
-        public int FieldCount => _diagnostics.FieldCount;
-
-        #endregion
+       
     }
 }

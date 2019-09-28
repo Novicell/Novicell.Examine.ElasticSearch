@@ -9,11 +9,10 @@ namespace Novicell.Examine.ElasticSearch.Tests
     public class TestBaseIndex : ElasticSearchBaseIndex
     {
         public TestBaseIndex(ElasticSearchConfig connectionConfiguration,
-            IProfilingLogger profilingLogger,
             FieldDefinitionCollection fieldDefinitions = null,
             string analyzer = null,
             IValueSetValidator validator = null)
-            : base("testIndexer", connectionConfiguration, profilingLogger,fieldDefinitions, analyzer, validator)
+            : base("testIndexer", connectionConfiguration, fieldDefinitions, analyzer, validator)
         {
         }
 

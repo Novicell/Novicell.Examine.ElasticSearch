@@ -19,14 +19,14 @@ namespace Novicell.Examine.ElasticSearch
 {
     public class ElasticSearchBaseIndex : BaseIndexProvider, IDisposable
     {
-        private readonly ElasticSearchConfig _connectionConfiguration;
+        public readonly ElasticSearchConfig _connectionConfiguration;
         private bool? _exists;
         private bool isReindexing = false;
 
-        private readonly Lazy<ElasticClient> _client;
+        public readonly Lazy<ElasticClient> _client;
         private ElasticClient _indexer;
         private static readonly object ExistsLocker = new object();
-        private readonly Lazy<ElasticSearchSearcher> _searcher;
+        public readonly Lazy<ElasticSearchSearcher> _searcher;
       
 
         /// <summary>
@@ -308,14 +308,7 @@ namespace Novicell.Examine.ElasticSearch
                     .Refresh(Refresh.WaitFor);
 
             var response = _client.Value.Bulk(descriptor);
-            if (response.Errors)
-            {
-                foreach (var itemWithError in response.ItemsWithErrors)
-                {
-                    _logger.Error<ElasticSearchBaseIndex>("Failed to remove from index document {NodeID}: {Error}",
-                        itemWithError.Id, itemWithError.Error);
-                }
-            }
+           
         }
 
         public override ISearcher GetSearcher()
@@ -347,13 +340,18 @@ namespace Novicell.Examine.ElasticSearch
                 _client.Value.DisposeIfDisposable();
         }
 
-        public long DocumentCount => _client.Value.Count<Document>(e => e.Index(indexAlias)).Count;
-        public int FieldCount => _searcher.Value.AllFields.Length;
+
         public IEnumerable<string> GetFields()
         {
             return _searcher.Value.AllFields;
         }
 
-        public bool PublishedValuesOnly { get; }
+        #region IIndexDiagnostics
+
+
+        public long DocumentCount => _client.Value.Count<Document>(e => e.Index(indexAlias)).Count;
+        public int FieldCount => _searcher.Value.AllFields.Length;
+
+        #endregion
     }
 }

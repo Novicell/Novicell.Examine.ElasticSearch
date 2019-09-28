@@ -40,6 +40,9 @@
           <HintPath>..\packages\Examine.1.0.1\lib\net452\Examine.dll</HintPath>
           <Private>True</Private>
         </Reference>
+        <Reference Include="Nest, Version=6.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d">
+          <HintPath>..\packages\NEST.6.7.0\lib\net461\Nest.dll</HintPath>
+        </Reference>
         <Reference Include="System" />
         <Reference Include="System.Core" />
         <Reference Include="System.Data" />

@@ -89,7 +89,7 @@ namespace Novicell.Examine.ElasticSearch
                 LowFrequencyOperator = Operator.Or,
                 MinimumShouldMatch = 1,
                 Name = "named_query",
-                Query = "nelly the elephant not as a"
+                Query = searchText
             };
             return new ElasticSearchSearchResults(_client.Value, query, _prefix+_indexName,maxResults);
         }

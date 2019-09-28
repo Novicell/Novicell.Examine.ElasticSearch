@@ -19,7 +19,7 @@ namespace Novicell.Examine.ElasticSearch
         private readonly BooleanQuery _luceneQuery;
         private QueryContainer _queryContainer;
         private readonly string _indexName;
-
+        private IEnumerable<ISearchResult> results;
         public long TotalItemCount { get; private set; }
 
 
@@ -30,6 +30,7 @@ namespace Novicell.Examine.ElasticSearch
             _maxResults = maxResults;
             _client = client;
             _indexName = indexName;
+            results = DoSearch(null).ConvertResult();
         }
 
         public ElasticSearchSearchResults(ElasticClient client, QueryContainer queryContainer, string indexName,
@@ -39,12 +40,13 @@ namespace Novicell.Examine.ElasticSearch
             _maxResults = maxResults;
             _client = client;
             _indexName = indexName;
+            results = DoSearch(null).ConvertResult();
         }
 
         public IEnumerator<ISearchResult> GetEnumerator()
         {
-            var result = DoSearch(null);
-            return result.ConvertResult().GetEnumerator();
+       
+            return results.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -87,8 +89,8 @@ namespace Novicell.Examine.ElasticSearch
 
         public IEnumerable<ISearchResult> Skip(int skip)
         {
-            var result = DoSearch(skip);
-            return result.ConvertResult();
+            results = DoSearch(skip).ConvertResult();
+            return results;
         }
     }
 }

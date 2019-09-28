@@ -16,6 +16,7 @@ namespace Novicell.Examine.ElasticSearch
             _search = search;
         }
 
+        #region IBooleanOperation Members
         public override IQuery And() => new ElasticSearchQuery(_search, BooleanOperation.And);
         public override IQuery Or() => new ElasticSearchQuery(_search, BooleanOperation.Or);
 
@@ -29,20 +30,16 @@ namespace Novicell.Examine.ElasticSearch
         protected override INestedQuery NotNested() => new ElasticSearchQuery(_search, BooleanOperation.Not);
 
         public override ISearchResults Execute(int maxResults = 500) => _search.Execute(maxResults);
-
+        #endregion
+        
         #region IOrdering
 
-        public override IOrdering OrderBy(params SortableField[] fields)
-        {
-         
-            return _search.OrderBy(fields);
-        }
+        public override IOrdering OrderBy(params SortableField[] fields) => _search.OrderBy(fields);
 
-        public override IOrdering OrderByDescending(params SortableField[] fields)
-        {
-            return _search.OrderByDescending(fields);
-        }
-
+        public override IOrdering OrderByDescending(params SortableField[] fields) => _search.OrderByDescending(fields);
+        
         #endregion
+        public override string ToString() => _search.ToString();
+      
     }
 }

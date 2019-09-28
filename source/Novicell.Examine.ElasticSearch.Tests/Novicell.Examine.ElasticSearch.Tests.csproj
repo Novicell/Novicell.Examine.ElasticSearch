@@ -33,6 +33,9 @@
         <WarningLevel>4</WarningLevel>
     </PropertyGroup>
     <ItemGroup>
+        <Reference Include="Elasticsearch.Net, Version=6.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d">
+          <HintPath>..\packages\Elasticsearch.Net.6.7.0\lib\net461\Elasticsearch.Net.dll</HintPath>
+        </Reference>
         <Reference Include="ElasticsearchInside, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\packages\elasticsearch-inside.6.6.1\lib\net461\ElasticsearchInside.dll</HintPath>
         </Reference>
@@ -60,11 +63,6 @@
         <Compile Include="IndexInitializer.cs" />
         <Compile Include="Index\LuceneIndexTests.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
-        <Compile Include="Search\DataTypeTests.cs" />
-        <Compile Include="Search\FluentApiTests.cs" />
-        <Compile Include="Search\HighlightResultsTest.cs" />
-        <Compile Include="Search\MultiIndexSearch.cs" />
-        <Compile Include="Search\StringTests.cs" />
         <Compile Include="SimpleDataProviderTest.cs" />
         <Compile Include="TestHelper.cs" />
         <Compile Include="TestBaseIndex.cs" />

@@ -29,10 +29,10 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
         [Test]
         public void Rebuild_Index()
         {
-            using (var elasticsearch = new Elasticsearch())
+            using (var elasticsearch = new ElasticsearchInside.Elasticsearch())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
-                using (var indexer = new TestBaseIndex(config,))
+                using (var indexer = new TestBaseIndex(config,  new FieldDefinitionCollection(new FieldDefinition("item2", "number"))))
                 {
                     indexer.CreateIndex();
                     indexer.IndexItems(indexer.AllData());
@@ -46,15 +46,18 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
         [Test]
         public void Index_Exists()
         {
-            using (var elasticsearch = new Elasticsearch())
+            using (var elasticsearch = new ElasticsearchInside.Elasticsearch())
             {
-                using (var indexer = new TestBaseIndex(luceneDir, new StandardAnalyzer(Version.LUCENE_30)))
+                ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
+                using (var indexer = new TestBaseIndex(config,  new FieldDefinitionCollection(new FieldDefinition("item2", "number"))))
                 {
                     indexer.EnsureIndex(true);
                     Assert.IsTrue(indexer.IndexExists());
                 }
+            
             }
         }
+        
 /*
         [Test]
         public void Can_Add_One_Document()

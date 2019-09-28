@@ -164,7 +164,7 @@ namespace Novicell.Examine.ElasticSearch
             return "standard";
         }
 
-        private void EnsureIndex(bool forceOverwrite)
+        public void EnsureIndex(bool forceOverwrite)
         {
             if (!forceOverwrite && _exists.HasValue && _exists.Value) return;
 
@@ -271,14 +271,7 @@ namespace Novicell.Examine.ElasticSearch
 
                 totalResults += indexResult.Items.Count;
 
-                if (indexResult.Errors)
-                {
-                    foreach (var itemWithError in indexResult.ItemsWithErrors)
-                    {
-                        _logger.Error<ElasticSearchBaseIndex>("Failed to index document {NodeID}: {Error}",
-                            itemWithError.Id, itemWithError.Error);
-                    }
-                }
+               
             }
 
 

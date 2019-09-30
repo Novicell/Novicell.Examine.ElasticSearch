@@ -296,7 +296,7 @@ namespace Novicell.Examine.ElasticSearch
             var descriptor = new BulkDescriptor();
 
             foreach (var id in itemIds.Where(x => !string.IsNullOrWhiteSpace(x)))
-                descriptor.Index(indexName).Delete<Document>(x => x
+                descriptor.Index(indexAlias).Delete<Document>(x => x
                         .Id(id))
                     .Refresh(Refresh.WaitFor);
 

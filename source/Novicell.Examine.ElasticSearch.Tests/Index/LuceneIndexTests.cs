@@ -36,7 +36,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
                 .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
-                using (var indexer = new TestBaseIndex(config,  new FieldDefinitionCollection(new FieldDefinition("item2", "number"))))
+                using (var indexer = new TestBaseIndex(config,  new FieldDefinitionCollection()))
                 {
                     indexer.CreateIndex();
                     indexer.IndexItems(indexer.AllData());
@@ -65,13 +65,17 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
             }
         }
         
-/*
+
         [Test]
         public void Can_Add_One_Document()
         {
-            using (var elasticsearch = new Elasticsearch())
+            using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
+                .EnableLogging()
+                .SetPort(9200)
+                .SetElasticsearchStartTimeout(180)).ReadySync())
             {
-                using (var indexer = new TestIndex(luceneDir, new StandardAnalyzer(Version.LUCENE_30)))
+                ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
+                using (var indexer = new TestBaseIndex(config,  new FieldDefinitionCollection()))
                 {
                     indexer.IndexItem(new ValueSet(1.ToString(), "content",
                         new Dictionary<string, IEnumerable<object>>
@@ -80,9 +84,8 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
                             {"item2", new List<object>(new[] {"value2"})}
                         }));
 
-                    var indexWriter = indexer.GetIndexWriter();
-                    var reader = indexWriter.GetReader();
-                    Assert.AreEqual(1, reader.NumDocs());
+        
+                    Assert.AreEqual(1, indexer.DocumentCount);
                 }
             }
         }
@@ -90,9 +93,13 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
         [Test]
         public void Can_Add_Same_Document_Twice_Without_Duplication()
         {
-            using (var elasticsearch = new Elasticsearch())
+            using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
+                .EnableLogging()
+                .SetPort(9200)
+                .SetElasticsearchStartTimeout(180)).ReadySync())
             {
-                using (var indexer = new TestIndex(luceneDir, new StandardAnalyzer(Version.LUCENE_30)))
+                ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
+                using (var indexer = new TestBaseIndex(config,  new FieldDefinitionCollection()))
                 {
                     var value = new ValueSet(1.ToString(), "content",
                         new Dictionary<string, IEnumerable<object>>
@@ -104,9 +111,8 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
                     indexer.IndexItem(value);
                     indexer.IndexItem(value);
 
-                    var indexWriter = indexer.GetIndexWriter();
-                    var reader = indexWriter.GetReader();
-                    Assert.AreEqual(1, reader.NumDocs());
+                  
+                    Assert.AreEqual(1, indexer.DocumentCount);
                 }
             }
         }
@@ -114,9 +120,13 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
         [Test]
         public void Can_Add_Multiple_Docs()
         {
-            using (var elasticsearch = new Elasticsearch())
+            using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
+                .EnableLogging()
+                .SetPort(9200)
+                .SetElasticsearchStartTimeout(180)).ReadySync())
             {
-                using (var indexer = new TestIndex(luceneDir, new StandardAnalyzer(Version.LUCENE_30)))
+                ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
+                using (var indexer = new TestBaseIndex(config,  new FieldDefinitionCollection()))
                 {
                     for (var i = 0; i < 10; i++)
                     {
@@ -128,13 +138,11 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
                             }));
                     }
 
-                    var indexWriter = indexer.GetIndexWriter();
-                    var reader = indexWriter.GetReader();
-                    Assert.AreEqual(10, reader.NumDocs());
+                    Assert.AreEqual(10, indexer.DocumentCount);
                 }
             }
         }
-
+/*
         [Test]
         public void Can_Delete()
         {

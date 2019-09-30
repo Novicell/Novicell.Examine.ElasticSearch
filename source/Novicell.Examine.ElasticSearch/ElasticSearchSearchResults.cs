@@ -20,6 +20,7 @@ namespace Novicell.Examine.ElasticSearch
         private QueryContainer _queryContainer;
         private readonly string _indexName;
         private IEnumerable<ISearchResult> results;
+        private int lastskip = 0;
         public long TotalItemCount { get; private set; }
 
 
@@ -58,6 +59,7 @@ namespace Novicell.Examine.ElasticSearch
 
         private ISearchResponse<Document> DoSearch(int? skip)
         {
+            lastskip = skip ?? 0;
             ISearchResponse<Document> searchResult;
             if (_luceneQuery != null)
             {
@@ -89,6 +91,8 @@ namespace Novicell.Examine.ElasticSearch
 
         public IEnumerable<ISearchResult> Skip(int skip)
         {
+            if (lastskip == skip)
+                return results;
             results = DoSearch(skip).ConvertResult();
             return results;
         }

@@ -25,7 +25,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
     /// Tests the standard indexing capabilities
     /// </summary>
     [TestFixture]
-    public class LuceneIndexTests
+    public class ElasticIndexTests
     {
         [Test]
         public void Rebuild_Index()
@@ -40,7 +40,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
                 {
                     indexer.CreateIndex();
                     indexer.IndexItems(indexer.AllData());
-
+                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
                     Assert.AreEqual(100, indexer.DocumentCount);
                 }
             }
@@ -59,6 +59,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
                 using (var indexer = new TestBaseIndex(config,  new FieldDefinitionCollection(new FieldDefinition("item2", "number"))))
                 {
                     indexer.EnsureIndex(true);
+                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
                     Assert.IsTrue(indexer.IndexExists());
                 }
             
@@ -84,7 +85,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
                             {"item2", new List<object>(new[] {"value2"})}
                         }));
 
-        
+                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
                     Assert.AreEqual(1, indexer.DocumentCount);
                 }
             }
@@ -111,7 +112,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
                     indexer.IndexItem(value);
                     indexer.IndexItem(value);
 
-                  
+                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
                     Assert.AreEqual(1, indexer.DocumentCount);
                 }
             }
@@ -137,18 +138,22 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
                                 {"item2", new List<object>(new[] {"value2"})}
                             }));
                     }
-
+                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
                     Assert.AreEqual(10, indexer.DocumentCount);
                 }
             }
         }
-/*
+
         [Test]
         public void Can_Delete()
         {
-            using (var elasticsearch = new Elasticsearch())
+            using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
+                .EnableLogging()
+                .SetPort(9200)
+                .SetElasticsearchStartTimeout(180)).ReadySync())
             {
-                using (var indexer = new TestIndex(luceneDir, new StandardAnalyzer(Version.LUCENE_30)))
+                ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
+                using (var indexer = new TestBaseIndex(config,  new FieldDefinitionCollection()))
                 {
                     for (var i = 0; i < 10; i++)
                     {
@@ -162,21 +167,23 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
 
                     indexer.DeleteFromIndex("9");
 
-                    var indexWriter = indexer.GetIndexWriter();
-                    var reader = indexWriter.GetReader();
-                    Assert.AreEqual(9, reader.NumDocs());
+                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
+                    Assert.AreEqual(9, indexer.DocumentCount);
                 }
             }
         }
 
-
+/*
         [Test]
         public void Can_Add_Doc_With_Fields()
         {
-            using (var elasticsearch = new Elasticsearch())
+            using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
+                .EnableLogging()
+                .SetPort(9200)
+                .SetElasticsearchStartTimeout(180)).ReadySync())
             {
-                using (var indexer = new TestIndex(luceneDir, new StandardAnalyzer(Version.LUCENE_30)))
-                {
+                ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
+                using (var indexer = new TestBaseIndex(config,  new FieldDefinitionCollection())){
                     indexer.IndexItem(new ValueSet(1.ToString(), "content", "test",
                         new Dictionary<string, IEnumerable<object>>
                         {
@@ -185,23 +192,23 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
                         }));
 
 
-                    using (var s = (LuceneSearcher) indexer.GetSearcher())
+                    using (var s = (ElasticSearchSearcher) indexer.GetSearcher())
                     {
-                        var luceneSearcher = s.GetLuceneSearcher();
-                        var fields = luceneSearcher.Doc(0).GetFields().ToArray();
-                        Assert.IsNotNull(fields.SingleOrDefault(x => x.Name == "item1"));
-                        Assert.IsNotNull(fields.SingleOrDefault(x => x.Name == "item2"));
-                        Assert.IsNotNull(fields.SingleOrDefault(x => x.Name == LuceneIndex.ItemTypeFieldName));
-                        Assert.IsNotNull(fields.SingleOrDefault(x => x.Name == LuceneIndex.ItemIdFieldName));
-                        Assert.IsNotNull(fields.SingleOrDefault(x => x.Name == LuceneIndex.CategoryFieldName));
+                        var fields = s.AllFields;
+                        Assert.IsNotNull(fields.SingleOrDefault(x => x == "item1"));
+                        Assert.IsNotNull(fields.SingleOrDefault(x => x == "item2"));
+                        Assert.IsNotNull(fields.SingleOrDefault(x => x == LuceneIndex.ItemTypeFieldName));
+                        Assert.IsNotNull(fields.SingleOrDefault(x => x == LuceneIndex.ItemIdFieldName));
+                        Assert.IsNotNull(fields.SingleOrDefault(x => x == LuceneIndex.CategoryFieldName));
 
-                        Assert.AreEqual("value1", fields.Single(x => x.Name == "item1").StringValue);
-                        Assert.AreEqual("value2", fields.Single(x => x.Name == "item2").StringValue);
+                        /*Assert.AreEqual("value1", fields.Single(x => x == "item1").StringValue);
+                        Assert.AreEqual("value2", fields.Single(x => x == "item2").StringValue);
                         Assert.AreEqual("test",
                             fields.Single(x => x.Name == LuceneIndex.ItemTypeFieldName).StringValue);
                         Assert.AreEqual("1", fields.Single(x => x.Name == LuceneIndex.ItemIdFieldName).StringValue);
                         Assert.AreEqual("content",
                             fields.Single(x => x.Name == LuceneIndex.CategoryFieldName).StringValue);
+                            
                     }
                 }
             }
@@ -210,20 +217,30 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
         [Test]
         public void Can_Add_Doc_With_Easy_Fields()
         {
-            using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(luceneDir, new StandardAnalyzer(Version.LUCENE_30)))
+            using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
+                .EnableLogging()
+                .SetPort(9200)
+                .SetElasticsearchStartTimeout(180)).ReadySync())
             {
-                indexer.IndexItem(ValueSet.FromObject(1.ToString(), "content",
-                    new {item1 = "value1", item2 = "value2"}));
-
-                using (var s = (LuceneSearcher) indexer.GetSearcher())
+                ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
+                using (var indexer = new TestBaseIndex(config, new FieldDefinitionCollection()))
                 {
-                    var luceneSearcher = s.GetLuceneSearcher();
-                    var fields = luceneSearcher.Doc(0).GetFields().ToArray();
-                    Assert.IsNotNull(fields.SingleOrDefault(x => x.Name == "item1"));
-                    Assert.IsNotNull(fields.SingleOrDefault(x => x.Name == "item2"));
-                    Assert.AreEqual("value1", fields.Single(x => x.Name == "item1").StringValue);
-                    Assert.AreEqual("value2", fields.Single(x => x.Name == "item2").StringValue);
+                    indexer.IndexItem(ValueSet.FromObject(1.ToString(), "content",
+                        new {item1 = "value1", item2 = "value2"}));
+
+                    using (var s = (ElasticSearchSearcher) indexer.GetSearcher())
+                    {
+                        var fields = s.AllFields;
+                        Assert.IsNotNull(fields.SingleOrDefault(x => x == "item1"));
+                        Assert.IsNotNull(fields.SingleOrDefault(x => x == "item2"));
+                        Assert.IsNotNull(fields.SingleOrDefault(x => x == LuceneIndex.ItemTypeFieldName));
+                        Assert.IsNotNull(fields.SingleOrDefault(x => x == LuceneIndex.ItemIdFieldName));
+                        Assert.IsNotNull(fields.SingleOrDefault(x => x == LuceneIndex.CategoryFieldName));
+                        /*
+                        Assert.AreEqual("value1", fields.Single(x => x.Name == "item1").StringValue);
+                        Assert.AreEqual("value2", fields.Single(x => x.Name == "item2").StringValue);
+                        
+                    }
                 }
             }
         }
@@ -231,33 +248,39 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
         [Test]
         public void Can_Have_Multiple_Values_In_Fields()
         {
-            using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(luceneDir, new StandardAnalyzer(Version.LUCENE_30)))
+            using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
+                .EnableLogging()
+                .SetPort(9200)
+                .SetElasticsearchStartTimeout(180)).ReadySync())
             {
-                indexer.IndexItem(new ValueSet(1.ToString(), "content",
-                    new Dictionary<string, IEnumerable<object>>
-                    {
-                        {
-                            "item1", new List<object> {"subval1", "subval2"}
-                        },
-                        {
-                            "item2", new List<object> {"subval1", "subval2", "subval3"}
-                        }
-                    }));
-
-                using (var s = (LuceneSearcher) indexer.GetSearcher())
+                ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
+                using (var indexer = new TestBaseIndex(config, new FieldDefinitionCollection()))
                 {
-                    var luceneSearcher = s.GetLuceneSearcher();
-                    var fields = luceneSearcher.Doc(0).GetFields().ToArray();
-                    Assert.AreEqual(2, fields.Count(x => x.Name == "item1"));
-                    Assert.AreEqual(3, fields.Count(x => x.Name == "item2"));
+                    indexer.IndexItem(new ValueSet(1.ToString(), "content",
+                        new Dictionary<string, IEnumerable<object>>
+                        {
+                            {
+                                "item1", new List<object> {"subval1", "subval2"}
+                            },
+                            {
+                                "item2", new List<object> {"subval1", "subval2", "subval3"}
+                            }
+                        }));
 
-                    Assert.AreEqual("subval1", fields.Where(x => x.Name == "item1").ElementAt(0).StringValue);
-                    Assert.AreEqual("subval2", fields.Where(x => x.Name == "item1").ElementAt(1).StringValue);
+                    using (var s = (ElasticSearchSearcher0) indexer.GetSearcher())
+                    {
+                        var luceneSearcher = s.GetLuceneSearcher();
+                        var fields = luceneSearcher.Doc(0).GetFields().ToArray();
+                        Assert.AreEqual(2, fields.Count(x => x.Name == "item1"));
+                        Assert.AreEqual(3, fields.Count(x => x.Name == "item2"));
 
-                    Assert.AreEqual("subval1", fields.Where(x => x.Name == "item2").ElementAt(0).StringValue);
-                    Assert.AreEqual("subval2", fields.Where(x => x.Name == "item2").ElementAt(1).StringValue);
-                    Assert.AreEqual("subval3", fields.Where(x => x.Name == "item2").ElementAt(2).StringValue);
+                        Assert.AreEqual("subval1", fields.Where(x => x.Name == "item1").ElementAt(0).StringValue);
+                        Assert.AreEqual("subval2", fields.Where(x => x.Name == "item1").ElementAt(1).StringValue);
+
+                        Assert.AreEqual("subval1", fields.Where(x => x.Name == "item2").ElementAt(0).StringValue);
+                        Assert.AreEqual("subval2", fields.Where(x => x.Name == "item2").ElementAt(1).StringValue);
+                        Assert.AreEqual("subval3", fields.Where(x => x.Name == "item2").ElementAt(2).StringValue);
+                    }
                 }
             }
         }
@@ -265,23 +288,29 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
         [Test]
         public void Can_Update_Document()
         {
-            using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(luceneDir, new StandardAnalyzer(Version.LUCENE_30)))
+            using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
+                .EnableLogging()
+                .SetPort(9200)
+                .SetElasticsearchStartTimeout(180)).ReadySync())
             {
-                indexer.IndexItem(ValueSet.FromObject(1.ToString(), "content",
-                    new {item1 = "value1", item2 = "value2"}));
-
-                indexer.IndexItem(ValueSet.FromObject(1.ToString(), "content",
-                    new {item1 = "value3", item2 = "value4"}));
-
-                using (var s = (LuceneSearcher) indexer.GetSearcher())
+                ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
+                using (var indexer = new TestBaseIndex(config, new FieldDefinitionCollection()))
                 {
-                    var luceneSearcher = s.GetLuceneSearcher();
-                    var fields = luceneSearcher.Doc(luceneSearcher.MaxDoc - 1).GetFields().ToArray();
-                    Assert.IsNotNull(fields.SingleOrDefault(x => x.Name == "item1"));
-                    Assert.IsNotNull(fields.SingleOrDefault(x => x.Name == "item2"));
-                    Assert.AreEqual("value3", fields.Single(x => x.Name == "item1").StringValue);
-                    Assert.AreEqual("value4", fields.Single(x => x.Name == "item2").StringValue);
+                    indexer.IndexItem(ValueSet.FromObject(1.ToString(), "content",
+                        new {item1 = "value1", item2 = "value2"}));
+
+                    indexer.IndexItem(ValueSet.FromObject(1.ToString(), "content",
+                        new {item1 = "value3", item2 = "value4"}));
+
+                    using (var s = (LuceneSearcher) indexer.GetSearcher())
+                    {
+                        var luceneSearcher = s.GetLuceneSearcher();
+                        var fields = luceneSearcher.Doc(luceneSearcher.MaxDoc - 1).GetFields().ToArray();
+                        Assert.IsNotNull(fields.SingleOrDefault(x => x.Name == "item1"));
+                        Assert.IsNotNull(fields.SingleOrDefault(x => x.Name == "item2"));
+                        Assert.AreEqual("value3", fields.Single(x => x.Name == "item1").StringValue);
+                        Assert.AreEqual("value4", fields.Single(x => x.Name == "item2").StringValue);
+                    }
                 }
             }
         }
@@ -289,31 +318,34 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
         [Test]
         public void Number_Field()
         {
-            using (var luceneDir = new RandomIdRAMDirectory())
-            using (var indexer = new TestIndex(
-                new FieldDefinitionCollection(new FieldDefinition("item2", "number")),
-                luceneDir,
-                new StandardAnalyzer(Version.LUCENE_30)))
+            using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
+                .EnableLogging()
+                .SetPort(9200)
+                .SetElasticsearchStartTimeout(180)).ReadySync())
             {
-                indexer.IndexItem(new ValueSet(1.ToString(), "content",
-                    new Dictionary<string, IEnumerable<object>>
-                    {
-                        {"item1", new List<object>(new[] {"value1"})},
-                        {"item2", new List<object>(new object[] {123456})}
-                    }));
-
-                using (var s = (LuceneSearcher) indexer.GetSearcher())
+                ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
+                using (var indexer = new TestBaseIndex(config, new FieldDefinitionCollection()))
                 {
-                    var luceneSearcher = s.GetLuceneSearcher();
-                    var fields = luceneSearcher.Doc(luceneSearcher.MaxDoc - 1).GetFields().ToArray();
+                    indexer.IndexItem(new ValueSet(1.ToString(), "content",
+                        new Dictionary<string, IEnumerable<object>>
+                        {
+                            {"item1", new List<object>(new[] {"value1"})},
+                            {"item2", new List<object>(new object[] {123456})}
+                        }));
 
-                    var valType = indexer.FieldValueTypeCollection.GetValueType("item2");
-                    Assert.AreEqual(typeof(Int32Type), valType.GetType());
-                    Assert.IsNotNull(fields.SingleOrDefault(x => x.Name == "item2"));
+                    using (var s = (LuceneSearcher) indexer.GetSearcher())
+                    {
+                        var luceneSearcher = s.GetLuceneSearcher();
+                        var fields = luceneSearcher.Doc(luceneSearcher.MaxDoc - 1).GetFields().ToArray();
+
+                        var valType = indexer.FieldValueTypeCollection.GetValueType("item2");
+                        Assert.AreEqual(typeof(Int32Type), valType.GetType());
+                        Assert.IsNotNull(fields.SingleOrDefault(x => x.Name == "item2"));
+                    }
                 }
             }
         }
-
+       /*
         /// <summary>
         /// Ensures that the cancellation is successful when creating a new index while it's currently indexing
         /// </summary>
@@ -621,8 +653,8 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
                 Assert.AreEqual(10, results.Count());
             }
         }
-
- */
+*/
+ 
       //  private readonly TestContentService _contentService = new TestContentService();
     }
    

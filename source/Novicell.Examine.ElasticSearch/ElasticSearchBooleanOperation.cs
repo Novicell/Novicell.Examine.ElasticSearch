@@ -2,6 +2,7 @@
 using Examine;
 using Examine.LuceneEngine.Search;
 using Examine.Search;
+using Lucene.Net.Search;
 using Novicell.Examine.ElasticSearch.Queries;
 
 namespace Novicell.Examine.ElasticSearch
@@ -17,17 +18,24 @@ namespace Novicell.Examine.ElasticSearch
         }
 
         #region IBooleanOperation Members
-        public override IQuery And() => new ElasticSearchQuery(_search, BooleanOperation.And);
-        public override IQuery Or() => new ElasticSearchQuery(_search, BooleanOperation.Or);
+        protected override INestedQuery AndNested() => new ElasticQuery(this._search, Occur.MUST);
 
         /// <inheritdoc />
-        public override IQuery Not() => new ElasticSearchQuery(_search, BooleanOperation.Not);
+        protected override INestedQuery OrNested() => new ElasticQuery(this._search, Occur.SHOULD);
 
-        protected override INestedQuery AndNested() => new ElasticSearchQuery(_search, BooleanOperation.And);
+        /// <inheritdoc />
+        protected override INestedQuery NotNested() => new ElasticQuery(this._search, Occur.MUST_NOT);
 
-        protected override INestedQuery OrNested() => new ElasticSearchQuery(_search, BooleanOperation.Or);
+        /// <inheritdoc />
+        public override IQuery And() => new ElasticQuery(this._search, Occur.MUST);
 
-        protected override INestedQuery NotNested() => new ElasticSearchQuery(_search, BooleanOperation.Not);
+
+        /// <inheritdoc />
+        public override IQuery Or() => new ElasticQuery(this._search, Occur.SHOULD);
+
+
+        /// <inheritdoc />
+        public override IQuery Not() => new ElasticQuery(this._search, Occur.MUST_NOT);
 
         public override ISearchResults Execute(int maxResults = 500) => _search.Execute(maxResults);
         #endregion
@@ -40,6 +48,20 @@ namespace Novicell.Examine.ElasticSearch
         
         #endregion
         public override string ToString() => _search.ToString();
+        protected internal LuceneBooleanOperationBase Op(
+            Func<INestedQuery, INestedBooleanOperation> inner,
+            BooleanOperation outerOp,
+            BooleanOperation? defaultInnerOp = null)
+        {
+            this._search.Queries.Push(new BooleanQuery());
+            BooleanOperation booleanOperation1 = this._search.BooleanOperation;
+            if (defaultInnerOp.HasValue)
+                this._search.BooleanOperation = defaultInnerOp.Value;
+            INestedBooleanOperation booleanOperation2 = inner((INestedQuery) this._search);
+            if (defaultInnerOp.HasValue)
+                this._search.BooleanOperation = booleanOperation1;
+            return this._search.LuceneQuery((Query) this._search.Queries.Pop(), new BooleanOperation?(outerOp));
+        }
       
     }
 }

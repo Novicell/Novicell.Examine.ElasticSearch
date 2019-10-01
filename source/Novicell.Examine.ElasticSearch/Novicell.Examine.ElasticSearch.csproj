@@ -329,6 +329,7 @@
       <Compile Include="Populators\MemberIndexPopulator.cs" />
       <Compile Include="Populators\PublishedContentIndexPopulator.cs" />
       <Compile Include="Properties\AssemblyInfo.cs" />
+      <Compile Include="Queries\ElasticQuery.cs" />
       <Compile Include="Queries\ElasticSearchQuery.cs" />
       <Compile Include="Queries\LateBoundQuery.cs" />
     </ItemGroup>

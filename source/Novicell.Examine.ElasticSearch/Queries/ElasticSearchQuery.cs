@@ -3,14 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using Examine;
 using Examine.LuceneEngine.Indexing;
+using Examine.LuceneEngine.Providers;
 using Examine.LuceneEngine.Search;
 using Examine.Search;
 using Lucene.Net.Analysis;
 using Lucene.Net.Documents;
+using Lucene.Net.Index;
+using Lucene.Net.QueryParsers;
 using Lucene.Net.Search;
 using Nest;
 using Novicell.Examine.ElasticSearch.Model;
 using Umbraco.Core;
+using KeywordAnalyzer = Lucene.Net.Analysis.KeywordAnalyzer;
 using SortField = Lucene.Net.Search.SortField;
 using StandardAnalyzer = Lucene.Net.Analysis.Standard.StandardAnalyzer;
 using Version = Lucene.Net.Util.Version;
@@ -21,16 +25,22 @@ namespace Novicell.Examine.ElasticSearch.Queries
     {
         public readonly ElasticSearchSearcher _searcher;
         public string _indexName;
+        private readonly CustomMultiFieldQueryParser _queryParser;
+        public QueryParser QueryParser => _queryParser;
+
+        internal readonly Stack<BooleanQuery> Queries = new Stack<BooleanQuery>();
         internal readonly List<SortField> SortFields = new List<SortField>();
         internal Analyzer DefaultAnalyzer { get; } = new StandardAnalyzer(Version.LUCENE_29);
         internal static readonly LuceneSearchOptions EmptyOptions = new LuceneSearchOptions();
-
+        private const Version LuceneVersion = Version.LUCENE_30;
         public ElasticSearchQuery(ElasticSearchSearcher searcher, string category, string[] fields, BooleanOperation op,
             string indexName) : base(category, new StandardAnalyzer(Version.LUCENE_29), fields,
             EmptyOptions, op)
         {
             _searcher = searcher;
             _indexName = indexName;
+            _queryParser = new CustomMultiFieldQueryParser(LuceneVersion, fields, new StandardAnalyzer(Version.LUCENE_29));
+            _queryParser.AllowLeadingWildcard =true;
         }
 
         public ElasticSearchQuery(ElasticSearchQuery previous, BooleanOperation op)
@@ -206,5 +216,276 @@ namespace Novicell.Examine.ElasticSearch.Queries
         public IOrdering OrderBy(params SortableField[] fields) => OrderByInternal(false, fields);
 
         public IOrdering OrderByDescending(params SortableField[] fields) => OrderByInternal(true, fields);
+        
+        #region examineprivateorinternalmethods
+        
+        protected internal LuceneBooleanOperationBase IdInternal(
+            string id,
+            Occur occurrence)
+        {
+            if (id == null)
+                throw new ArgumentNullException(nameof (id));
+            this.Query.Add(this._queryParser.GetFieldQueryInternal("__NodeId", id),occurrence);
+            return this.CreateOp();
+        }
+        internal ElasticSearchBooleanOperation ManagedQueryInternal(string query, string[] fields = null)
+        {
+            Query.Add(new LateBoundQuery(() =>
+            {
+                //if no fields are specified then use all fields
+                fields = fields ?? AllFields;
+
+
+                //Strangely we need an inner and outer query. If we don't do this then the lucene syntax returned is incorrect 
+                //since it doesn't wrap in parenthesis properly. I'm unsure if this is a lucene issue (assume so) since that is what
+                //is producing the resulting lucene string syntax. It might not be needed internally within Lucene since it's an object
+                //so it might be the ToString() that is the issue.
+                var outer = new BooleanQuery();
+                var inner = new BooleanQuery();
+                
+                foreach (var field in fields)
+                {
+                    var q =   FullTextType.GenerateQuery(field, query, DefaultAnalyzer);
+                    if (q != null)
+                    {
+                        //CriteriaContext.ManagedQueries.Add(new KeyValuePair<IIndexFieldValueType, Query>(type, q));
+                        inner.Add(q, Occur.SHOULD);
+                    }
+
+                }
+
+                outer.Add(inner, Occur.SHOULD);
+
+                return outer;
+            }), Occurrence);
+
+
+            return new ElasticSearchBooleanOperation(this);
+        }
+
+        protected internal LuceneBooleanOperationBase FieldInternal(string fieldName, IExamineValue fieldValue, Occur occurrence)
+        {
+            if (fieldName == null) throw new ArgumentNullException(nameof(fieldName));
+            if (fieldValue == null) throw new ArgumentNullException(nameof(fieldValue));
+            return FieldInternal(fieldName, fieldValue, occurrence, true);
+        }
+
+        private LuceneBooleanOperationBase FieldInternal(string fieldName, IExamineValue fieldValue, Occur occurrence, bool useQueryParser)
+        {
+            Query queryToAdd = GetFieldInternalQuery(fieldName, fieldValue, useQueryParser);
+
+            if (queryToAdd != null)
+                Query.Add(queryToAdd, occurrence);
+
+            return CreateOp();
+        }
+
+        protected internal LuceneBooleanOperationBase GroupedAndInternal(string[] fields, IExamineValue[] fieldVals, Occur occurrence)
+        {
+            if (fields == null) throw new ArgumentNullException(nameof(fields));
+            if (fieldVals == null) throw new ArgumentNullException(nameof(fieldVals));
+
+            //if there's only 1 query text we want to build up a string like this:
+            //(+field1:query +field2:query +field3:query)
+            //but Lucene will bork if you provide an array of length 1 (which is != to the field length)
+
+            Query.Add(GetMultiFieldQuery(fields, fieldVals, Occur.MUST), occurrence);
+
+            return CreateOp();
+        }
+
+        protected internal LuceneBooleanOperationBase GroupedNotInternal(string[] fields, IExamineValue[] fieldVals)
+        {
+            if (fields == null) throw new ArgumentNullException(nameof(fields));
+            if (fieldVals == null) throw new ArgumentNullException(nameof(fieldVals));
+
+            //if there's only 1 query text we want to build up a string like this:
+            //(!field1:query !field2:query !field3:query)
+            //but Lucene will bork if you provide an array of length 1 (which is != to the field length)
+
+            Query.Add(GetMultiFieldQuery(fields, fieldVals, Occur.MUST_NOT, true),
+                //NOTE: This is important because we cannot prefix a + to a group of NOT's, that doesn't work. 
+                // for example, it cannot be:  +(-id:1 -id:2 -id:3)
+                // it just needs to be          (-id:1 -id:2 -id:3)
+                Occur.SHOULD);
+
+            return CreateOp();
+        }
+
+        protected internal LuceneBooleanOperationBase GroupedOrInternal(string[] fields, IExamineValue[] fieldVals, Occur occurrence)
+        {
+            if (fields == null) throw new ArgumentNullException(nameof(fields));
+            if (fieldVals == null) throw new ArgumentNullException(nameof(fieldVals));
+
+            //if there's only 1 query text we want to build up a string like this:
+            //(field1:query field2:query field3:query)
+            //but Lucene will bork if you provide an array of length 1 (which is != to the field length)
+
+            Query.Add(GetMultiFieldQuery(fields, fieldVals, Occur.SHOULD, true), occurrence);
+
+            return CreateOp();
+        }
+        
+        private BooleanQuery GetMultiFieldQuery(
+            IReadOnlyList<string> fields,
+            IExamineValue[] fieldVals,
+            Occur occurrence,
+            bool matchAllCombinations = false)
+        {
+
+            var qry = new BooleanQuery();
+            if (matchAllCombinations)
+            {
+                foreach (var f in fields)
+                {
+                    foreach (var val in fieldVals)
+                    {
+                        var q = GetFieldInternalQuery(f, val, true);
+                        if (q != null)
+                        {
+                            qry.Add(q, occurrence);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                var queryVals = new IExamineValue[fields.Count];
+                if (fieldVals.Length == 1)
+                {
+                    for (int i = 0; i < queryVals.Length; i++)
+                        queryVals[i] = fieldVals[0];
+                }
+                else
+                {
+                    queryVals = fieldVals;
+                }
+
+                for (int i = 0; i < fields.Count; i++)
+                {
+                    var q = GetFieldInternalQuery(fields[i], queryVals[i], true);
+                    if (q != null)
+                    {
+                        qry.Add(q, occurrence);
+                    }
+                }
+            }
+
+            return qry;
+        }
+         private Query GetFieldInternalQuery(string fieldName, IExamineValue fieldValue, bool useQueryParser)
+        {
+            Query queryToAdd;
+
+            switch (fieldValue.Examineness)
+            {
+                case Examineness.Fuzzy:
+                    if (useQueryParser)
+                    {
+                        queryToAdd = _queryParser.GetFuzzyQueryInternal(fieldName, fieldValue.Value, fieldValue.Level);
+                    }
+                    else
+                    {
+                        //REFERENCE: http://lucene.apache.org/java/2_4_0/queryparsersyntax.html#Fuzzy%20Searches
+                        var proxQuery = fieldName + ":" + fieldValue.Value + "~" + Convert.ToInt32(fieldValue.Level);
+                        queryToAdd = ParseRawQuery(proxQuery);
+                    }
+                    break;
+                case Examineness.SimpleWildcard:
+                case Examineness.ComplexWildcard:
+                    if (useQueryParser)
+                    {
+                        queryToAdd = _queryParser.GetWildcardQueryInternal(fieldName, fieldValue.Value);
+                    }
+                    else
+                    {
+                        //this will already have a * or a . suffixed based on the extension methods
+                        //REFERENCE: http://lucene.apache.org/java/2_4_0/queryparsersyntax.html#Wildcard%20Searches
+                        var proxQuery = fieldName + ":" + fieldValue.Value;
+                        queryToAdd = ParseRawQuery(proxQuery);
+                    }
+                    break;
+                case Examineness.Boosted:
+                    if (useQueryParser)
+                    {
+                        queryToAdd = _queryParser.GetFieldQueryInternal(fieldName, fieldValue.Value);
+                        queryToAdd.Boost = fieldValue.Level;
+                    }
+                    else
+                    {
+                        //REFERENCE: http://lucene.apache.org/java/2_4_0/queryparsersyntax.html#Boosting%20a%20Term
+                        var proxQuery = fieldName + ":\"" + fieldValue.Value + "\"^" + Convert.ToInt32(fieldValue.Level).ToString();
+                        queryToAdd = ParseRawQuery(proxQuery);
+                    }
+                    break;
+                case Examineness.Proximity:
+
+                    //This is how you are supposed to do this based on this doc here:
+                    //http://lucene.apache.org/java/2_4_1/api/org/apache/lucene/search/spans/package-summary.html#package_description
+                    //but i think that lucene.net has an issue with it's internal parser since it parses to a very strange query
+                    //we'll just manually make it instead below
+
+                    //var spans = new List<SpanQuery>();
+                    //foreach (var s in fieldValue.Value.Split(' '))
+                    //{
+                    //    spans.Add(new SpanTermQuery(new Term(fieldName, s)));
+                    //}
+                    //queryToAdd = new SpanNearQuery(spans.ToArray(), Convert.ToInt32(fieldValue.Level), true);
+
+                    var qry = fieldName + ":\"" + fieldValue.Value + "\"~" + Convert.ToInt32(fieldValue.Level);
+                    if (useQueryParser)
+                    {
+                        queryToAdd = _queryParser.Parse(qry);
+                    }
+                    else
+                    {
+                        queryToAdd = ParseRawQuery(qry);
+                    }
+                    break;
+                case Examineness.Escaped:
+
+                    //This uses the KeywordAnalyzer to parse the 'phrase'
+                    var stdQuery = fieldName + ":" + fieldValue.Value;
+
+                    //NOTE: We used to just use this but it's more accurate/exact with the below usage of phrase query
+                    //queryToAdd = ParseRawQuery(stdQuery);
+
+                    //This uses the PhraseQuery to parse the phrase, the results seem identical
+                    queryToAdd = ParseRawQuery(fieldName, fieldValue.Value);
+
+                    break;
+                case Examineness.Explicit:
+                default:
+                    if (useQueryParser)
+                    {
+                        queryToAdd = _queryParser.GetFieldQueryInternal(fieldName, fieldValue.Value);
+                    }
+                    else
+                    {
+                        //standard query 
+                        var proxQuery = fieldName + ":" + fieldValue.Value;
+                        queryToAdd = ParseRawQuery(proxQuery);
+                    }
+                    break;
+            }
+            return queryToAdd;
+        }
+         private Query ParseRawQuery(string rawQuery)
+         {
+             var parser = new QueryParser(LuceneVersion, "", new KeywordAnalyzer());
+             return parser.Parse(rawQuery);
+         }
+
+        
+         private static Query ParseRawQuery(string field, string txt)
+         {
+             var phraseQuery = new PhraseQuery { Slop = 0 };
+             foreach (var val in txt.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries))
+             {
+                 phraseQuery.Add(new Term(field, val));
+             }
+             return phraseQuery;
+         }
+        #endregion
     }
 }

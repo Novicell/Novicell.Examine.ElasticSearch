@@ -186,7 +186,9 @@ namespace Novicell.Examine.ElasticSearch
                             .Properties(ps => CreateFieldsMapping(ps, FieldDefinitionCollection))
                     ))
                 );
-                if (!indexExists)
+                var indexesMappedToAlias = _client.Value.GetAlias(descriptor => descriptor.Name(indexAlias))
+                    .Indices.Select(x => x.Key).ToList();
+                if (indexesMappedToAlias.Count==0)
                 {
                     var bulkAliasResponse = _client.Value.Alias(ba => ba
                         .Add(add => add.Index(indexName).Alias(indexAlias))
@@ -200,7 +202,7 @@ namespace Novicell.Examine.ElasticSearch
 
         private ElasticSearchSearcher CreateSearcher()
         {
-            return new ElasticSearchSearcher(_connectionConfiguration, Name, prefix);
+            return new ElasticSearchSearcher(_connectionConfiguration, Name, indexName);
         }
 
         private ElasticClient GetIndexClient()
@@ -250,6 +252,10 @@ namespace Novicell.Examine.ElasticSearch
             {
             
                 CreateNewIndex(true);
+            }
+            else
+            {
+                EnsureIndex(false);
             }
             var indexTarget = isReindexing ? indexName : indexAlias;
         

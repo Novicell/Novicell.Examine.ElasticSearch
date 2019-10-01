@@ -4,8 +4,6 @@ using System.Linq;
 using Elasticsearch.Net;
 using Examine;
 using Examine.LuceneEngine.Providers;
-using Lucene.Net.Index;
-using Lucene.Net.Store;
 using Nest;
 using Novicell.Examine.ElasticSearch.Model;
 using Umbraco.Core;
@@ -13,7 +11,7 @@ using Umbraco.Core.Composing;
 using Umbraco.Core.Logging;
 using Umbraco.Examine;
 
-namespace Novicell.Examine.ElasticSearch
+namespace Novicell.Examine.ElasticSearch.Indexers
 {
     public class ElasticSearchUmbracoIndex : ElasticSearchBaseIndex, IUmbracoIndex
     {

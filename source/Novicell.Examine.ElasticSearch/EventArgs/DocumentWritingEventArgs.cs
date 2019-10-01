@@ -2,7 +2,7 @@ using System.ComponentModel;
 using Examine;
 using Novicell.Examine.ElasticSearch.Model;
 
-namespace Novicell.Examine.ElasticSearch
+namespace Novicell.Examine.ElasticSearch.EventArgs
 {
     public class DocumentWritingEventArgs : CancelEventArgs
     {

@@ -2,6 +2,7 @@
 using System.IO;
 using Examine;
 using Examine.LuceneEngine;
+using Novicell.Examine.ElasticSearch.Indexers;
 using Umbraco.Core.Logging;
 
 namespace Novicell.Examine.ElasticSearch.Tests

@@ -12,9 +12,18 @@ using Lucene.Net.Index;
 using Lucene.Net.QueryParsers;
 using Lucene.Net.Search;
 using Nest;
+using Novicell.Examine.ElasticSearch.Helpers;
+using Novicell.Examine.ElasticSearch.Indexing;
 using Novicell.Examine.ElasticSearch.Model;
 using Umbraco.Core;
+using DateTimeType = Novicell.Examine.ElasticSearch.Indexing.DateTimeType;
+using DoubleType = Novicell.Examine.ElasticSearch.Indexing.DoubleType;
+using FullTextType = Novicell.Examine.ElasticSearch.Indexing.FullTextType;
+using IIndexFieldValueType = Novicell.Examine.ElasticSearch.Indexing.IIndexFieldValueType;
+using Int32Type = Novicell.Examine.ElasticSearch.Indexing.Int32Type;
+using Int64Type = Novicell.Examine.ElasticSearch.Indexing.Int64Type;
 using KeywordAnalyzer = Lucene.Net.Analysis.KeywordAnalyzer;
+using SingleType = Novicell.Examine.ElasticSearch.Indexing.SingleType;
 using SortField = Lucene.Net.Search.SortField;
 using StandardAnalyzer = Lucene.Net.Analysis.Standard.StandardAnalyzer;
 using Version = Lucene.Net.Util.Version;
@@ -26,7 +35,7 @@ namespace Novicell.Examine.ElasticSearch.Queries
         public readonly ElasticSearchSearcher _searcher;
         public string _indexName;
         private readonly CustomMultiFieldQueryParser _queryParser;
-        public QueryParser QueryParser => _queryParser;
+        public new QueryParser QueryParser => _queryParser;
 
         internal readonly Stack<BooleanQuery> Queries = new Stack<BooleanQuery>();
         internal readonly List<SortField> SortFields = new List<SortField>();
@@ -106,19 +115,19 @@ namespace Novicell.Examine.ElasticSearch.Queries
             switch (property.Type.ToLowerInvariant())
             {
                 case "date":
-                    return new DateTimeType(property.Name.ToString(), DateTools.Resolution.MILLISECOND);
+                    return new DateTimeType(property.Name.Name, DateTools.Resolution.MILLISECOND);
                 case "double":
-                    return new DoubleType(property.Name.ToString());
+                    return new DoubleType(property.Name.Name);
 
                 case "float":
-                    return new SingleType(property.Name.ToString());
+                    return new SingleType(property.Name.Name);
 
                 case "long":
-                    return new Int64Type(property.Name.ToString());
+                    return new Int64Type(property.Name.Name);
                 case "integer":
-                    return new Int32Type(property.Name.ToString());
+                    return new Int32Type(property.Name.Name);
                 default:
-                    return new FullTextType(property.Name.ToString(), new StandardAnalyzer(Version.LUCENE_CURRENT));
+                    return new FullTextType(property.Name.Name, new StandardAnalyzer(Version.LUCENE_CURRENT));
             }
         }
 
@@ -139,9 +148,10 @@ namespace Novicell.Examine.ElasticSearch.Queries
 
                 foreach (var valueType in fieldsMapping.Where(e => fields.Contains(e.Key.Name)))
                 {
-                    if (FromElasticType(valueType.Value) is IIndexRangeValueType<T> type)
+                  
+                    if (FromElasticType(valueType.Value) is IIndexRangeValueType type)
                     {
-                        var q = type.GetQuery(min, max, minInclusive, maxInclusive);
+                        var q = ((Indexing.IIndexRangeValueType<T>)type).GetQuery(min, max, minInclusive, maxInclusive);
                         if (q != null)
                         {
                             //CriteriaContext.FieldQueries.Add(new KeyValuePair<IIndexFieldValueType, Query>(type, q));
@@ -151,7 +161,7 @@ namespace Novicell.Examine.ElasticSearch.Queries
                     else
                     {
                         throw new InvalidOperationException(
-                            $"Could not perform a range query on the field {valueType.Key}, it's value type is {valueType.Value.Type}");
+                            $"Could not perform a range query on the field {valueType.Key.Name}, it's value type is {valueType.Value.Type}");
                     }
                 }
 

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using Examine;
+using Novicell.Examine.ElasticSearch.Indexers;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Services;

@@ -323,6 +323,17 @@
       <Compile Include="Indexers\ElasticSearchUmbracoIndex.cs" />
       <Compile Include="Indexers\ElasticSearchBaseIndex.cs" />
       <Compile Include="Indexers\MemberElasticSearchIndex.cs" />
+      <Compile Include="Indexing\DateTimeType.cs" />
+      <Compile Include="Indexing\DoubleType.cs" />
+      <Compile Include="Indexing\FullTextType.cs" />
+      <Compile Include="Indexing\GenericAnalyzerFieldValueType.cs" />
+      <Compile Include="Indexing\IIndexFieldValueType.cs" />
+      <Compile Include="Indexing\IIndexRangeValueType.cs" />
+      <Compile Include="Indexing\IndexFieldValueTypeBase.cs" />
+      <Compile Include="Indexing\Int32Type.cs" />
+      <Compile Include="Indexing\Int64Type.cs" />
+      <Compile Include="Indexing\RawStringType.cs" />
+      <Compile Include="Indexing\SingleType.cs" />
       <Compile Include="Model\Document.cs" />
       <Compile Include="Populators\ContentIndexPopulator.cs" />
       <Compile Include="Populators\MediaIndexPopulator.cs" />

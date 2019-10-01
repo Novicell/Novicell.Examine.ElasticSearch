@@ -17,6 +17,8 @@ using Umbraco.Examine;
 using Umbraco.Web.Cache;
 using Umbraco.Web.Search;
 using Novicell.Examine.ElasticSearch.ContentTypes;
+using Novicell.Examine.ElasticSearch.Indexers;
+
 namespace Novicell.Examine.ElasticSearch
 {
     public class ElasticSearchExamineComponent : IComponent, Umbraco.Core.Composing.IComponent
@@ -90,7 +92,7 @@ namespace Novicell.Examine.ElasticSearch
 
         public void Dispose()
         {
-            Disposed?.Invoke(this, new EventArgs());
+            Disposed?.Invoke(this, new System.EventArgs());
         }
 
         #region Cache refresher updated event handlers

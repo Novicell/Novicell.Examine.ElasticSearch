@@ -4,18 +4,14 @@ using System.Configuration;
 using System.Linq;
 using Elasticsearch.Net;
 using Examine;
-using Examine.LuceneEngine;
 using Examine.LuceneEngine.Providers;
 using Examine.Providers;
 using Nest;
 using Novicell.Examine.ElasticSearch.Model;
 using Umbraco.Core;
-using Umbraco.Core.Logging;
-using Umbraco.Core.Services;
-using Umbraco.Examine;
-using Umbraco.Web.Search;
+using DocumentWritingEventArgs = Novicell.Examine.ElasticSearch.EventArgs.DocumentWritingEventArgs;
 
-namespace Novicell.Examine.ElasticSearch
+namespace Novicell.Examine.ElasticSearch.Indexers
 {
     public class ElasticSearchBaseIndex : BaseIndexProvider, IDisposable
     {

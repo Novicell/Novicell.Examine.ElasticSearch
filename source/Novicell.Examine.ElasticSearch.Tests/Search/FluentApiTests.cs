@@ -390,7 +390,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     var criteria = (ElasticSearchQuery) searcher.CreateQuery();
                     criteria.Field("__NodeTypeAlias", "myDocumentTypeAlias");
                     criteria.GroupedOr(new[] {"id"}.ToList(), new[] {"1", "2", "3"});
-                  //  Console.WriteLine(criteria.Query);
+                  Console.WriteLine(criteria.Query);
                     Assert.AreEqual("+__NodeTypeAlias:mydocumenttypealias +(id:1 id:2 id:3)",
                         criteria.Query.ToString());
 
@@ -398,7 +398,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     criteria = (ElasticSearchQuery) searcher.CreateQuery();
                     criteria.Field("__NodeTypeAlias", "myDocumentTypeAlias");
                     criteria.GroupedOr(new[] {"id", "parentID"}.ToList(), new[] {"1", "2", "3"});
-                  //  Console.WriteLine(criteria.Query);
+                  Console.WriteLine(criteria.Query);
                     Assert.AreEqual(
                         "+__NodeTypeAlias:mydocumenttypealias +(id:1 id:2 id:3 parentID:1 parentID:2 parentID:3)",
                         criteria.Query.ToString());
@@ -407,7 +407,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     criteria = (ElasticSearchQuery) searcher.CreateQuery();
                     criteria.Field("__NodeTypeAlias", "myDocumentTypeAlias");
                     criteria.GroupedOr(new[] {"id", "parentID", "blahID"}.ToList(), new[] {"1", "2", "3"});
-                  //  Console.WriteLine(criteria.Query);
+                  Console.WriteLine(criteria.Query);
                     Assert.AreEqual(
                         "+__NodeTypeAlias:mydocumenttypealias +(id:1 id:2 id:3 parentID:1 parentID:2 parentID:3 blahID:1 blahID:2 blahID:3)",
                         criteria.Query.ToString());
@@ -416,7 +416,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     criteria = (ElasticSearchQuery) searcher.CreateQuery();
                     criteria.Field("__NodeTypeAlias", "myDocumentTypeAlias");
                     criteria.GroupedOr(new[] {"id", "parentID"}.ToList(), new[] {"1"});
-                  //  Console.WriteLine(criteria.Query);
+                  Console.WriteLine(criteria.Query);
                     Assert.AreEqual("+__NodeTypeAlias:mydocumenttypealias +(id:1 parentID:1)",
                         criteria.Query.ToString());
 
@@ -424,7 +424,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     criteria = (ElasticSearchQuery) searcher.CreateQuery();
                     criteria.Field("__NodeTypeAlias", "myDocumentTypeAlias");
                     criteria.GroupedOr(new[] {"id"}.ToList(), new[] {"1"});
-                  //  Console.WriteLine(criteria.Query);
+                  Console.WriteLine(criteria.Query);
                     Assert.AreEqual("+__NodeTypeAlias:mydocumenttypealias +(id:1)", criteria.Query.ToString());
 
                 }
@@ -458,14 +458,14 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     var criteria = (ElasticSearchQuery) searcher.CreateQuery();
                     criteria.Field("__NodeTypeAlias", "myDocumentTypeAlias");
                     criteria.GroupedAnd(new[] {"id"}.ToList(), new[] {"1", "2", "3"});
-                  //  Console.WriteLine(criteria.Query);
+                  Console.WriteLine(criteria.Query);
                     Assert.AreEqual("+__NodeTypeAlias:mydocumenttypealias +(+id:1)", criteria.Query.ToString());
 
                     Console.WriteLine("GROUPED AND - MULTI FIELD, EQUAL MULTI VAL");
                     criteria = (ElasticSearchQuery) searcher.CreateQuery();
                     criteria.Field("__NodeTypeAlias", "myDocumentTypeAlias");
                     criteria.GroupedAnd(new[] {"id", "parentID", "blahID"}.ToList(), new[] {"1", "2", "3"});
-                  //  Console.WriteLine(criteria.Query);
+                  Console.WriteLine(criteria.Query);
                     Assert.AreEqual("+__NodeTypeAlias:mydocumenttypealias +(+id:1 +parentID:2 +blahID:3)",
                         criteria.Query.ToString());
 
@@ -473,7 +473,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     criteria = (ElasticSearchQuery) searcher.CreateQuery();
                     criteria.Field("__NodeTypeAlias", "myDocumentTypeAlias");
                     criteria.GroupedAnd(new[] {"id", "parentID"}.ToList(), new[] {"1", "2", "3"});
-                  //  Console.WriteLine(criteria.Query);
+                  Console.WriteLine(criteria.Query);
                     Assert.AreEqual("+__NodeTypeAlias:mydocumenttypealias +(+id:1 +parentID:2)",
                         criteria.Query.ToString());
 
@@ -481,7 +481,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     criteria = (ElasticSearchQuery) searcher.CreateQuery();
                     criteria.Field("__NodeTypeAlias", "myDocumentTypeAlias");
                     criteria.GroupedAnd(new[] {"id", "parentID"}.ToList(), new[] {"1"});
-                  //  Console.WriteLine(criteria.Query);
+                  Console.WriteLine(criteria.Query);
                     Assert.AreEqual("+__NodeTypeAlias:mydocumenttypealias +(+id:1 +parentID:1)",
                         criteria.Query.ToString());
 
@@ -489,7 +489,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     criteria = (ElasticSearchQuery) searcher.CreateQuery();
                     criteria.Field("__NodeTypeAlias", "myDocumentTypeAlias");
                     criteria.GroupedAnd(new[] {"id"}.ToList(), new[] {"1"});
-                  //  Console.WriteLine(criteria.Query);
+                  Console.WriteLine(criteria.Query);
                     Assert.AreEqual("+__NodeTypeAlias:mydocumenttypealias +(+id:1)", criteria.Query.ToString());
                 }
             }
@@ -515,7 +515,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     var criteria = (ElasticSearchQuery) searcher.CreateQuery();
                     criteria.Field("__NodeTypeAlias", "myDocumentTypeAlias");
                     criteria.GroupedNot(new[] {"id"}.ToList(), new[] {"1", "2", "3"});
-                  //  Console.WriteLine(criteria.Query);
+                  Console.WriteLine(criteria.Query);
                     Assert.AreEqual("+__NodeTypeAlias:mydocumenttypealias (-id:1 -id:2 -id:3)",
                         criteria.Query.ToString());
 
@@ -523,7 +523,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     criteria = (ElasticSearchQuery) searcher.CreateQuery();
                     criteria.Field("__NodeTypeAlias", "myDocumentTypeAlias");
                     criteria.GroupedNot(new[] {"id", "parentID"}.ToList(), new[] {"1", "2", "3"});
-                  //  Console.WriteLine(criteria.Query);
+                  Console.WriteLine(criteria.Query);
                     Assert.AreEqual(
                         "+__NodeTypeAlias:mydocumenttypealias (-id:1 -id:2 -id:3 -parentID:1 -parentID:2 -parentID:3)",
                         criteria.Query.ToString());
@@ -532,7 +532,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     criteria = (ElasticSearchQuery) searcher.CreateQuery();
                     criteria.Field("__NodeTypeAlias", "myDocumentTypeAlias");
                     criteria.GroupedNot(new[] {"id", "parentID", "blahID"}.ToList(), new[] {"1", "2", "3"});
-                  //  Console.WriteLine(criteria.Query);
+                  Console.WriteLine(criteria.Query);
                     Assert.AreEqual(
                         "+__NodeTypeAlias:mydocumenttypealias (-id:1 -id:2 -id:3 -parentID:1 -parentID:2 -parentID:3 -blahID:1 -blahID:2 -blahID:3)",
                         criteria.Query.ToString());
@@ -541,7 +541,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     criteria = (ElasticSearchQuery) searcher.CreateQuery();
                     criteria.Field("__NodeTypeAlias", "myDocumentTypeAlias");
                     criteria.GroupedNot(new[] {"id", "parentID"}.ToList(), new[] {"1"});
-                  //  Console.WriteLine(criteria.Query);
+                  Console.WriteLine(criteria.Query);
                     Assert.AreEqual("+__NodeTypeAlias:mydocumenttypealias (-id:1 -parentID:1)",
                         criteria.Query.ToString());
 
@@ -549,7 +549,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     criteria = (ElasticSearchQuery) searcher.CreateQuery();
                     criteria.Field("__NodeTypeAlias", "myDocumentTypeAlias");
                     criteria.GroupedNot(new[] {"id"}.ToList(), new[] {"1"});
-                  //  Console.WriteLine(criteria.Query);
+                  Console.WriteLine(criteria.Query);
                     Assert.AreEqual("+__NodeTypeAlias:mydocumenttypealias (-id:1)", criteria.Query.ToString());
                 }
             }
@@ -2127,7 +2127,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         //    criteria = (LuceneSearchCriteria)criteria.RawQuery("hello:world");
         //    criteria.LuceneQuery(NumericRangeQuery.NewLongRange("numTest", 4, 5, true, true));
 
-        //  //  Console.WriteLine(criteria.Query);
+        //  Console.WriteLine(criteria.Query);
         //    Assert.AreEqual("+hello:world +numTest:[4 TO 5]", criteria.Query.ToString());
         //}
 

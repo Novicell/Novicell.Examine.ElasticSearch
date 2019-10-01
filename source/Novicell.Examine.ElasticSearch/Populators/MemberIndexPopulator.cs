@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Examine;
+using Novicell.Examine.ElasticSearch.Indexers;
 using Umbraco.Core.Models;
 using Umbraco.Core.Services;
 using Umbraco.Examine;

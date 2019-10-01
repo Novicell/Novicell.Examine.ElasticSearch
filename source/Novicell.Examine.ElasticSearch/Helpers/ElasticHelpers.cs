@@ -2,11 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Elasticsearch.Net;
 using Examine;
 using Examine.LuceneEngine.Providers;
 using Lucene.Net.Search;
 using Nest;
+using Novicell.Examine.ElasticSearch.Indexing;
 using Novicell.Examine.ElasticSearch.Model;
 
 namespace Novicell.Examine.ElasticSearch.Helpers
@@ -30,5 +32,6 @@ namespace Novicell.Examine.ElasticSearch.Helpers
                 return r;
             });
         }
+ 
     }
 }

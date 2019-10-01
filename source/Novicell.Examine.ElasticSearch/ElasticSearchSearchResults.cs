@@ -108,9 +108,12 @@ namespace Novicell.Examine.ElasticSearch
 
             foreach (var field in fields)
             {
-                sortDescriptor.Field(field.Field, field.Reverse ? SortOrder.Descending : SortOrder.Ascending);
-            }
 
+                sortDescriptor.Field(e =>
+                    e.Field(field.Field).UnmappedType(FieldType.Long)
+                        .Order(field.Reverse ? SortOrder.Descending : SortOrder.Ascending));
+            }
+      
             return sortDescriptor;
         }
     }

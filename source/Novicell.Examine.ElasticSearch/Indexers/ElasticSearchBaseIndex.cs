@@ -58,7 +58,7 @@ namespace Novicell.Examine.ElasticSearch
             ElasticURL = ConfigurationManager.AppSettings[$"examine:ElasticSearch[{name}].Url"];
             _searcher = new Lazy<ElasticSearchSearcher>(CreateSearcher);
             _client = new Lazy<ElasticClient>(CreateElasticSearchClient);
-            indexAlias = prefix + name.ToLower();
+            indexAlias = prefix + Name;
         }
 
         private ElasticClient CreateElasticSearchClient()
@@ -246,18 +246,13 @@ namespace Novicell.Examine.ElasticSearch
         {
             var indexesMappedToAlias = _client.Value.GetAlias(descriptor => descriptor.Name(indexAlias))
                 .Indices.Select(x => x.Key).ToList();
-
-            var indexTarget = isReindexing ? indexName : indexAlias;
             if (isReindexing)
             {
-                var index = _client.Value.CreateIndex(indexName
-                    , c => c
-                        .Mappings(ms => ms.Map<Document>(
-                            m => m.AutoMap()
-                                .Properties(ps => CreateFieldsMapping(ps, FieldDefinitionCollection))
-                        ))
-                );
+            
+                CreateNewIndex(true);
             }
+            var indexTarget = isReindexing ? indexName : indexAlias;
+        
 
             var indexer = GetIndexClient();
             var totalResults = 0;

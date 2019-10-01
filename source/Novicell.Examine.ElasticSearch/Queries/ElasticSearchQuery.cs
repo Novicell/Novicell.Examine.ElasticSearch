@@ -42,7 +42,8 @@ namespace Novicell.Examine.ElasticSearch.Queries
 
         public ISearchResults Execute(int maxResults = 500)
         {
-            return new ElasticSearchSearchResults(_searcher._client.Value, Query, _indexName, maxResults);
+            
+            return new ElasticSearchSearchResults(_searcher._client.Value, Query, _indexName, SortFields, maxResults);
         }
 
         protected override LuceneBooleanOperationBase CreateOp()

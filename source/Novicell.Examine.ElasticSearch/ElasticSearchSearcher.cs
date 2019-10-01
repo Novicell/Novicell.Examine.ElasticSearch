@@ -9,6 +9,7 @@ using Novicell.Examine.ElasticSearch.Model;
 using Novicell.Examine.ElasticSearch.Queries;
 using Umbraco.Core;
 using IQuery = Examine.Search.IQuery;
+using SortField = Lucene.Net.Search.SortField;
 
 namespace Novicell.Examine.ElasticSearch
 {
@@ -16,6 +17,7 @@ namespace Novicell.Examine.ElasticSearch
     {
         private readonly ElasticSearchConfig _connectionConfiguration;
         public readonly Lazy<ElasticClient> _client;
+        internal readonly List<SortField> _sortFields = new List<SortField>();
         private string[] _allFields;
         private IProperties _fieldsMapping;
         private bool? _exists;
@@ -91,11 +93,11 @@ namespace Novicell.Examine.ElasticSearch
                 Name = "named_query",
                 Query = searchText
             };
-            return new ElasticSearchSearchResults(_client.Value, query, _prefix+_indexName,maxResults);
+            return new ElasticSearchSearchResults(_client.Value, query, _prefix+_indexName, _sortFields, maxResults);
         }
         public ISearchResults Search(QueryContainer queryContainer, int maxResults = 500)
         {
-            return new ElasticSearchSearchResults(_client.Value, queryContainer, _prefix+_indexName,maxResults);
+            return new ElasticSearchSearchResults(_client.Value, queryContainer, _prefix+_indexName, _sortFields, maxResults);
         }
         public override IQuery CreateQuery(string category = null,
             BooleanOperation defaultOperation = BooleanOperation.And)

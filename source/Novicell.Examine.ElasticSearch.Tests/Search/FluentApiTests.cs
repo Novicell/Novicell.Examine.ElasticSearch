@@ -1046,8 +1046,8 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     double currSort = 0;
                     for (var i = 0; i < results1.Length; i++)
                     {
-                        Assert.GreaterOrEqual(double.Parse(results1[i].Values["updateDate"]), currSort);
-                        currSort = double.Parse(results1[i].Values["updateDate"]);
+                        Assert.GreaterOrEqual(Convert.ToDateTime(results1[i].Values["updateDate"]).ToOADate(), currSort);
+                        currSort = Convert.ToDateTime(results1[i].Values["updateDate"]).ToOADate();
                     }
                 }
             }

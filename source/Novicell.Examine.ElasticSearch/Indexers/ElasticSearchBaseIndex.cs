@@ -83,6 +83,7 @@ namespace Novicell.Examine.ElasticSearch.Indexers
             {
                 case "date":
                 case "datetimeoffset":
+                case "datetime":
                     descriptor.Date(s => s.Name(field.Name));
                     break;
                 case "double":

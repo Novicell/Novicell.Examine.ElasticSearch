@@ -110,7 +110,7 @@ namespace Novicell.Examine.ElasticSearch
             {
 
                 sortDescriptor.Field(e =>
-                    e.Field(field.Field).UnmappedType(FieldType.Long)
+                    e.Field(field.Field).UnmappedType(FieldType.Long).MissingLast()
                         .Order(field.Reverse ? SortOrder.Descending : SortOrder.Ascending));
             }
       

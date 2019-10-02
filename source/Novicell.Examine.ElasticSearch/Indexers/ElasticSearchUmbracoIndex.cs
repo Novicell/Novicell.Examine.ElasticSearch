@@ -47,7 +47,7 @@ namespace Novicell.Examine.ElasticSearch.Indexers
             IValueSetValidator validator = null)
             : base(name,connectionConfiguration,  fieldDefinitions, analyzer, validator)
         {
-           
+            _logger = profilingLogger;
         }
 
         private readonly bool _configBased = false;
@@ -61,7 +61,7 @@ namespace Novicell.Examine.ElasticSearch.Indexers
         public bool PublishedValuesOnly { get; protected set; } = false;
 
         /// <inheritdoc />
-        public IEnumerable<string> GetFields()
+        public new IEnumerable<string> GetFields()
         {
             //we know this is a LuceneSearcher
             var searcher = (LuceneSearcher) GetSearcher();

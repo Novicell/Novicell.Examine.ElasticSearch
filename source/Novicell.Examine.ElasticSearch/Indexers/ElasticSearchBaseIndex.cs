@@ -112,8 +112,7 @@ namespace Novicell.Examine.ElasticSearch.Indexers
 
         private static string FromLuceneAnalyzer(string analyzer)
         {
-            //not fully qualified, just return the type
-            if (!analyzer.Contains(","))
+            if (string.IsNullOrEmpty(analyzer) || !analyzer.Contains(","))
                 return "standard";
 
             //if it contains a comma, we'll assume it's an assembly typed name

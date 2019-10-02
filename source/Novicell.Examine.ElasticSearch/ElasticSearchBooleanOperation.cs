@@ -48,7 +48,7 @@ namespace Novicell.Examine.ElasticSearch
         
         #endregion
         public override string ToString() => _search.ToString();
-        protected internal LuceneBooleanOperationBase Op(
+        protected internal new LuceneBooleanOperationBase Op(
             Func<INestedQuery, INestedBooleanOperation> inner,
             BooleanOperation outerOp,
             BooleanOperation? defaultInnerOp = null)

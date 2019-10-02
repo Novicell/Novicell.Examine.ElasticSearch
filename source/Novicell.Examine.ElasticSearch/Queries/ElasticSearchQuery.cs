@@ -173,7 +173,23 @@ namespace Novicell.Examine.ElasticSearch.Queries
 
             return new ElasticSearchBooleanOperation(this);
         }
+        public new IBooleanOperation GroupedAnd(IEnumerable<string> fields, params string[] query)
+            => this.GroupedAndInternal(fields.ToArray(), query.Select(f => new ExamineValue(Examineness.Explicit, f)).Cast<IExamineValue>().ToArray(), Occurrence);
 
+        public new IBooleanOperation GroupedAnd(IEnumerable<string> fields, params IExamineValue[] query)
+            => this.GroupedAndInternal(fields.ToArray(), query, Occurrence);
+
+        public new IBooleanOperation GroupedOr(IEnumerable<string> fields, params string[] query)
+            => this.GroupedOrInternal(fields.ToArray(), query.Select(f => new ExamineValue(Examineness.Explicit, f)).Cast<IExamineValue>().ToArray(), Occurrence);
+
+        public new IBooleanOperation GroupedOr(IEnumerable<string> fields, params IExamineValue[] query)
+            => this.GroupedOrInternal(fields.ToArray(), query, Occurrence);
+
+        public new IBooleanOperation GroupedNot(IEnumerable<string> fields, params string[] query)
+            => this.GroupedNotInternal(fields.ToArray(), query.Select(f => new ExamineValue(Examineness.Explicit, f)).Cast<IExamineValue>().ToArray());
+
+        public new IBooleanOperation GroupedNot(IEnumerable<string> fields, params IExamineValue[] query)
+            => this.GroupedNotInternal(fields.ToArray(), query);
         private ElasticSearchBooleanOperation OrderByInternal(bool descending, params SortableField[] fields)
         {
             if (fields == null) throw new ArgumentNullException(nameof(fields));
@@ -229,7 +245,7 @@ namespace Novicell.Examine.ElasticSearch.Queries
         
         #region examineprivateorinternalmethods
         
-        protected internal LuceneBooleanOperationBase IdInternal(
+        protected internal new LuceneBooleanOperationBase IdInternal(
             string id,
             Occur occurrence)
         {
@@ -273,7 +289,7 @@ namespace Novicell.Examine.ElasticSearch.Queries
             return new ElasticSearchBooleanOperation(this);
         }
 
-        protected internal LuceneBooleanOperationBase FieldInternal(string fieldName, IExamineValue fieldValue, Occur occurrence)
+        protected internal new LuceneBooleanOperationBase FieldInternal(string fieldName, IExamineValue fieldValue, Occur occurrence)
         {
             if (fieldName == null) throw new ArgumentNullException(nameof(fieldName));
             if (fieldValue == null) throw new ArgumentNullException(nameof(fieldValue));
@@ -290,7 +306,7 @@ namespace Novicell.Examine.ElasticSearch.Queries
             return CreateOp();
         }
 
-        protected internal LuceneBooleanOperationBase GroupedAndInternal(string[] fields, IExamineValue[] fieldVals, Occur occurrence)
+        protected internal new LuceneBooleanOperationBase GroupedAndInternal(string[] fields, IExamineValue[] fieldVals, Occur occurrence)
         {
             if (fields == null) throw new ArgumentNullException(nameof(fields));
             if (fieldVals == null) throw new ArgumentNullException(nameof(fieldVals));
@@ -304,7 +320,7 @@ namespace Novicell.Examine.ElasticSearch.Queries
             return CreateOp();
         }
 
-        protected internal LuceneBooleanOperationBase GroupedNotInternal(string[] fields, IExamineValue[] fieldVals)
+        protected internal new LuceneBooleanOperationBase GroupedNotInternal(string[] fields, IExamineValue[] fieldVals)
         {
             if (fields == null) throw new ArgumentNullException(nameof(fields));
             if (fieldVals == null) throw new ArgumentNullException(nameof(fieldVals));
@@ -322,7 +338,7 @@ namespace Novicell.Examine.ElasticSearch.Queries
             return CreateOp();
         }
 
-        protected internal LuceneBooleanOperationBase GroupedOrInternal(string[] fields, IExamineValue[] fieldVals, Occur occurrence)
+        protected internal new LuceneBooleanOperationBase GroupedOrInternal(string[] fields, IExamineValue[] fieldVals, Occur occurrence)
         {
             if (fields == null) throw new ArgumentNullException(nameof(fields));
             if (fieldVals == null) throw new ArgumentNullException(nameof(fieldVals));

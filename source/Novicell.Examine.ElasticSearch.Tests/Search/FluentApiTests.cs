@@ -310,7 +310,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                             .OrderBy(new SortableField("sortOrder", SortType.Int));
 
                         var numberSortedResult = numberSortedCriteria.Execute();
-
+                        elasticsearch.Dispose();
                         Assert.AreEqual(2, numberSortedResult.TotalItemCount);
                     }
 
@@ -367,9 +367,11 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     new[] { "CWS\\_Home".Boost(10), "About".MultipleCharacterWildcard() });
 
                 var results = filter.Execute();
+                elasticsearch.Dispose();
                 Assert.AreEqual(2, results.TotalItemCount);
             }
         }
+           
             }
 
         [Test]
@@ -594,6 +596,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     var filter = criteria.GroupedOr(new[] {"nodeName", "bodyText", "headerText"}, "ipsum").Not()
                         .Field("umbracoNaviHide", "1");
                     var results = filter.Execute();
+                    elasticsearch.Dispose();
                     Assert.AreEqual(1, results.TotalItemCount);
                 }
             }

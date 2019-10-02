@@ -32,7 +32,7 @@ namespace Novicell.Examine.ElasticSearch.Queries
         public IBooleanOperation Field(string fieldName, IExamineValue fieldValue)
             => _search.FieldInternal(fieldName, fieldValue, _occurrence);
 
-        public IBooleanOperation GroupedAnd(IEnumerable<string> fields, params string[] query)
+        public  IBooleanOperation GroupedAnd(IEnumerable<string> fields, params string[] query)
             => _search.GroupedAndInternal(fields.ToArray(), query.Select(f => new ExamineValue(Examineness.Explicit, f)).Cast<IExamineValue>().ToArray(), _occurrence);
 
         public IBooleanOperation GroupedAnd(IEnumerable<string> fields, params IExamineValue[] query)

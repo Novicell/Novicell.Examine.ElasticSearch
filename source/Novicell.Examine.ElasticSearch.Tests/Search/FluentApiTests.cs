@@ -14,7 +14,7 @@ using NUnit.Framework.Internal;
 namespace Novicell.Examine.ElasticSearch.Tests.Search
 {
     [TestFixture]
-	public class FluentApiTests
+    public class FluentApiTests
     {
         [Test]
         public void Managed_Range_Date()
@@ -56,6 +56,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     });
 
 
+                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
                     var searcher = indexer.GetSearcher();
 
                     var numberSortedCriteria = searcher.CreateQuery()
@@ -137,190 +138,186 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         }
 
         [Test]
-
-            public void Managed_Full_Text_With_Bool()
+        public void Managed_Full_Text_With_Bool()
+        {
+            using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
+                .EnableLogging()
+                .SetPort(9200)
+                .SetElasticsearchStartTimeout(180)).ReadySync())
             {
-                using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
-                    .EnableLogging()
-                    .SetPort(9200)
-                    .SetElasticsearchStartTimeout(180)).ReadySync())
+                ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
+                using (var indexer1 = new TestBaseIndex(config))
                 {
-                    ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
-                    using (var indexer1 = new TestBaseIndex(config))
+                    indexer1.CreateIndex();
+                    indexer1.IndexItem(ValueSet.FromObject("1", "content",
+                        new
+                        {
+                            item1 = "value1",
+                            item2 =
+                                "The agitated zebras gallop back and forth in short, panicky dashes, then skitter off into the total absolute darkness."
+                        }));
+                    indexer1.IndexItem(ValueSet.FromObject("2", "content",
+                        new
+                        {
+                            item1 = "value2",
+                            item2 =
+                                "The festival lasts five days and celebrates the victory of good over evil, light over darkness, and knowledge over ignorance."
+                        }));
+                    indexer1.IndexItem(ValueSet.FromObject("3", "content",
+                        new
+                        {
+                            item1 = "value3",
+                            item2 =
+                                "They are expected to confront the darkness and show evidence that they have done so in their papers"
+                        }));
+                    indexer1.IndexItem(ValueSet.FromObject("4", "content",
+                        new
+                        {
+                            item1 = "value4",
+                            item2 =
+                                "Scientists believe the lake could be home to cold-loving microbial life adapted to living in total darkness."
+                        }));
+                    indexer1.IndexItem(ValueSet.FromObject("5", "content",
+                        new {item1 = "value3", item2 = "Scotch scotch scotch, i love scotch"}));
+                    indexer1.IndexItem(ValueSet.FromObject("6", "content",
+                        new {item1 = "value4", item2 = "60% of the time, it works everytime"}));
+
+                    var searcher = indexer1.GetSearcher();
+
+                    var qry = searcher.CreateQuery().ManagedQuery("darkness").And().Field("item1", "value1");
+                    Console.WriteLine(qry);
+                    var result = qry.Execute();
+
+                    Assert.AreEqual(1, result.TotalItemCount);
+                    Console.WriteLine("Search 1:");
+                    foreach (var r in result)
                     {
-                        indexer1.CreateIndex();
-                        indexer1.IndexItem(ValueSet.FromObject("1", "content",
-                            new
-                            {
-                                item1 = "value1",
-                                item2 =
-                                    "The agitated zebras gallop back and forth in short, panicky dashes, then skitter off into the total absolute darkness."
-                            }));
-                        indexer1.IndexItem(ValueSet.FromObject("2", "content",
-                            new
-                            {
-                                item1 = "value2",
-                                item2 =
-                                    "The festival lasts five days and celebrates the victory of good over evil, light over darkness, and knowledge over ignorance."
-                            }));
-                        indexer1.IndexItem(ValueSet.FromObject("3", "content",
-                            new
-                            {
-                                item1 = "value3",
-                                item2 =
-                                    "They are expected to confront the darkness and show evidence that they have done so in their papers"
-                            }));
-                        indexer1.IndexItem(ValueSet.FromObject("4", "content",
-                            new
-                            {
-                                item1 = "value4",
-                                item2 =
-                                    "Scientists believe the lake could be home to cold-loving microbial life adapted to living in total darkness."
-                            }));
-                        indexer1.IndexItem(ValueSet.FromObject("5", "content",
-                            new {item1 = "value3", item2 = "Scotch scotch scotch, i love scotch"}));
-                        indexer1.IndexItem(ValueSet.FromObject("6", "content",
-                            new {item1 = "value4", item2 = "60% of the time, it works everytime"}));
+                        Console.WriteLine($"Id = {r.Id}, Score = {r.Score}");
+                    }
 
-                        var searcher = indexer1.GetSearcher();
+                    qry = searcher.CreateQuery().ManagedQuery("darkness")
+                        .And(query => query.Field("item1", "value1").Or().Field("item1", "value2"),
+                            BooleanOperation.Or);
+                    Console.WriteLine(qry);
+                    result = qry.Execute();
 
-                        var qry = searcher.CreateQuery().ManagedQuery("darkness").And().Field("item1", "value1");
-                        Console.WriteLine(qry);
-                        var result = qry.Execute();
-
-                        Assert.AreEqual(1, result.TotalItemCount);
-                        Console.WriteLine("Search 1:");
-                        foreach (var r in result)
-                        {
-                            Console.WriteLine($"Id = {r.Id}, Score = {r.Score}");
-                        }
-
-                        qry = searcher.CreateQuery().ManagedQuery("darkness")
-                            .And(query => query.Field("item1", "value1").Or().Field("item1", "value2"),
-                                BooleanOperation.Or);
-                        Console.WriteLine(qry);
-                        result = qry.Execute();
-
-                        Assert.AreEqual(2, result.TotalItemCount);
-                        Console.WriteLine("Search 2:");
-                        foreach (var r in result)
-                        {
-                            Console.WriteLine($"Id = {r.Id}, Score = {r.Score}");
-                        }
+                    Assert.AreEqual(2, result.TotalItemCount);
+                    Console.WriteLine("Search 2:");
+                    foreach (var r in result)
+                    {
+                        Console.WriteLine($"Id = {r.Id}, Score = {r.Score}");
                     }
                 }
             }
+        }
 
-            [
-
-                Test]
-            public void Managed_Range_Int()
+        [
+            Test]
+        public void Managed_Range_Int()
+        {
+            using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
+                .EnableLogging()
+                .SetPort(9200)
+                .SetElasticsearchStartTimeout(180)).ReadySync())
             {
-                using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
-                    .EnableLogging()
-                    .SetPort(9200)
-                    .SetElasticsearchStartTimeout(180)).ReadySync())
+                ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
+                using (var indexer = new TestBaseIndex(config,
+                    new FieldDefinitionCollection(new FieldDefinition("parentID", "number"))
+                ))
                 {
-                    ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
-                    using (var indexer = new TestBaseIndex(config,
-                        new FieldDefinitionCollection(new FieldDefinition("parentID", "number"))
-                       ))
+                    indexer.CreateIndex();
+                    indexer.IndexItems(new[]
                     {
+                        ValueSet.FromObject(123.ToString(), "content",
+                            new
+                            {
+                                parentID = 121,
+                                bodyText = "lorem ipsum",
+                                nodeTypeAlias = "CWS_Home"
+                            }),
+                        ValueSet.FromObject(2.ToString(), "content",
+                            new
+                            {
+                                parentID = 123,
+                                bodyText = "lorem ipsum",
+                                nodeTypeAlias = "CWS_Test"
+                            }),
+                        ValueSet.FromObject(3.ToString(), "content",
+                            new
+                            {
+                                parentID = 124,
+                                bodyText = "lorem ipsum",
+                                nodeTypeAlias = "CWS_Page"
+                            })
+                    });
 
-                        indexer.CreateIndex();
-                        indexer.IndexItems(new[]
-                        {
-                            ValueSet.FromObject(123.ToString(), "content",
-                                new
-                                {
-                                    parentID = 121,
-                                    bodyText = "lorem ipsum",
-                                    nodeTypeAlias = "CWS_Home"
-                                }),
-                            ValueSet.FromObject(2.ToString(), "content",
-                                new
-                                {
-                                    parentID = 123,
-                                    bodyText = "lorem ipsum",
-                                    nodeTypeAlias = "CWS_Test"
-                                }),
-                            ValueSet.FromObject(3.ToString(), "content",
-                                new
-                                {
-                                    parentID = 124,
-                                    bodyText = "lorem ipsum",
-                                    nodeTypeAlias = "CWS_Page"
-                                })
-                        });
+                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
+                    var searcher = indexer.GetSearcher();
 
-                        var searcher = indexer.GetSearcher();
+                    var numberSortedCriteria = searcher.CreateQuery()
+                        .RangeQuery<int>(new[] {"parentID"}, 122, 124);
 
-                        var numberSortedCriteria = searcher.CreateQuery()
-                            .RangeQuery<int>(new[] {"parentID"}, 122, 124);
+                    var numberSortedResult = numberSortedCriteria.Execute();
 
-                        var numberSortedResult = numberSortedCriteria.Execute();
-
-                        Assert.AreEqual(2, numberSortedResult.TotalItemCount);
-                    }
+                    Assert.AreEqual(2, numberSortedResult.TotalItemCount);
                 }
             }
+        }
 
-            [Test]
-            public void Legacy_ParentId()
+        [Test]
+        public void Legacy_ParentId()
+        {
+            using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
+                .EnableLogging()
+                .SetPort(9200)
+                .SetElasticsearchStartTimeout(180)).ReadySync())
             {
-                using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
-                    .EnableLogging()
-                    .SetPort(9200)
-                    .SetElasticsearchStartTimeout(180)).ReadySync())
+                ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
+                using (var indexer = new TestBaseIndex(config,
+                    new FieldDefinitionCollection(new FieldDefinition("parentID", "number"))
+                ))
                 {
-                    ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
-                    using (var indexer = new TestBaseIndex(config,
-                        new FieldDefinitionCollection(new FieldDefinition("parentID", "number"))
-                    ))
+                    indexer.CreateIndex();
+                    indexer.IndexItems(new[]
                     {
+                        ValueSet.FromObject(123.ToString(), "content",
+                            new
+                            {
+                                nodeName = "my name 1",
+                                bodyText = "lorem ipsum",
+                                nodeTypeAlias = "CWS_Home"
+                            }),
+                        ValueSet.FromObject(2.ToString(), "content",
+                            new
+                            {
+                                parentID = 123,
+                                bodyText = "lorem ipsum",
+                                nodeTypeAlias = "CWS_Test"
+                            }),
+                        ValueSet.FromObject(3.ToString(), "content",
+                            new
+                            {
+                                parentID = 123,
+                                bodyText = "lorem ipsum",
+                                nodeTypeAlias = "CWS_Page"
+                            })
+                    });
 
-                        indexer.CreateIndex();
-                        indexer.IndexItems(new[]
-                        {
-                            ValueSet.FromObject(123.ToString(), "content",
-                                new
-                                {
-                                    nodeName = "my name 1",
-                                    bodyText = "lorem ipsum",
-                                    nodeTypeAlias = "CWS_Home"
-                                }),
-                            ValueSet.FromObject(2.ToString(), "content",
-                                new
-                                {
-                                    parentID = 123,
-                                    bodyText = "lorem ipsum",
-                                    nodeTypeAlias = "CWS_Test"
-                                }),
-                            ValueSet.FromObject(3.ToString(), "content",
-                                new
-                                {
-                                    parentID = 123,
-                                    bodyText = "lorem ipsum",
-                                    nodeTypeAlias = "CWS_Page"
-                                })
-                        });
+                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
+                    var searcher = indexer.GetSearcher();
 
-                        var searcher = indexer.GetSearcher();
+                    var numberSortedCriteria = searcher.CreateQuery()
+                        .Field("parentID", 123)
+                        .OrderBy(new SortableField("sortOrder", SortType.Int));
 
-                        var numberSortedCriteria = searcher.CreateQuery()
-                            .Field("parentID", 123)
-                            .OrderBy(new SortableField("sortOrder", SortType.Int));
-
-                        var numberSortedResult = numberSortedCriteria.Execute();
-                        elasticsearch.Dispose();
-                        Assert.AreEqual(2, numberSortedResult.TotalItemCount);
-                    }
-
-
+                    var numberSortedResult = numberSortedCriteria.Execute();
+                    elasticsearch.Dispose();
+                    Assert.AreEqual(2, numberSortedResult.TotalItemCount);
                 }
             }
+        }
 
-            [Test]
+        [Test]
         public void Grouped_Or_Examiness()
         {
             using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
@@ -330,51 +327,51 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
                 using (var indexer = new TestBaseIndex(config))
-            {
-                indexer.CreateIndex();
-
-                indexer.IndexItems(new[]
                 {
-                    ValueSet.FromObject(1.ToString(), "content",
-                        new
-                        {
-                            nodeName = "my name 1",
-                            bodyText = "lorem ipsum",
-                            nodeTypeAlias = "CWS_Home"
-                        }),
-                    ValueSet.FromObject(2.ToString(), "content",
-                        new
-                        {
-                            nodeName = "About us",
-                            bodyText = "lorem ipsum",
-                            nodeTypeAlias = "CWS_Test"
-                        }),
-                    ValueSet.FromObject(3.ToString(), "content",
-                        new
-                        {
-                            nodeName = "my name 3",
-                            bodyText = "lorem ipsum",
-                            nodeTypeAlias = "CWS_Page"
-                        })
-                });
+                    indexer.CreateIndex();
 
-                var searcher = indexer.GetSearcher();
+                    indexer.IndexItems(new[]
+                    {
+                        ValueSet.FromObject(1.ToString(), "content",
+                            new
+                            {
+                                nodeName = "my name 1",
+                                bodyText = "lorem ipsum",
+                                nodeTypeAlias = "CWS_Home"
+                            }),
+                        ValueSet.FromObject(2.ToString(), "content",
+                            new
+                            {
+                                nodeName = "About us",
+                                bodyText = "lorem ipsum",
+                                nodeTypeAlias = "CWS_Test"
+                            }),
+                        ValueSet.FromObject(3.ToString(), "content",
+                            new
+                            {
+                                nodeName = "my name 3",
+                                bodyText = "lorem ipsum",
+                                nodeTypeAlias = "CWS_Page"
+                            })
+                    });
 
-                //paths contain punctuation, we'll escape it and ensure an exact match
-                var criteria = searcher.CreateQuery("content");
+                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
+                    var searcher = indexer.GetSearcher();
 
-                //get all node type aliases starting with CWS_Home OR and all nodees starting with "About"
-                var filter = criteria.GroupedOr(
-                    new[] { "nodeTypeAlias", "nodeName" },
-                    new[] { "CWS\\_Home".Boost(10), "About".MultipleCharacterWildcard() });
+                    //paths contain punctuation, we'll escape it and ensure an exact match
+                    var criteria = searcher.CreateQuery("content");
 
-                var results = filter.Execute();
-                elasticsearch.Dispose();
-                Assert.AreEqual(2, results.TotalItemCount);
+                    //get all node type aliases starting with CWS_Home OR and all nodees starting with "About"
+                    var filter = criteria.GroupedOr(
+                        new[] {"nodeTypeAlias", "nodeName"},
+                        new[] {"CWS\\_Home".Boost(10), "About".MultipleCharacterWildcard()});
+
+                    var results = filter.Execute();
+                    elasticsearch.Dispose();
+                    Assert.AreEqual(2, results.TotalItemCount);
+                }
             }
         }
-           
-            }
 
         [Test]
         public void Grouped_Or_Query_Output()
@@ -394,7 +391,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     var criteria = (ElasticSearchQuery) searcher.CreateQuery();
                     criteria.Field("__NodeTypeAlias", "myDocumentTypeAlias");
                     criteria.GroupedOr(new[] {"id"}.ToList(), new[] {"1", "2", "3"});
-                  Console.WriteLine(criteria.Query);
+                    Console.WriteLine(criteria.Query);
                     Assert.AreEqual("+__NodeTypeAlias:mydocumenttypealias +(id:1 id:2 id:3)",
                         criteria.Query.ToString());
 
@@ -402,7 +399,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     criteria = (ElasticSearchQuery) searcher.CreateQuery();
                     criteria.Field("__NodeTypeAlias", "myDocumentTypeAlias");
                     criteria.GroupedOr(new[] {"id", "parentID"}.ToList(), new[] {"1", "2", "3"});
-                  Console.WriteLine(criteria.Query);
+                    Console.WriteLine(criteria.Query);
                     Assert.AreEqual(
                         "+__NodeTypeAlias:mydocumenttypealias +(id:1 id:2 id:3 parentID:1 parentID:2 parentID:3)",
                         criteria.Query.ToString());
@@ -411,7 +408,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     criteria = (ElasticSearchQuery) searcher.CreateQuery();
                     criteria.Field("__NodeTypeAlias", "myDocumentTypeAlias");
                     criteria.GroupedOr(new[] {"id", "parentID", "blahID"}.ToList(), new[] {"1", "2", "3"});
-                  Console.WriteLine(criteria.Query);
+                    Console.WriteLine(criteria.Query);
                     Assert.AreEqual(
                         "+__NodeTypeAlias:mydocumenttypealias +(id:1 id:2 id:3 parentID:1 parentID:2 parentID:3 blahID:1 blahID:2 blahID:3)",
                         criteria.Query.ToString());
@@ -420,7 +417,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     criteria = (ElasticSearchQuery) searcher.CreateQuery();
                     criteria.Field("__NodeTypeAlias", "myDocumentTypeAlias");
                     criteria.GroupedOr(new[] {"id", "parentID"}.ToList(), new[] {"1"});
-                  Console.WriteLine(criteria.Query);
+                    Console.WriteLine(criteria.Query);
                     Assert.AreEqual("+__NodeTypeAlias:mydocumenttypealias +(id:1 parentID:1)",
                         criteria.Query.ToString());
 
@@ -428,12 +425,9 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     criteria = (ElasticSearchQuery) searcher.CreateQuery();
                     criteria.Field("__NodeTypeAlias", "myDocumentTypeAlias");
                     criteria.GroupedOr(new[] {"id"}.ToList(), new[] {"1"});
-                  Console.WriteLine(criteria.Query);
+                    Console.WriteLine(criteria.Query);
                     Assert.AreEqual("+__NodeTypeAlias:mydocumenttypealias +(id:1)", criteria.Query.ToString());
-
                 }
-
-
             }
         }
 
@@ -453,8 +447,6 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
                 using (var indexer = new TestBaseIndex(config))
                 {
-
-
                     var searcher = indexer.GetSearcher();
                     //new LuceneSearcher("testSearcher", luceneDir, analyzer);
 
@@ -462,14 +454,14 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     var criteria = (ElasticSearchQuery) searcher.CreateQuery();
                     criteria.Field("__NodeTypeAlias", "myDocumentTypeAlias");
                     criteria.GroupedAnd(new[] {"id"}.ToList(), new[] {"1", "2", "3"});
-                  Console.WriteLine(criteria.Query);
+                    Console.WriteLine(criteria.Query);
                     Assert.AreEqual("+__NodeTypeAlias:mydocumenttypealias +(+id:1)", criteria.Query.ToString());
 
                     Console.WriteLine("GROUPED AND - MULTI FIELD, EQUAL MULTI VAL");
                     criteria = (ElasticSearchQuery) searcher.CreateQuery();
                     criteria.Field("__NodeTypeAlias", "myDocumentTypeAlias");
                     criteria.GroupedAnd(new[] {"id", "parentID", "blahID"}.ToList(), new[] {"1", "2", "3"});
-                  Console.WriteLine(criteria.Query);
+                    Console.WriteLine(criteria.Query);
                     Assert.AreEqual("+__NodeTypeAlias:mydocumenttypealias +(+id:1 +parentID:2 +blahID:3)",
                         criteria.Query.ToString());
 
@@ -477,7 +469,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     criteria = (ElasticSearchQuery) searcher.CreateQuery();
                     criteria.Field("__NodeTypeAlias", "myDocumentTypeAlias");
                     criteria.GroupedAnd(new[] {"id", "parentID"}.ToList(), new[] {"1", "2", "3"});
-                  Console.WriteLine(criteria.Query);
+                    Console.WriteLine(criteria.Query);
                     Assert.AreEqual("+__NodeTypeAlias:mydocumenttypealias +(+id:1 +parentID:2)",
                         criteria.Query.ToString());
 
@@ -485,7 +477,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     criteria = (ElasticSearchQuery) searcher.CreateQuery();
                     criteria.Field("__NodeTypeAlias", "myDocumentTypeAlias");
                     criteria.GroupedAnd(new[] {"id", "parentID"}.ToList(), new[] {"1"});
-                  Console.WriteLine(criteria.Query);
+                    Console.WriteLine(criteria.Query);
                     Assert.AreEqual("+__NodeTypeAlias:mydocumenttypealias +(+id:1 +parentID:1)",
                         criteria.Query.ToString());
 
@@ -493,7 +485,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     criteria = (ElasticSearchQuery) searcher.CreateQuery();
                     criteria.Field("__NodeTypeAlias", "myDocumentTypeAlias");
                     criteria.GroupedAnd(new[] {"id"}.ToList(), new[] {"1"});
-                  Console.WriteLine(criteria.Query);
+                    Console.WriteLine(criteria.Query);
                     Assert.AreEqual("+__NodeTypeAlias:mydocumenttypealias +(+id:1)", criteria.Query.ToString());
                 }
             }
@@ -519,7 +511,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     var criteria = (ElasticSearchQuery) searcher.CreateQuery();
                     criteria.Field("__NodeTypeAlias", "myDocumentTypeAlias");
                     criteria.GroupedNot(new[] {"id"}.ToList(), new[] {"1", "2", "3"});
-                  Console.WriteLine(criteria.Query);
+                    Console.WriteLine(criteria.Query);
                     Assert.AreEqual("+__NodeTypeAlias:mydocumenttypealias (-id:1 -id:2 -id:3)",
                         criteria.Query.ToString());
 
@@ -527,7 +519,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     criteria = (ElasticSearchQuery) searcher.CreateQuery();
                     criteria.Field("__NodeTypeAlias", "myDocumentTypeAlias");
                     criteria.GroupedNot(new[] {"id", "parentID"}.ToList(), new[] {"1", "2", "3"});
-                  Console.WriteLine(criteria.Query);
+                    Console.WriteLine(criteria.Query);
                     Assert.AreEqual(
                         "+__NodeTypeAlias:mydocumenttypealias (-id:1 -id:2 -id:3 -parentID:1 -parentID:2 -parentID:3)",
                         criteria.Query.ToString());
@@ -536,7 +528,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     criteria = (ElasticSearchQuery) searcher.CreateQuery();
                     criteria.Field("__NodeTypeAlias", "myDocumentTypeAlias");
                     criteria.GroupedNot(new[] {"id", "parentID", "blahID"}.ToList(), new[] {"1", "2", "3"});
-                  Console.WriteLine(criteria.Query);
+                    Console.WriteLine(criteria.Query);
                     Assert.AreEqual(
                         "+__NodeTypeAlias:mydocumenttypealias (-id:1 -id:2 -id:3 -parentID:1 -parentID:2 -parentID:3 -blahID:1 -blahID:2 -blahID:3)",
                         criteria.Query.ToString());
@@ -545,7 +537,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     criteria = (ElasticSearchQuery) searcher.CreateQuery();
                     criteria.Field("__NodeTypeAlias", "myDocumentTypeAlias");
                     criteria.GroupedNot(new[] {"id", "parentID"}.ToList(), new[] {"1"});
-                  Console.WriteLine(criteria.Query);
+                    Console.WriteLine(criteria.Query);
                     Assert.AreEqual("+__NodeTypeAlias:mydocumenttypealias (-id:1 -parentID:1)",
                         criteria.Query.ToString());
 
@@ -553,7 +545,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     criteria = (ElasticSearchQuery) searcher.CreateQuery();
                     criteria.Field("__NodeTypeAlias", "myDocumentTypeAlias");
                     criteria.GroupedNot(new[] {"id"}.ToList(), new[] {"1"});
-                  Console.WriteLine(criteria.Query);
+                    Console.WriteLine(criteria.Query);
                     Assert.AreEqual("+__NodeTypeAlias:mydocumenttypealias (-id:1)", criteria.Query.ToString());
                 }
             }
@@ -591,6 +583,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                             })
                     });
 
+                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
                     var searcher = indexer.GetSearcher();
 
                     //paths contain punctuation, we'll escape it and ensure an exact match
@@ -638,7 +631,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     });
 
 
-
+                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
                     var searcher = indexer.GetSearcher();
 
                     //paths contain punctuation, we'll escape it and ensure an exact match
@@ -664,10 +657,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     results3 = wildcardfilter.Execute();
                     Assert.AreEqual(0, results3.TotalItemCount);
                 }
-
-
             }
-
         }
 
         [Test]
@@ -679,11 +669,11 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                 .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
-                using (var indexer = new TestBaseIndex(config, new FieldDefinitionCollection( new FieldDefinition("parentID", "number"))))
+                using (var indexer = new TestBaseIndex(config,
+                    new FieldDefinitionCollection(new FieldDefinition("parentID", "number"))))
 
 
                 {
-
                     indexer.CreateIndex();
                     indexer.IndexItems(new[]
                     {
@@ -696,7 +686,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     });
 
 
-
+                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
                     var searcher = indexer.GetSearcher();
 
                     var criteria = searcher.CreateQuery("content");
@@ -721,7 +711,6 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                 using (var indexer = new TestBaseIndex(config,
                     new FieldDefinitionCollection(new FieldDefinition("nodeTypeAlias", "raw"))))
                 {
-
                     indexer.CreateIndex();
                     indexer.IndexItems(new[]
                     {
@@ -749,7 +738,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     });
 
 
-
+                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
                     var searcher = indexer.GetSearcher();
 
                     var criteria = searcher.CreateQuery("content");
@@ -776,7 +765,6 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
 
 
                 {
-
                     indexer.CreateIndex();
                     indexer.IndexItems(new[]
                     {
@@ -801,6 +789,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                             })
                     });
 
+                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
                     var searcher = indexer.GetSearcher();
 
                     var criteria = searcher.CreateQuery();
@@ -854,6 +843,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                             })
                     });
 
+                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
                     var searcher = indexer.GetSearcher();
 
                     var criteria = searcher.CreateQuery("content");
@@ -862,7 +852,6 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
 
                     Assert.AreEqual(2, results.TotalItemCount);
                 }
-
             }
         }
 
@@ -879,7 +868,6 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
 
 
                 {
-
                     indexer.CreateIndex();
                     indexer.IndexItems(new[]
                     {
@@ -961,7 +949,6 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
 
 
                 {
-
                     indexer.CreateIndex();
                     indexer.IndexItems(new[]
                     {
@@ -1010,8 +997,6 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
 
 
                 {
-
-
                     var now = DateTime.Now;
                     indexer.CreateIndex();
                     indexer.IndexItems(new[]
@@ -1046,7 +1031,8 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     double currSort = 0;
                     for (var i = 0; i < results1.Length; i++)
                     {
-                        Assert.GreaterOrEqual(Convert.ToDateTime(results1[i].Values["updateDate"]).ToOADate(), currSort);
+                        Assert.GreaterOrEqual(Convert.ToDateTime(results1[i].Values["updateDate"]).ToOADate(),
+                            currSort);
                         currSort = Convert.ToDateTime(results1[i].Values["updateDate"]).ToOADate();
                     }
                 }
@@ -1068,8 +1054,6 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
 
 
                 {
-
-
                     indexer.CreateIndex();
                     indexer.IndexItems(new[]
                     {
@@ -1099,8 +1083,6 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
 
                     Assert.AreNotEqual(results1.First().Id, results2.First().Id);
                 }
-
-
             }
         }
 
@@ -1154,7 +1136,6 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                                 i + 1));
                     }
                 }
-
             }
         }
 
@@ -1171,7 +1152,6 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
 
 
                 {
-
                     indexer.CreateIndex();
                     indexer.IndexItems(new[]
                     {
@@ -1196,8 +1176,6 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     //Assert
                     Assert.AreNotEqual(results.First(), results.Skip(2).First(), "Third result should be different");
                 }
-
-
             }
         }
 
@@ -1214,8 +1192,6 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
 
 
                 {
-
-
                     indexer.CreateIndex();
                     indexer.IndexItems(new[]
                     {
@@ -1241,8 +1217,6 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     //NOTE: The result is 2 because the double space is removed with the analyzer
                     Assert.AreEqual(2, results.TotalItemCount);
                 }
-
-
             }
         }
 
@@ -1259,7 +1233,6 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
 
 
                 {
-
                     indexer.CreateIndex();
                     indexer.IndexItems(new[]
                     {
@@ -1306,7 +1279,6 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
 
 
                 {
-
                     indexer.CreateIndex();
                     indexer.IndexItems(new[]
                     {
@@ -1342,8 +1314,6 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     //Assert
                     Assert.AreEqual(3, results.TotalItemCount);
                 }
-
-
             }
         }
 
@@ -1353,7 +1323,6 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         [Test]
         public void Float_Range_SimpleIndexSet()
         {
-
             using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
                 .EnableLogging()
                 .SetPort(9200)
@@ -1366,7 +1335,6 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
 
 
                 {
-
                     indexer.CreateIndex();
                     indexer.IndexItems(new[]
                     {
@@ -1397,7 +1365,6 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     Assert.AreEqual(3, results1.TotalItemCount);
                     Assert.AreEqual(1, results2.TotalItemCount);
                 }
-
             }
         }
 
@@ -1518,12 +1485,12 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                 .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
-                using (var indexer = new TestBaseIndex(config,   new FieldDefinitionCollection(new FieldDefinition("SomeLong", "long")))
-                 )
+                using (var indexer = new TestBaseIndex(config,
+                    new FieldDefinitionCollection(new FieldDefinition("SomeLong", "long")))
+                )
 
 
                 {
-
                     indexer.CreateIndex();
                     indexer.IndexItems(new[]
                     {
@@ -1555,7 +1522,6 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     Assert.AreEqual(1, results2.TotalItemCount);
                 }
             }
-
         }
 
         ///// <summary>
@@ -1572,7 +1538,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
 
         //        new[] { new FieldDefinition("MinuteCreated", "date.minute") },
         //        luceneDir, analyzer))
-            
+
 
         //    {
         //        
@@ -1588,7 +1554,6 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         //                new { MinuteCreated = reIndexDateTime })
         //            });
 
-                
 
         //        var searcher = new LuceneSearcher("testSearcher", luceneDir, analyzer);
 
@@ -1625,7 +1590,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
 
         //        new[] { new FieldDefinition("HourCreated", "date.hour") },
         //        luceneDir, analyzer))
-            
+
 
         //    {
 
@@ -1642,7 +1607,6 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         //                new { HourCreated = reIndexDateTime })
         //            });
 
-                
 
         //        var searcher = new LuceneSearcher("testSearcher", luceneDir, analyzer);
 
@@ -1676,7 +1640,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
 
         //        new[] { new FieldDefinition("DayCreated", "date.day") },
         //        luceneDir, analyzer))
-            
+
 
         //    {
         //        
@@ -1692,7 +1656,6 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         //                new { DayCreated = reIndexDateTime })
         //            });
 
-                
 
         //        var searcher = new LuceneSearcher("testSearcher", luceneDir, analyzer);
 
@@ -1727,7 +1690,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
 
         //        new[] { new FieldDefinition("MonthCreated", "date.month") },
         //        luceneDir, analyzer))
-            
+
 
         //    {
         //        
@@ -1743,7 +1706,6 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         //                new { MonthCreated = reIndexDateTime })
         //            });
 
-                
 
         //        var searcher = new LuceneSearcher("testSearcher", luceneDir, analyzer);
 
@@ -1779,7 +1741,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
 
         //        new[] { new FieldDefinition("YearCreated", "date.year") },
         //        luceneDir, analyzer))
-            
+
 
         //    {
         //        
@@ -1795,7 +1757,6 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         //                new { YearCreated = reIndexDateTime })
         //            });
 
-                
 
         //        var searcher = new LuceneSearcher("testSearcher", luceneDir, analyzer);
 
@@ -2203,5 +2164,4 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         //}
 */
     }
-   
 }

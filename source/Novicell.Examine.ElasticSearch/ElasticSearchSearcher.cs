@@ -88,17 +88,14 @@ namespace Novicell.Examine.ElasticSearch
         }
         public override ISearchResults Search(string searchText, int maxResults = 500)
         {
-            var query = new CommonTermsQuery()
+            var query = new MultiMatchQuery()
             {
-
+                
+                Query = searchText,
                 Analyzer = "standard",
-                Boost = 1.1,
-                CutoffFrequency = 0.001,
-                HighFrequencyOperator = Operator.And,
-                LowFrequencyOperator = Operator.Or,
-                MinimumShouldMatch = 1,
-                Name = "named_query",
-                Query = searchText
+                Slop = 2,
+                Type=      TextQueryType.Phrase
+                
             };
             return new ElasticSearchSearchResults(_client.Value, query, indexAlias, _sortFields, maxResults);
         }

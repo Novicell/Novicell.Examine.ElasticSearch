@@ -190,8 +190,10 @@ namespace Novicell.Examine.ElasticSearch.Indexers
                         .Add(add => add.Index(indexName).Alias(indexAlias))
                     );
                 }
-
-                isReindexing = true;
+                else
+                {
+                    isReindexing = true;
+                }
                 _exists = true;
             }
         }

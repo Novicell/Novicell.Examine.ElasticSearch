@@ -114,7 +114,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                         new {item1 = "value3", item2 = "Scotch scotch scotch, i love scotch"}));
                     indexer1.IndexItem(ValueSet.FromObject("6", "content",
                         new {item1 = "value4", item2 = "60% of the time, it works everytime"}));
-
+                    indexer1._client.Value.Refresh(Indices.Index(indexer1.indexAlias));
                     var searcher = indexer1.GetSearcher();
 
                     var result = searcher.Search("darkness");
@@ -181,7 +181,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                         new {item1 = "value3", item2 = "Scotch scotch scotch, i love scotch"}));
                     indexer1.IndexItem(ValueSet.FromObject("6", "content",
                         new {item1 = "value4", item2 = "60% of the time, it works everytime"}));
-
+                    indexer1._client.Value.Refresh(Indices.Index(indexer1.indexAlias));
                     var searcher = indexer1.GetSearcher();
 
                     var qry = searcher.CreateQuery().ManagedQuery("darkness").And().Field("item1", "value1");

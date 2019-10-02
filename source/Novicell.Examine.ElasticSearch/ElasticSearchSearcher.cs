@@ -66,7 +66,7 @@ namespace Novicell.Examine.ElasticSearch
            
                 IEnumerable<PropertyName> keys = AllProperties.Keys;
 
-                _allFields = keys.Select(x => x.ToString()).ToArray();
+                _allFields = keys.Select(x => x.Name).ToArray();
                 return _allFields;
             }
         }

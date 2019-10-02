@@ -28,7 +28,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                 using (var indexer = new TestBaseIndex(config,
                     new FieldDefinitionCollection(new FieldDefinition("created", "datetime"))))
                 {
-
+                    indexer.CreateIndex();
 
                     indexer.IndexItems(new[]
                     {
@@ -80,6 +80,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
                 using (var indexer1 = new TestBaseIndex(config))
                 {
+                    indexer1.CreateIndex();
                     indexer1.IndexItem(ValueSet.FromObject("1", "content",
                         new
                         {
@@ -147,6 +148,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
                     using (var indexer1 = new TestBaseIndex(config))
                     {
+                        indexer1.CreateIndex();
                         indexer1.IndexItem(ValueSet.FromObject("1", "content",
                             new
                             {
@@ -225,7 +227,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                        ))
                     {
 
-
+                        indexer.CreateIndex();
                         indexer.IndexItems(new[]
                         {
                             ValueSet.FromObject(123.ToString(), "content",
@@ -277,7 +279,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     ))
                     {
 
-
+                        indexer.CreateIndex();
                         indexer.IndexItems(new[]
                         {
                             ValueSet.FromObject(123.ToString(), "content",
@@ -329,7 +331,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
                 using (var indexer = new TestBaseIndex(config))
             {
-                
+                indexer.CreateIndex();
 
                 indexer.IndexItems(new[]
                 {
@@ -572,7 +574,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     // It's because the searching is NOT using a managed search
                     //new[] { new FieldDefinition("umbracoNaviHide", "number") }, 
 
-
+                    indexer.CreateIndex();
                     indexer.IndexItems(new[]
                     {
                         ValueSet.FromObject(1.ToString(), "content",
@@ -615,7 +617,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     new FieldDefinitionCollection(new FieldDefinition("__Path", "raw"))
                 ))
                 {
-
+                    indexer.CreateIndex();
 
                     indexer.IndexItems(new[]
                     {
@@ -682,7 +684,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
 
                 {
 
-
+                    indexer.CreateIndex();
                     indexer.IndexItems(new[]
                     {
                         ValueSet.FromObject(1.ToString(), "content",
@@ -720,7 +722,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     new FieldDefinitionCollection(new FieldDefinition("nodeTypeAlias", "raw"))))
                 {
 
-
+                    indexer.CreateIndex();
                     indexer.IndexItems(new[]
                     {
                         new ValueSet(1.ToString(), "content",
@@ -775,7 +777,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
 
                 {
 
-
+                    indexer.CreateIndex();
                     indexer.IndexItems(new[]
                     {
                         ValueSet.FromObject(1.ToString(), "content",
@@ -825,7 +827,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
 
 
                 {
-
+                    indexer.CreateIndex();
 
                     indexer.IndexItems(new[]
                     {
@@ -878,7 +880,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
 
                 {
 
-
+                    indexer.CreateIndex();
                     indexer.IndexItems(new[]
                     {
                         ValueSet.FromObject(1.ToString(), "media",
@@ -914,7 +916,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
 
 
                 {
-
+                    indexer.CreateIndex();
 
                     indexer.IndexItems(new[]
                     {
@@ -960,7 +962,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
 
                 {
 
-
+                    indexer.CreateIndex();
                     indexer.IndexItems(new[]
                     {
                         ValueSet.FromObject(1.ToString(), "content",
@@ -1011,7 +1013,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
 
 
                     var now = DateTime.Now;
-
+                    indexer.CreateIndex();
                     indexer.IndexItems(new[]
                     {
                         ValueSet.FromObject(1.ToString(), "content",
@@ -1068,7 +1070,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                 {
 
 
-
+                    indexer.CreateIndex();
                     indexer.IndexItems(new[]
                     {
                         ValueSet.FromObject(1.ToString(), "content",
@@ -1115,7 +1117,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
 
 
                 {
-
+                    indexer.CreateIndex();
 
 
                     indexer.IndexItems(new[]
@@ -1170,7 +1172,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
 
                 {
 
-
+                    indexer.CreateIndex();
                     indexer.IndexItems(new[]
                     {
                         ValueSet.FromObject(1.ToString(), "content",
@@ -1214,7 +1216,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                 {
 
 
-
+                    indexer.CreateIndex();
                     indexer.IndexItems(new[]
                     {
                         ValueSet.FromObject(1.ToString(), "content",
@@ -1258,7 +1260,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
 
                 {
 
-
+                    indexer.CreateIndex();
                     indexer.IndexItems(new[]
                     {
                         ValueSet.FromObject(1.ToString(), "content",
@@ -1305,7 +1307,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
 
                 {
 
-
+                    indexer.CreateIndex();
                     indexer.IndexItems(new[]
                     {
                         ValueSet.FromObject(1.ToString(), "content",
@@ -1365,7 +1367,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
 
                 {
 
-
+                    indexer.CreateIndex();
                     indexer.IndexItems(new[]
                     {
                         ValueSet.FromObject(1.ToString(), "content",
@@ -1417,7 +1419,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
 
 
                 {
-
+                    indexer.CreateIndex();
 
                     indexer.IndexItems(new[]
                     {
@@ -1470,7 +1472,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
 
 
                 {
-
+                    indexer.CreateIndex();
 
                     indexer.IndexItems(new[]
                     {
@@ -1522,7 +1524,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
 
                 {
 
-
+                    indexer.CreateIndex();
                     indexer.IndexItems(new[]
                     {
                         ValueSet.FromObject(1.ToString(), "content",

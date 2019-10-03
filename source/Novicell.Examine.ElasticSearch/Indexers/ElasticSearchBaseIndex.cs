@@ -251,6 +251,10 @@ namespace Novicell.Examine.ElasticSearch.Indexers
             
                 CreateNewIndex(true);
             }
+            else if(indexesMappedToAlias.Count == 0)
+            {
+                EnsureIndex(false);
+            }
             var indexTarget = isReindexing ? indexName : indexAlias;
         
 

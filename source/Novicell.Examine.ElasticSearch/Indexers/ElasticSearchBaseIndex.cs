@@ -254,15 +254,12 @@ namespace Novicell.Examine.ElasticSearch.Indexers
         {
             var indexesMappedToAlias = _client.Value.GetAlias(descriptor => descriptor.Name(indexAlias))
                 .Indices.Select(x => x.Key).ToList();
-            if (isReindexing)
+            if (isReindexing || !IndexExists() )
             {
             
                 CreateNewIndex(true);
             }
-            else if(indexesMappedToAlias.Count == 0)
-            {
-                EnsureIndex(false);
-            }
+          
             var indexTarget = isReindexing ? indexName : indexAlias;
         
 

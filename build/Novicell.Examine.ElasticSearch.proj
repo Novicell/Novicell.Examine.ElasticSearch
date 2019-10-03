@@ -50,6 +50,7 @@
     <BuildNuGetDir>$(BuildDir)\_nuget</BuildNuGetDir>
     <ArtifactsDir>$(RootDir)\artifacts</ArtifactsDir>
     <CoreProjectDir>$(RootDir)\source\Novicell.Examine.ElasticSearch</CoreProjectDir>
+	<TestProjectDir>$(RootDir)\source\Novicell.Examine.ElasticSearch.Tests</TestProjectDir>
   </PropertyGroup>
 
   <!-- CLEAN -->
@@ -65,7 +66,7 @@
   <!-- COMPILE -->
   <Target Name="Compile" DependsOnTargets="Clean">
     <MSBuild Projects="$(CoreProjectDir)\Novicell.Examine.ElasticSearch.csproj" Properties="Configuration=$(BuildConfig)" />
-
+	<MSBuild Projects="$(TestProjectDir)\Novicell.Examine.ElasticSearch.Tests.csproj" Properties="Configuration=$(BuildConfig)" />
   </Target>
 
   <!-- PREPARE FILES -->

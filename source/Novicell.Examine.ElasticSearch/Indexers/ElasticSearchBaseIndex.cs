@@ -36,6 +36,7 @@ namespace Novicell.Examine.ElasticSearch.Indexers
             ? ConfigurationManager.AppSettings["examine:ElasticSearch.Prefix"]
             : "";
         public string indexAlias { get; set; }
+        private string tempindexAlias { get; set; }
         public string ElasticURL { get; set; }
 
  
@@ -55,6 +56,7 @@ namespace Novicell.Examine.ElasticSearch.Indexers
             _searcher = new Lazy<ElasticSearchSearcher>(CreateSearcher);
             _client = new Lazy<ElasticClient>(CreateElasticSearchClient);
             indexAlias = prefix + Name;
+            tempindexAlias= indexAlias + "temp";
         }
 
         private ElasticClient CreateElasticSearchClient()
@@ -166,7 +168,7 @@ namespace Novicell.Examine.ElasticSearch.Indexers
 
             var indexExists = IndexExists();
             if (indexExists && !forceOverwrite) return;
-
+            if (TempIndexExists()) return;
             CreateNewIndex(indexExists);
         }
 
@@ -174,6 +176,8 @@ namespace Novicell.Examine.ElasticSearch.Indexers
         {
             lock (ExistsLocker)
             {
+                _client.Value.Alias(ba => ba
+                    .Remove(remove => remove.Index("*").Alias(indexAlias+"temp")));
                 indexName = prefix + Name + "_" +
                             DateTime.Now.ToString("dd_MM_yyyy_HH_mm_ss");
                 var index = _client.Value.CreateIndex(indexName, c => c
@@ -183,7 +187,8 @@ namespace Novicell.Examine.ElasticSearch.Indexers
                     ))
                 );
                 var indexesMappedToAlias = _client.Value.GetAlias(descriptor => descriptor.Name(indexAlias))
-                    .Indices.Select(x => x.Key).ToList();
+                    .Indices;
+            
                 if (indexesMappedToAlias.Count==0)
                 {
                     var bulkAliasResponse = _client.Value.Alias(ba => ba
@@ -192,8 +197,12 @@ namespace Novicell.Examine.ElasticSearch.Indexers
                 }
                 else
                 {
+                    
                     isReindexing = true;
                 }
+                _client.Value.Alias(ba => ba
+                    .Add(add => add.Index(indexName).Alias(indexAlias+"temp"))
+                );
                 _exists = true;
             }
         }
@@ -252,15 +261,12 @@ namespace Novicell.Examine.ElasticSearch.Indexers
 
         protected override void PerformIndexItems(IEnumerable<ValueSet> op, Action<IndexOperationEventArgs> onComplete)
         {
+            
             var indexesMappedToAlias = _client.Value.GetAlias(descriptor => descriptor.Name(indexAlias))
                 .Indices.Select(x => x.Key).ToList();
-            if (isReindexing || !IndexExists() )
-            {
-            
-                CreateNewIndex(true);
-            }
+            EnsureIndex(false);
           
-            var indexTarget = isReindexing ? indexName : indexAlias;
+            var indexTarget = isReindexing ? tempindexAlias : indexAlias;
         
 
             var indexer = GetIndexClient();
@@ -285,6 +291,8 @@ namespace Novicell.Examine.ElasticSearch.Indexers
                     .Remove(remove => remove.Index("*").Alias(indexAlias))
                     .Add(add => add.Index(indexName).Alias(indexAlias))
                 );
+             
+                
              
                     indexesMappedToAlias.Where(e=>e.Name != indexName).ToList().ForEach(e => _client.Value.DeleteIndex(e));
              
@@ -320,16 +328,27 @@ namespace Novicell.Examine.ElasticSearch.Indexers
 
         public override bool IndexExists()
         {
-            if (_client.Value.IndexExists(indexAlias).Exists)
-            {
-                var indexesMappedToAlias = _client.Value.GetAlias(descriptor => descriptor.Name(indexAlias))
-                    .Indices.Select(x => x.Key).ToList();
-                indexName = indexesMappedToAlias[0].Name;
+         
+                var indexesMappedToAlias = _client.Value.GetAlias(descriptor => descriptor.Name(indexAlias)).Indices;
+                if(indexesMappedToAlias.Count>0){
+                    indexName = indexesMappedToAlias.Keys.FirstOrDefault().Name;
+                       return true;
+                }
+           
+                    return false;
+                
+             
+        }
+        public bool TempIndexExists()
+        {
+            var indexesMappedToAlias = _client.Value.GetAlias(descriptor => descriptor.Name(tempindexAlias)).Indices;
+            if(indexesMappedToAlias.Count>0){
+                indexName = indexesMappedToAlias.Keys.FirstOrDefault().Name;
                 return true;
             }
+           
             return false;
         }
-
         public void Dispose()
         {
             _indexer?.DisposeIfDisposable();
@@ -346,8 +365,8 @@ namespace Novicell.Examine.ElasticSearch.Indexers
         #region IIndexDiagnostics
 
 
-        public long DocumentCount => _client.Value.Count<Document>(e => e.Index(indexAlias)).Count;
-        public int FieldCount => _searcher.Value.AllFields.Length;
+        public long DocumentCount => IndexExists()?_client.Value.Count<Document>(e => e.Index(indexAlias)).Count : 0;
+        public int FieldCount => IndexExists()?_searcher.Value.AllFields.Length:0;
 
         #endregion
     }

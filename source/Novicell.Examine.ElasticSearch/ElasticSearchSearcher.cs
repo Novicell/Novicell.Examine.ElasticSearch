@@ -49,7 +49,19 @@ namespace Novicell.Examine.ElasticSearch
             {
                 if (_exists == null || !_exists.Value)
                 {
-                    _exists = _client.Value.IndexExists(indexAlias).Exists;
+                    if (_client.Value.IndexExists(indexAlias).Exists)
+                    {
+                        var indexesMappedToAlias = _client.Value.GetAlias(descriptor => descriptor.Name(indexAlias)).Indices;
+                        if(indexesMappedToAlias.Count>0){
+                            _exists = true;
+                        }
+                        else
+                        {
+                            _exists = false;
+                        }
+                    }
+
+                   
                 }
                 return _exists.Value;
             }

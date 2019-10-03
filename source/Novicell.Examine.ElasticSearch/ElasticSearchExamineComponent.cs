@@ -24,7 +24,7 @@ namespace Novicell.Examine.ElasticSearch
     public class ElasticSearchExamineComponent : IComponent, Umbraco.Core.Composing.IComponent
     {
         private readonly IExamineManager _examineManager;
-        private readonly ElasticIndexCreator _indexCreator;
+        private readonly IUmbracoIndexesCreator _indexCreator;
         private readonly IProfilingLogger _logger;
         private readonly ServiceContext _services;   
         private readonly IContentValueSetBuilder _contentValueSetBuilder;
@@ -37,7 +37,7 @@ namespace Novicell.Examine.ElasticSearch
         // but greater that SafeXmlReaderWriter priority which is 60
         private const int EnlistPriority = 80;
         public ElasticSearchExamineComponent(IExamineManager examineManager,
-            ElasticIndexCreator indexCreator,
+            IUmbracoIndexesCreator indexCreator,
             IProfilingLogger profilingLogger,
             ServiceContext services,
             IScopeProvider scopeProvider,

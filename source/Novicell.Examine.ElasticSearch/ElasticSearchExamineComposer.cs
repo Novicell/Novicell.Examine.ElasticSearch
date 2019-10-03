@@ -38,8 +38,7 @@ namespace Novicell.Examine.ElasticSearch
             composition.Register<IndexRebuilder>(Lifetime.Singleton);
 
             //   composition.RegisterUnique<IUmbracoIndexesCreator, UmbracoIndexesCreator>();
-            composition.RegisterUnique<ElasticIndexCreator>();
-
+            composition.RegisterUnique<IUmbracoIndexesCreator, ElasticIndexCreator>();
             composition.RegisterUnique<IPublishedContentValueSetBuilder>(factory =>
                 new ContentValueSetBuilder(
                     factory.GetInstance<PropertyEditorCollection>(),

@@ -1,7 +1,6 @@
 using System;
 using System.Configuration;
 using System.Linq;
-using ElasticsearchInside.Config;
 using Nest;
 
 namespace Novicell.Examine.ElasticSearch
@@ -40,15 +39,23 @@ namespace Novicell.Examine.ElasticSearch
         }
         public ElasticSearchConfig()
         {
-            ElasticSearch = new ElasticsearchInside.Elasticsearch(
-                    settings => settings
-                        .EnableLogging()
-                        .SetPort(9200)
-                        .SetElasticsearchStartTimeout(180))
-                .ReadySync();
-            
-                ////Arrange
-                ConnectionConfiguration=new ConnectionSettings(ElasticSearch.Url);
+            try
+            {
+                
+                ElasticSearch = new ElasticsearchInside.Elasticsearch(
+                        settings => settings
+                            .EnableLogging()
+                            .SetElasticsearchStartTimeout(180))
+                    .ReadySync();
+                ConnectionConfiguration = new ConnectionSettings(ElasticSearch.Url);
+            }
+            catch (DllNotFoundException)
+            {
+                
+            }
+
+            ////Arrange
+               
             
          
         }

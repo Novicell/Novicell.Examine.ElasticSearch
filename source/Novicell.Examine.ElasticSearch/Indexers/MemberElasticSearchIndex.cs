@@ -1,9 +1,10 @@
 using Examine;
 using Umbraco.Core.Logging;
+using Umbraco.Examine;
 
 namespace Novicell.Examine.ElasticSearch.Indexers
 {
-    public class MemberElasticSearchIndex : ElasticSearchUmbracoIndex
+    public class MemberElasticSearchIndex : ElasticSearchUmbracoIndex, IUmbracoIndex
     {
         public MemberElasticSearchIndex(string name, ElasticSearchConfig connectionConfiguration,
             IProfilingLogger profilingLogger, 

@@ -20,7 +20,7 @@ namespace Novicell.Examine.ElasticSearch
         public ElasticIndexCreator(IProfilingLogger profilingLogger,
             ILocalizationService languageService,
             IPublicAccessService publicAccessService)
-        {`
+        {
             ProfilingLogger = profilingLogger ?? throw new System.ArgumentNullException(nameof(profilingLogger));
             LanguageService = languageService ?? throw new System.ArgumentNullException(nameof(languageService));
             _publicAccessService =

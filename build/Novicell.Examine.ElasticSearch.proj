@@ -66,7 +66,7 @@
   <!-- COMPILE -->
   <Target Name="Compile" DependsOnTargets="Clean">
     <MSBuild Projects="$(CoreProjectDir)\Novicell.Examine.ElasticSearch.csproj" Properties="Configuration=$(BuildConfig)" />
-	<!-- <MSBuild Projects="$(TestProjectDir)\Novicell.Examine.ElasticSearch.Tests.csproj" Properties="Configuration=$(BuildConfig)" /> -->
+	<MSBuild Projects="$(TestProjectDir)\Novicell.Examine.ElasticSearch.Tests.csproj" Properties="Configuration=$(BuildConfig)" />
   </Target>
 
   <!-- PREPARE FILES -->

@@ -13,7 +13,7 @@ using Umbraco.Examine;
 
 namespace Novicell.Examine.ElasticSearch.Indexers
 {
-    public class ElasticSearchUmbracoIndex : ElasticSearchBaseIndex, IUmbracoIndex
+    public class ElasticSearchUmbracoIndex : ElasticSearchBaseIndex, IUmbracoIndex, IIndexDiagnostics
     {
         private const string SpecialFieldPrefix = "__";
 
@@ -45,7 +45,7 @@ namespace Novicell.Examine.ElasticSearch.Indexers
             FieldDefinitionCollection fieldDefinitions = null,
             string analyzer = null,
             IValueSetValidator validator = null)
-            : base(name,connectionConfiguration,  fieldDefinitions, analyzer, validator)
+            : base(name, connectionConfiguration, fieldDefinitions, analyzer, validator)
         {
             _logger = profilingLogger;
         }
@@ -74,8 +74,6 @@ namespace Novicell.Examine.ElasticSearch.Indexers
         /// <remarks>
         /// This check is required since the base examine lib will try to rebuild on startup
         /// </remarks>
-       
-
         /// <summary>
         /// Returns true if the Umbraco application is in a state that we can initialize the examine indexes
         /// </summary>
@@ -96,6 +94,7 @@ namespace Novicell.Examine.ElasticSearch.Indexers
             ProfilingLogger.Error(GetType(), ex.InnerException, ex.Message);
             base.OnIndexingError(ex);
         }
+
         protected override void PerformDeleteFromIndex(IEnumerable<string> itemIds,
             Action<IndexOperationEventArgs> onComplete)
         {
@@ -116,7 +115,7 @@ namespace Novicell.Examine.ElasticSearch.Indexers
                 }
             }
         }
-      
+
 
         protected override void OnTransformingIndexValues(IndexingItemEventArgs e)
         {
@@ -130,12 +129,52 @@ namespace Novicell.Examine.ElasticSearch.Indexers
             }
 
             //icon
-            if (e.ValueSet.Values.TryGetValue("icon", out var icon) && e.ValueSet.Values.ContainsKey(IconFieldName) == false)
+            if (e.ValueSet.Values.TryGetValue("icon", out var icon) &&
+                e.ValueSet.Values.ContainsKey(IconFieldName) == false)
             {
                 e.ValueSet.Values[IconFieldName] = icon;
             }
         }
-        
-       
+
+
+        public Attempt<string> IsHealthy()
+        {
+            var isHealthy = _client.Value.Ping();
+            return isHealthy.ApiCall.Success ? Attempt<string>.Succeed():  Attempt.Fail(isHealthy.OriginalException.Message);
+        }
+
+        public IReadOnlyDictionary<string, object> Metadata
+        {
+            get
+            {
+                var d = new Dictionary<string, object>();
+                d[nameof(DocumentCount)] = DocumentCount;
+                d[nameof(Name)] = Name;
+                d[nameof(indexAlias)] = indexAlias;
+                d[nameof(indexName)] = indexName;
+                d[nameof(ElasticURL)] = ElasticURL;
+                d[nameof(Analyzer)] = Analyzer;
+                d[nameof(EnableDefaultEventHandler)] = EnableDefaultEventHandler;
+                d[nameof(PublishedValuesOnly)] = PublishedValuesOnly;
+
+                if (ValueSetValidator is ValueSetValidator vsv)
+                {
+                    d[nameof(ContentValueSetValidator.IncludeItemTypes)] = vsv.IncludeItemTypes;
+                    d[nameof(ContentValueSetValidator.ExcludeItemTypes)] = vsv.ExcludeItemTypes;
+                    d[nameof(ContentValueSetValidator.IncludeFields)] = vsv.IncludeFields;
+                    d[nameof(ContentValueSetValidator.ExcludeFields)] = vsv.ExcludeFields;
+                }
+
+                if (ValueSetValidator is ContentValueSetValidator cvsv)
+                {
+                    d[nameof(ContentValueSetValidator.PublishedValuesOnly)] = cvsv.PublishedValuesOnly;
+                    d[nameof(ContentValueSetValidator.SupportProtectedContent)] = cvsv.SupportProtectedContent;
+                    d[nameof(ContentValueSetValidator.ParentId)] = cvsv.ParentId;
+                }
+
+                d[nameof(FieldDefinitionCollection)] = String.Join(", ",_searcher.Value.AllFields);
+                return d.Where(x => x.Value != null).ToDictionary(x => x.Key, x => x.Value);
+            }
+        }
     }
 }

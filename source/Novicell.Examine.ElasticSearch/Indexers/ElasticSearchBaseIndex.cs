@@ -199,10 +199,11 @@ namespace Novicell.Examine.ElasticSearch.Indexers
                 {
                     
                     isReindexing = true;
+                    _client.Value.Alias(ba => ba
+                        .Add(add => add.Index(indexName).Alias(indexAlias+"temp"))
+                    );
                 }
-                _client.Value.Alias(ba => ba
-                    .Add(add => add.Index(indexName).Alias(indexAlias+"temp"))
-                );
+             
                 _exists = true;
             }
         }
@@ -365,7 +366,7 @@ namespace Novicell.Examine.ElasticSearch.Indexers
         #region IIndexDiagnostics
 
 
-        public long DocumentCount => IndexExists()?_client.Value.Count<Document>(e => e.Index(indexAlias)).Count : 0;
+        public int DocumentCount => (int) (IndexExists()?_client.Value.Count<Document>(e => e.Index(indexAlias)).Count : 0);
         public int FieldCount => IndexExists()?_searcher.Value.AllFields.Length:0;
 
         #endregion

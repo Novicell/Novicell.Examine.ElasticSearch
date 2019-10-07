@@ -7,10 +7,10 @@
 | Release        | Soon                                                                                                                                                |
 | Pre-release    | [![Build status](https://img.shields.io/nuget/vpre/Novicell.Examine.ElasticSearch)](https://www.nuget.org/packages/Novicell.Examine.ElasticSearch/) |
 
-| Umbraco Packages | Version |
-| ---------------- | ------- |
-| Release          | soon    |
-| Pre-release      | soon    |
+| Umbraco Packages | Version                                                                                                                                              |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Release          | [![Our Umbraco project page](https://img.shields.io/badge/our-umbraco-orange.svg)](https://our.umbraco.com/packages/website-utilities/novicellexamineelasticsearch/) |
+| Pre-release      | soon                                                                                                                                                 |
 
 # Introduction:
 
@@ -57,4 +57,3 @@ Instruction of instalation and configuration is available on wiki:
 # Features:
 
 - 0 downtime reindexing
-

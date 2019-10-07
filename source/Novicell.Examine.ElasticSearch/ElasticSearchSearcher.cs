@@ -47,24 +47,19 @@ namespace Novicell.Examine.ElasticSearch
         {
             get
             {
-                if (_exists == null || !_exists.Value)
-                {
-                    if (_client.Value.IndexExists(indexAlias).Exists)
-                    {
+               
+                
                         var indexesMappedToAlias = _client.Value.GetAlias(descriptor => descriptor.Name(indexAlias)).Indices;
                         if(indexesMappedToAlias.Count>0){
                             _exists = true;
+                            return true;
                         }
-                        else
-                        {
-                            _exists = false;
-                        }
-                    }
 
-                   
+                        _exists = false;
+                        return false;
                 }
-                return _exists.Value;
-            }
+             
+            
         }
 
      
@@ -100,7 +95,7 @@ namespace Novicell.Examine.ElasticSearch
         }
         public override ISearchResults Search(string searchText, int maxResults = 500)
         {
-            var query = new MultiMatchQuery()
+            var query = new MultiMatchQuery
             {
                 
                 Query = searchText,

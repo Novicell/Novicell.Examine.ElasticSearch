@@ -102,6 +102,9 @@ namespace Novicell.Examine.ElasticSearch.Indexers
                 case "number":
                     descriptor.Number(s => s.Name(field.Name).Type(NumberType.Integer));
                     break;
+                case "raw":
+                    descriptor.Text(s => s.Name(field.Name).Analyzer("keyword"));
+                    break;
                 default:
                     descriptor.Text(s => s.Name(field.Name).Analyzer(FromLuceneAnalyzer(Analyzer)));
                     break;
@@ -116,7 +119,7 @@ namespace Novicell.Examine.ElasticSearch.Indexers
         private static string FromLuceneAnalyzer(string analyzer)
         {
             if (string.IsNullOrEmpty(analyzer) || !analyzer.Contains(","))
-                return "standard";
+                return "simple";
 
             //if it contains a comma, we'll assume it's an assembly typed name
 
@@ -159,7 +162,7 @@ namespace Novicell.Examine.ElasticSearch.Indexers
                 return "russian";
 
             //if the above fails, return standard
-            return "standard";
+            return "simple";
         }
 
         public void EnsureIndex(bool forceOverwrite)

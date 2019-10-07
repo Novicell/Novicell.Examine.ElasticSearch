@@ -326,7 +326,14 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                 .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
-                using (var indexer = new TestBaseIndex(config))
+                using (var indexer = new TestBaseIndex(config,
+                    new FieldDefinitionCollection(
+                        new FieldDefinition("nodeName", "text"),
+                                        new FieldDefinition("bodyText", "text"),
+                                        new FieldDefinition("nodeTypeAlias", "text")
+                        )
+                    )
+                )
                 {
                     indexer.CreateIndex();
 
@@ -864,8 +871,13 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                 .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
-                using (var indexer = new TestBaseIndex(config))
-
+                using (var indexer = new TestBaseIndex(config, 
+                    new FieldDefinitionCollection(
+                        new FieldDefinition("nodeName", "text"),
+                        new FieldDefinition("bodyText", "text"),
+                        new FieldDefinition("nodeTypeAlias", "text")
+                    )
+                ))
 
                 {
                     indexer.CreateIndex();
@@ -1311,8 +1323,9 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     //Act
                     var results = filter.Execute();
 
-                    //Assert
-                    Assert.AreEqual(3, results.TotalItemCount);
+                    //Assert - 
+                    
+                    Assert.AreEqual(2, results.TotalItemCount);
                 }
             }
         }

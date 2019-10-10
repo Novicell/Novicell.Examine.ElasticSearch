@@ -49,9 +49,9 @@ namespace Novicell.Examine.ElasticSearch.Indexing
 
         public Query GetQuery(DateTime? lower, DateTime? upper, bool lowerInclusive = true, bool upperInclusive = true)
         {
-            return NumericRangeQuery.NewLongRange(FieldName,
-                lower != null ? DateToLong(lower.Value) : (long?)null,
-                upper != null ? DateToLong(upper.Value) : (long?)null, lowerInclusive, upperInclusive);
+            return new TermRangeQuery(FieldName,
+                lower != null ? lower.Value.ToString("yyyy-MM-ddTHH:mm:ss") : string.Empty,
+                upper != null ? upper.Value.ToString("yyyy-MM-ddTHH:mm:ss") : string.Empty, lowerInclusive, upperInclusive);
         }
     }
 }

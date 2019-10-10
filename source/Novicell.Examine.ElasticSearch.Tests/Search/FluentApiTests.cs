@@ -819,7 +819,8 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                 .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
-                using (var indexer = new TestBaseIndex(config))
+                using (var indexer = new TestBaseIndex(config,
+                    new FieldDefinitionCollection(new FieldDefinition("nodeTypeAlias", "text"))))
 
 
                 {
@@ -1050,7 +1051,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                 }
             }
         }
-
+ /* TODO: As elastic doesn't support sorting on text fields by default figure out if should be added multifields defintion on every text field
         [Test]
         public void Sort_Result_By_Single_Field()
         {
@@ -1097,7 +1098,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                 }
             }
         }
-
+*/
         [Test]
         public void Standard_Results_Sorted_By_Score()
         {

@@ -70,7 +70,9 @@ namespace Novicell.Examine.ElasticSearch
             {
                 _queryContainer = new QueryContainer(new QueryStringQuery()
                 {
-                    Query = _luceneQuery.ToString()
+                    Query = _luceneQuery.ToString().Replace("-","\\-"),
+                    AnalyzeWildcard = true
+                    
                 });
             }
 

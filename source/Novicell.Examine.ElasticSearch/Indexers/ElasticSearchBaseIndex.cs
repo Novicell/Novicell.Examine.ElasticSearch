@@ -70,6 +70,11 @@ namespace Novicell.Examine.ElasticSearch.Indexers
         private PropertiesDescriptor<Document> CreateFieldsMapping(PropertiesDescriptor<Document> descriptor,
             FieldDefinitionCollection fieldDefinitionCollection)
         {
+            descriptor.Keyword(s => s.Name("Id"));
+            descriptor.Keyword(s => s.Name(FormatFieldName(LuceneIndex.ItemIdFieldName)));
+            descriptor.Keyword(s => s.Name(FormatFieldName(LuceneIndex.ItemTypeFieldName)));
+            descriptor.Keyword(s => s.Name(FormatFieldName(LuceneIndex.CategoryFieldName)));
+
             foreach (FieldDefinition field in fieldDefinitionCollection)
             {
                 FromExamineType(descriptor, field);
@@ -160,7 +165,8 @@ namespace Novicell.Examine.ElasticSearch.Indexers
 
             if (analyzer.Contains("RussianAnalyzer"))
                 return "russian";
-
+            if (analyzer.Contains("StopAnalyzer"))
+                return "stop";
             //if the above fails, return standard
             return "simple";
         }

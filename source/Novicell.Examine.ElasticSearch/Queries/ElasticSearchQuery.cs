@@ -76,16 +76,18 @@ namespace Novicell.Examine.ElasticSearch.Queries
         public override IBooleanOperation ManagedQuery(string query, string[] fields = null)
         {
             //TODO: Instead of AllFields here we should have a reference to the FieldDefinitionCollection
-            foreach (var field in fields ?? AllFields)
+            var fielddefintion =
+                _searcher.AllProperties.Values.Where(x => x.Type == "text").Select(x => x.Name.Name);
+            foreach (var field in fields ?? fielddefintion)
             {
                 var fullTextQuery = FullTextType.GenerateQuery(field, query, DefaultAnalyzer);
-                Query.Add(fullTextQuery, Occurrence);
+                Query.Add(fullTextQuery,  Occur.SHOULD);
             }
 
             return new ElasticSearchBooleanOperation(this);
         }
 
-
+       
         public override IBooleanOperation RangeQuery<T>(string[] fields, T? min, T? max, bool minInclusive = true,
             bool maxInclusive = true)
             => RangeQueryInternal(fields, min, max, minInclusive, maxInclusive);
@@ -95,8 +97,11 @@ namespace Novicell.Examine.ElasticSearch.Queries
 
         protected override INestedBooleanOperation ManagedQueryNested(string query, string[] fields = null)
         {
+            
             //TODO: Instead of AllFields here we should have a reference to the FieldDefinitionCollection
-            foreach (var field in fields ?? AllFields)
+            var fielddefintion =
+                _searcher.AllProperties.Values.Where(x => x.Type == "text").Select(x => x.Name.Name);
+            foreach (var field in fields ?? fielddefintion)
             {
                 var fullTextQuery = FullTextType.GenerateQuery(field, query, DefaultAnalyzer);
                 Query.Add(fullTextQuery, Occurrence);
@@ -254,7 +259,7 @@ namespace Novicell.Examine.ElasticSearch.Queries
             this.Query.Add(this._queryParser.GetFieldQueryInternal("__NodeId", id),occurrence);
             return this.CreateOp();
         }
-        internal ElasticSearchBooleanOperation ManagedQueryInternal(string query, string[] fields = null)
+        public ElasticSearchBooleanOperation ManagedQueryInternal(string query, string[] fields = null)
         {
             Query.Add(new LateBoundQuery(() =>
             {
@@ -268,8 +273,9 @@ namespace Novicell.Examine.ElasticSearch.Queries
                 //so it might be the ToString() that is the issue.
                 var outer = new BooleanQuery();
                 var inner = new BooleanQuery();
-                
-                foreach (var field in fields)
+                var fielddefintion =
+                    _searcher.AllProperties.Values.Where(x => x.Type == "text").Select(x => x.Name.Name);
+                foreach (var field in fielddefintion)
                 {
                     var q =   FullTextType.GenerateQuery(field, query, DefaultAnalyzer);
                     if (q != null)

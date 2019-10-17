@@ -758,7 +758,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                 }
             }
         }
-
+        /* TODO: Figure out if we need that test
         [Test]
         public void Search_With_Stop_Words()
         {
@@ -768,7 +768,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                 .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
-                using (var indexer = new TestBaseIndex(config))
+                using (var indexer = new TestBaseIndex(config,null, "StopAnalyzer"))
 
 
                 {
@@ -809,7 +809,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                 }
             }
         }
-
+*/
         [Test]
         public void Search_Raw_Query()
         {

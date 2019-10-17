@@ -52,7 +52,7 @@ namespace Novicell.Examine.ElasticSearch.Queries
 
         public IOrdering All() => _search.All();
 
-        public IBooleanOperation ManagedQuery(string query, string[] fields = null) => _search.ManagedQuery(query, fields);
+        public IBooleanOperation ManagedQuery(string query, string[] fields = null) => _search.ManagedQueryInternal(query, fields);
 
         public IBooleanOperation RangeQuery<T>(string[] fields, T? min, T? max, bool minInclusive = true, bool maxInclusive = true) where T : struct
             => _search.RangeQuery(fields, min, max, minInclusive: minInclusive, maxInclusive: maxInclusive);

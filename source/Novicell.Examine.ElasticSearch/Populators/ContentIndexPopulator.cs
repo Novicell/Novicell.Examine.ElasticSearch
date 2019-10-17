@@ -70,15 +70,13 @@ namespace Novicell.Examine.ElasticSearch.Populators
             {
                 contentParentId = _parentId.Value;
             }
-
             IContent[] content;
 
             do
             {
                 if (!_publishedValuesOnly)
                 {
-                    content = _contentService.GetPagedDescendants(contentParentId, pageIndex, pageSize, out _)
-                        .ToArray();
+                    content = _contentService.GetPagedDescendants(contentParentId, pageIndex, pageSize, out _).ToArray();
                 }
                 else
                 {

@@ -177,7 +177,7 @@ namespace Novicell.Examine.ElasticSearch.Indexers
 
             var indexExists = IndexExists();
             if (indexExists && !forceOverwrite) return;
-            if (TempIndexExists()) return;
+            if (TempIndexExists() && !isReindexing) return;
             CreateNewIndex(indexExists);
         }
 
@@ -186,7 +186,7 @@ namespace Novicell.Examine.ElasticSearch.Indexers
             lock (ExistsLocker)
             {
                 _client.Value.Alias(ba => ba
-                    .Remove(remove => remove.Index("*").Alias(indexAlias+"temp")));
+                    .Remove(remove => remove.Index("*").Alias(tempindexAlias)));
                 indexName = prefix + Name + "_" +
                             DateTime.Now.ToString("dd_MM_yyyy_HH_mm_ss");
                 var index = _client.Value.CreateIndex(indexName, c => c
@@ -197,8 +197,7 @@ namespace Novicell.Examine.ElasticSearch.Indexers
                 );
                 var indexesMappedToAlias = _client.Value.GetAlias(descriptor => descriptor.Name(indexAlias))
                     .Indices;
-            
-                if (indexesMappedToAlias.Count==0)
+                if (!indexExists || indexesMappedToAlias.Count == 0)
                 {
                     var bulkAliasResponse = _client.Value.Alias(ba => ba
                         .Add(add => add.Index(indexName).Alias(indexAlias))
@@ -209,7 +208,7 @@ namespace Novicell.Examine.ElasticSearch.Indexers
                     
                     isReindexing = true;
                     _client.Value.Alias(ba => ba
-                        .Add(add => add.Index(indexName).Alias(indexAlias+"temp"))
+                        .Add(add => add.Index(indexName).Alias(tempindexAlias))
                     );
                 }
              
@@ -354,6 +353,7 @@ namespace Novicell.Examine.ElasticSearch.Indexers
             var indexesMappedToAlias = _client.Value.GetAlias(descriptor => descriptor.Name(tempindexAlias)).Indices;
             if(indexesMappedToAlias.Count>0){
                 indexName = indexesMappedToAlias.Keys.FirstOrDefault().Name;
+                isReindexing = true;
                 return true;
             }
            

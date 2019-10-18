@@ -68,9 +68,7 @@ namespace Novicell.Examine.ElasticSearch
             get
             {
                 if (!IndexExists) return EmptyFields;
-                if (_allFields != null) return _allFields;
-               
-           
+
                 IEnumerable<PropertyName> keys = AllProperties.Keys;
 
                 _allFields = keys.Select(x => x.Name).ToArray();

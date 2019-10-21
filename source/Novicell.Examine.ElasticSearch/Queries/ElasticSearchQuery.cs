@@ -22,6 +22,7 @@ using FullTextType = Novicell.Examine.ElasticSearch.Indexing.FullTextType;
 using IIndexFieldValueType = Novicell.Examine.ElasticSearch.Indexing.IIndexFieldValueType;
 using Int32Type = Novicell.Examine.ElasticSearch.Indexing.Int32Type;
 using Int64Type = Novicell.Examine.ElasticSearch.Indexing.Int64Type;
+using IQuery = Examine.Search.IQuery;
 using KeywordAnalyzer = Lucene.Net.Analysis.KeywordAnalyzer;
 using SingleType = Novicell.Examine.ElasticSearch.Indexing.SingleType;
 using SortField = Lucene.Net.Search.SortField;
@@ -30,7 +31,7 @@ using Version = Lucene.Net.Util.Version;
 
 namespace Novicell.Examine.ElasticSearch.Queries
 {
-    public class ElasticSearchQuery : LuceneSearchQueryBase, IQueryExecutor
+    public class ElasticSearchQuery : LuceneSearchQueryBase, IQueryExecutor, IQuery
     {
         public readonly ElasticSearchSearcher _searcher;
         public string _indexName;
@@ -72,7 +73,8 @@ namespace Novicell.Examine.ElasticSearch.Queries
 
         public override IBooleanOperation Field<T>(string fieldName, T fieldValue)
             => RangeQueryInternal<T>(new[] {fieldName}, fieldValue, fieldValue);
-
+        public IBooleanOperation Field(string fieldName, IExamineValue fieldValue)
+            => FieldInternal(fieldName, fieldValue,Occurrence );
         public override IBooleanOperation ManagedQuery(string query, string[] fields = null)
         {
             //TODO: Instead of AllFields here we should have a reference to the FieldDefinitionCollection
@@ -88,9 +90,8 @@ namespace Novicell.Examine.ElasticSearch.Queries
         }
 
        
-        public override IBooleanOperation RangeQuery<T>(string[] fields, T? min, T? max, bool minInclusive = true,
-            bool maxInclusive = true)
-            => RangeQueryInternal(fields, min, max, minInclusive, maxInclusive);
+        public override IBooleanOperation RangeQuery<T>(string[] fields, T? min1, T? max1, bool minInclusive = true,
+            bool maxInclusive = true) => RangeQueryInternal(fields, min1, max1, minInclusive, maxInclusive);
 
         protected override INestedBooleanOperation FieldNested<T>(string fieldName, T fieldValue)
             => RangeQueryInternal<T>(new[] {fieldName}, fieldValue, fieldValue);
@@ -110,10 +111,10 @@ namespace Novicell.Examine.ElasticSearch.Queries
             return new ElasticSearchBooleanOperation(this);
         }
 
-        protected override INestedBooleanOperation RangeQueryNested<T>(string[] fields, T? min, T? max,
+        protected override INestedBooleanOperation RangeQueryNested<T>(string[] fields, T? min1, T? max1,
             bool minInclusive = true,
             bool maxInclusive = true)
-            => RangeQueryInternal(fields, min, max, minInclusive, maxInclusive);
+            => RangeQueryInternal(fields, min1, max1, minInclusive, maxInclusive);
 
         private IIndexFieldValueType FromElasticType(IProperty property)
         {
@@ -414,12 +415,12 @@ namespace Novicell.Examine.ElasticSearch.Queries
                 case Examineness.Fuzzy:
                     if (useQueryParser)
                     {
-                        queryToAdd = _queryParser.GetFuzzyQueryInternal(fieldName, fieldValue.Value, fieldValue.Level);
+                        queryToAdd = _queryParser.GetFuzzyQueryInternal(fieldName, fieldValue.Value.Replace("-","\\-"), fieldValue.Level);
                     }
                     else
                     {
                         //REFERENCE: http://lucene.apache.org/java/2_4_0/queryparsersyntax.html#Fuzzy%20Searches
-                        var proxQuery = fieldName + ":" + fieldValue.Value + "~" + Convert.ToInt32(fieldValue.Level);
+                        var proxQuery = fieldName + ":" + fieldValue.Value.Replace("-","\\-") + "~" + Convert.ToInt32(fieldValue.Level);
                         queryToAdd = ParseRawQuery(proxQuery);
                     }
                     break;
@@ -427,26 +428,26 @@ namespace Novicell.Examine.ElasticSearch.Queries
                 case Examineness.ComplexWildcard:
                     if (useQueryParser)
                     {
-                        queryToAdd = _queryParser.GetWildcardQueryInternal(fieldName, fieldValue.Value);
+                        queryToAdd = _queryParser.GetWildcardQueryInternal(fieldName, fieldValue.Value.Replace("-","\\-"));
                     }
                     else
                     {
                         //this will already have a * or a . suffixed based on the extension methods
                         //REFERENCE: http://lucene.apache.org/java/2_4_0/queryparsersyntax.html#Wildcard%20Searches
-                        var proxQuery = fieldName + ":" + fieldValue.Value;
+                        var proxQuery = fieldName + ":" + fieldValue.Value.Replace("-","\\-");
                         queryToAdd = ParseRawQuery(proxQuery);
                     }
                     break;
                 case Examineness.Boosted:
                     if (useQueryParser)
                     {
-                        queryToAdd = _queryParser.GetFieldQueryInternal(fieldName, fieldValue.Value);
+                        queryToAdd = _queryParser.GetFieldQueryInternal(fieldName, fieldValue.Value.Replace("-","\\-"));
                         queryToAdd.Boost = fieldValue.Level;
                     }
                     else
                     {
                         //REFERENCE: http://lucene.apache.org/java/2_4_0/queryparsersyntax.html#Boosting%20a%20Term
-                        var proxQuery = fieldName + ":\"" + fieldValue.Value + "\"^" + Convert.ToInt32(fieldValue.Level).ToString();
+                        var proxQuery = fieldName + ":\"" + fieldValue.Value.Replace("-","\\-") + "\"^" + Convert.ToInt32(fieldValue.Level).ToString();
                         queryToAdd = ParseRawQuery(proxQuery);
                     }
                     break;
@@ -464,7 +465,7 @@ namespace Novicell.Examine.ElasticSearch.Queries
                     //}
                     //queryToAdd = new SpanNearQuery(spans.ToArray(), Convert.ToInt32(fieldValue.Level), true);
 
-                    var qry = fieldName + ":\"" + fieldValue.Value + "\"~" + Convert.ToInt32(fieldValue.Level);
+                    var qry = fieldName + ":\"" + fieldValue.Value.Replace("-","\\-") + "\"~" + Convert.ToInt32(fieldValue.Level);
                     if (useQueryParser)
                     {
                         queryToAdd = _queryParser.Parse(qry);
@@ -477,25 +478,25 @@ namespace Novicell.Examine.ElasticSearch.Queries
                 case Examineness.Escaped:
 
                     //This uses the KeywordAnalyzer to parse the 'phrase'
-                    var stdQuery = fieldName + ":" + fieldValue.Value;
+                    var stdQuery = fieldName + ":" + fieldValue.Value.Replace("-","\\-");
 
                     //NOTE: We used to just use this but it's more accurate/exact with the below usage of phrase query
                     //queryToAdd = ParseRawQuery(stdQuery);
 
                     //This uses the PhraseQuery to parse the phrase, the results seem identical
-                    queryToAdd = ParseRawQuery(fieldName, fieldValue.Value);
+                    queryToAdd = ParseRawQuery(fieldName, fieldValue.Value.Replace("-","\\-"));
 
                     break;
                 case Examineness.Explicit:
                 default:
                     if (useQueryParser)
                     {
-                        queryToAdd = _queryParser.GetFieldQueryInternal(fieldName, fieldValue.Value);
+                        queryToAdd = _queryParser.GetFieldQueryInternal(fieldName, fieldValue.Value.Replace("-","\\-"));
                     }
                     else
                     {
                         //standard query 
-                        var proxQuery = fieldName + ":" + fieldValue.Value;
+                        var proxQuery = fieldName + ":" + fieldValue.Value.Replace("-","\\-");
                         queryToAdd = ParseRawQuery(proxQuery);
                     }
                     break;

@@ -639,7 +639,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
 
 
                     indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
-                    var searcher = indexer.GetSearcher();
+                    var searcher = (ElasticSearchSearcher)indexer.GetSearcher();
 
                     //paths contain punctuation, we'll escape it and ensure an exact match
                     var criteria = searcher.CreateQuery("content");

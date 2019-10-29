@@ -45,14 +45,12 @@ namespace Novicell.Examine.ElasticSearch.Populators
         /// <param name="contentService"></param>
         /// <param name="sqlContext"></param>
         /// <param name="contentValueSetBuilder"></param>
-        public ContentIndexPopulator(bool publishedValuesOnly, int? parentId, IContentService contentService,
-            ISqlContext sqlContext, IValueSetBuilder<IContent> contentValueSetBuilder)
+        public ContentIndexPopulator(bool publishedValuesOnly, int? parentId, IContentService contentService, ISqlContext sqlContext, IValueSetBuilder<IContent> contentValueSetBuilder)
         {
             if (sqlContext == null) throw new ArgumentNullException(nameof(sqlContext));
             _contentService = contentService ?? throw new ArgumentNullException(nameof(contentService));
-            _contentValueSetBuilder =
-                contentValueSetBuilder ?? throw new ArgumentNullException(nameof(contentValueSetBuilder));
-            if (_publishedQuery != null)
+            _contentValueSetBuilder = contentValueSetBuilder ?? throw new ArgumentNullException(nameof(contentValueSetBuilder));
+            if (_publishedQuery == null)
                 _publishedQuery = sqlContext.Query<IContent>().Where(x => x.Published);
             _publishedValuesOnly = publishedValuesOnly;
             _parentId = parentId;

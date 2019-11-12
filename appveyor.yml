@@ -10,7 +10,7 @@ configuration: Release
 
 branches:
   only:
-    - develop
+    - development
     - master
 
 environment:

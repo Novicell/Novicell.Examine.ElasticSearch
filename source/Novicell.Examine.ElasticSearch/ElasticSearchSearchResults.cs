@@ -27,7 +27,7 @@ namespace Novicell.Examine.ElasticSearch
 
 
         public ElasticSearchSearchResults(ElasticClient client, BooleanQuery luceneQuery, string indexName, List<SortField> sortFields,
-            int? maxResults = null)
+            int? maxResults = null, int? skip = null)
         {
             _luceneQuery = luceneQuery ?? throw new ArgumentNullException(nameof(luceneQuery));
             _maxResults = maxResults;
@@ -35,20 +35,20 @@ namespace Novicell.Examine.ElasticSearch
             _indexName = indexName;
             _sortDescriptor = GetSortDescriptor(sortFields);
 
-            results = DoSearch(null).ConvertResult();
+            results = DoSearch(skip).ConvertResult();
         }
 
-        public ElasticSearchSearchResults(ElasticClient client, QueryContainer queryContainer, string indexName, List<SortField> sortFields, int? maxResults = null)
+        public ElasticSearchSearchResults(ElasticClient client, QueryContainer queryContainer, string indexName, List<SortField> sortFields, int? maxResults = null, int? skip = null)
         {
             _queryContainer = queryContainer ?? throw new ArgumentNullException(nameof(queryContainer));
             _maxResults = maxResults;
             _client = client;
             _indexName = indexName;
             _sortDescriptor = GetSortDescriptor(sortFields);
-
-            results = DoSearch(null).ConvertResult();
+            lastskip = skip ?? 0;
+            results = DoSearch(skip).ConvertResult();
         }
-
+     
         public IEnumerator<ISearchResult> GetEnumerator()
         {
        
@@ -66,6 +66,7 @@ namespace Novicell.Examine.ElasticSearch
         {
             lastskip = skip ?? 0;
             ISearchResponse<Document> searchResult;
+          
             if (_luceneQuery != null)
             {
                 _queryContainer = new QueryContainer(new QueryStringQuery()
@@ -75,14 +76,12 @@ namespace Novicell.Examine.ElasticSearch
                     
                 });
             }
-
-           
             SearchDescriptor<Document> searchDescriptor = new SearchDescriptor<Document>();
-           
             searchDescriptor.Index(_indexName)
                 .Skip(skip)
                 .Size(_maxResults)
                 .Query(q => _queryContainer)
+                
                 .Sort(s => _sortDescriptor);
 
             var json = _client.RequestResponseSerializer.SerializeToString(searchDescriptor);

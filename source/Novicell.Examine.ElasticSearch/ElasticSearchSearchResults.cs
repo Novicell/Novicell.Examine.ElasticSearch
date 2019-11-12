@@ -94,7 +94,7 @@ namespace Novicell.Examine.ElasticSearch
 
             return searchResult;
         }
-
+        [Obsolete("Method is redundant as now ElasticSearchSearchResults could get skip as additional paramater")]
         public IEnumerable<ISearchResult> Skip(int skip)
         {
             if (lastskip == skip)

@@ -45,6 +45,7 @@ namespace Novicell.Examine.ElasticSearch
             _client = client;
             _indexName = indexName;
             _sortDescriptor = GetSortDescriptor(sortFields);
+            
             lastskip = skip ?? 0;
             results = DoSearch(skip).ConvertResult();
         }

@@ -267,7 +267,7 @@ namespace Novicell.Examine.ElasticSearch.Indexers
 
         protected override void PerformIndexItems(IEnumerable<ValueSet> op, Action<IndexOperationEventArgs> onComplete)
         {
-            if (!IndexExists() && !TempIndexExists())
+            if (!IndexExists() && !TempIndexExists() && _isUmbraco)
             {
                 return;
             }

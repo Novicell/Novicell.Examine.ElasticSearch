@@ -7,6 +7,7 @@ using Examine.LuceneEngine.Providers;
 using Examine.LuceneEngine.Search;
 using Examine.Search;
 using Nest;
+using Novicell.Examine.ElasticSearch.Model;
 using Novicell.Examine.ElasticSearch.Queries;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
@@ -1426,7 +1427,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     //Act
                     var results1 = filter1.Execute();
                     var results2 = filter2.Execute();
-
+              
                     //Assert
                     Assert.AreEqual(3, results1.TotalItemCount);
                     Assert.AreEqual(1, results2.TotalItemCount);
@@ -1486,7 +1487,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                 }
             }
         }
-
+        
         /// <summary>
         /// test range query with a Double structure
         /// </summary>

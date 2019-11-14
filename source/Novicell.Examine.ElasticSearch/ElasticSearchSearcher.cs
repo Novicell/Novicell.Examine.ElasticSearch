@@ -91,7 +91,8 @@ namespace Novicell.Examine.ElasticSearch
                
             } 
         }
-        public override ISearchResults Search(string searchText, int maxResults = 500, int page = 1)
+        
+        public ISearchResults Search(string searchText, int maxResults = 500, int page = 1)
         {
             var query = new MultiMatchQuery
             {
@@ -104,6 +105,19 @@ namespace Novicell.Examine.ElasticSearch
             };
          
             return new ElasticSearchSearchResults(_client.Value, query, indexAlias, _sortFields, maxResults,maxResults *(page-1));
+        }
+        public override ISearchResults Search(string searchText, int maxResults = 500)
+        {
+            var query = new MultiMatchQuery
+            {
+                
+                Query = searchText,
+                Analyzer = "standard",
+                Slop = 2,
+                Type=      TextQueryType.Phrase
+                
+            };
+            return new ElasticSearchSearchResults(_client.Value, query, indexAlias, _sortFields, maxResults);
         }
         public ISearchResults Search(QueryContainer queryContainer, int maxResults = 500)
         {

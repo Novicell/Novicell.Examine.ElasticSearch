@@ -45,7 +45,7 @@ namespace Novicell.Examine.ElasticSearch.Indexers
             FieldDefinitionCollection fieldDefinitions = null,
             string analyzer = null,
             IValueSetValidator validator = null)
-            : base(name, connectionConfiguration, fieldDefinitions, analyzer, validator)
+            : base(name, connectionConfiguration, fieldDefinitions, analyzer, validator,true)
         {
             _logger = profilingLogger;
         }

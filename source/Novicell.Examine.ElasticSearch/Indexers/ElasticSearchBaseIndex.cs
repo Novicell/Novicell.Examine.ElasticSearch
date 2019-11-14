@@ -17,7 +17,7 @@ namespace Novicell.Examine.ElasticSearch.Indexers
     {
         public readonly ElasticSearchConfig _connectionConfiguration;
         private bool isReindexing = false;
-
+        private bool _isUmbraco = false;
         public readonly Lazy<ElasticClient> _client;
         private ElasticClient _indexer;
         private static readonly object ExistsLocker = new object();
@@ -44,12 +44,12 @@ namespace Novicell.Examine.ElasticSearch.Indexers
             ElasticSearchConfig connectionConfiguration,
             FieldDefinitionCollection fieldDefinitions = null,
             string analyzer = null,
-            IValueSetValidator validator = null)
+            IValueSetValidator validator = null, bool isUmbraco = false)
             : base(name.ToLowerInvariant(), //TODO: Need to 'clean' the name according to Azure Search rules
                 fieldDefinitions ?? new FieldDefinitionCollection(), validator)
         {
             _connectionConfiguration = connectionConfiguration;
-      
+            _isUmbraco = isUmbraco;
             Analyzer = analyzer;
             ElasticURL = ConfigurationManager.AppSettings[$"examine:ElasticSearch[{name}].Url"];
             _searcher = new Lazy<ElasticSearchSearcher>(CreateSearcher);
@@ -267,9 +267,18 @@ namespace Novicell.Examine.ElasticSearch.Indexers
 
         protected override void PerformIndexItems(IEnumerable<ValueSet> op, Action<IndexOperationEventArgs> onComplete)
         {
-            if (!IndexExists() && !TempIndexExists()) return;
+            if (!IndexExists() && !TempIndexExists())
+            {
+                return;
+            }
+            if(!_isUmbraco)
+            {
+                EnsureIndex(false);
+            }
+
             var indexesMappedToAlias = _client.Value.GetAlias(descriptor => descriptor.Name(indexAlias))
                 .Indices.Select(x => x.Key).ToList();
+           
           
             var indexTarget = isReindexing ? tempindexAlias : indexAlias;
         

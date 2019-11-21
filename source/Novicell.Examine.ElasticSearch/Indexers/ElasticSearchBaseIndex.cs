@@ -7,6 +7,7 @@ using Examine;
 using Examine.LuceneEngine.Providers;
 using Examine.Providers;
 using Nest;
+using Novicell.Examine.ElasticSearch.EventArgs;
 using Novicell.Examine.ElasticSearch.Model;
 using Umbraco.Core;
 using DocumentWritingEventArgs = Novicell.Examine.ElasticSearch.EventArgs.DocumentWritingEventArgs;
@@ -22,7 +23,7 @@ namespace Novicell.Examine.ElasticSearch.Indexers
         private ElasticClient _indexer;
         private static readonly object ExistsLocker = new object();
         public readonly Lazy<ElasticSearchSearcher> _searcher;
-      
+        public event EventHandler<MappingOperationEventArgs> Mapping;
 
         /// <summary>
         /// Occurs when [document writing].
@@ -78,8 +79,9 @@ namespace Novicell.Examine.ElasticSearch.Indexers
             {
                 FromExamineType(descriptor, field);
             }
-
-
+            var docArgs = new MappingOperationEventArgs(descriptor);
+            onMapping(docArgs);
+            
             return descriptor;
         }
 
@@ -114,7 +116,10 @@ namespace Novicell.Examine.ElasticSearch.Indexers
                     break;
             }
         }
-
+        protected virtual void onMapping(MappingOperationEventArgs mappingArgs)
+        {
+            Mapping?.Invoke(this, mappingArgs);
+        }
         protected virtual void OnDocumentWriting(DocumentWritingEventArgs docArgs)
         {
             DocumentWriting?.Invoke(this, docArgs);

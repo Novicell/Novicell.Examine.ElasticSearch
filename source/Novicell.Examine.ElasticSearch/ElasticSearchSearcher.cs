@@ -123,6 +123,16 @@ namespace Novicell.Examine.ElasticSearch
         {
             return new ElasticSearchSearchResults(_client.Value, queryContainer, indexAlias, _sortFields, maxResults);
         }
+        public ISearchResults Search(ISearchRequest searchRequest)
+        {        
+            return new ElasticSearchSearchResults(_client.Value, searchRequest, indexAlias, _sortFields);
+            
+        }
+        public ISearchResults Search(Func<SearchDescriptor<Document>, ISearchRequest> searchSelector)
+        {        
+            return new ElasticSearchSearchResults(_client.Value, searchSelector, indexAlias, _sortFields);
+            
+        }
         public override IQuery CreateQuery(string category = null,
             BooleanOperation defaultOperation = BooleanOperation.And)
         {  

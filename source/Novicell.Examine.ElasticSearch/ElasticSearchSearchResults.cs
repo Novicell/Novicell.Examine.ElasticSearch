@@ -19,6 +19,8 @@ namespace Novicell.Examine.ElasticSearch
         private readonly ElasticClient _client;
         private readonly BooleanQuery _luceneQuery;
         private QueryContainer _queryContainer;
+        private ISearchRequest _searchRequest;
+        private Func<SearchDescriptor<Document>, ISearchRequest> _searchSelector;
         private SortDescriptor<Document> _sortDescriptor;
         private readonly string _indexName;
         private IEnumerable<ISearchResult> results;
@@ -37,7 +39,28 @@ namespace Novicell.Examine.ElasticSearch
 
             results = DoSearch(skip).ConvertResult();
         }
-
+        public ElasticSearchSearchResults(ElasticClient client, ISearchRequest searchRequest, string indexName, List<SortField> sortFields, int? maxResults = null, int? skip = null)
+        {
+            _searchRequest = searchRequest ?? throw new ArgumentNullException(nameof(searchRequest));
+            _maxResults = maxResults;
+            _client = client;
+            _indexName = indexName;
+            _sortDescriptor = GetSortDescriptor(sortFields);
+            
+            lastskip = skip ?? 0;
+            results = DoSearch(skip).ConvertResult();
+        }
+        public ElasticSearchSearchResults(ElasticClient client, Func<SearchDescriptor<Document>, ISearchRequest> searchSelector, string indexName, List<SortField> sortFields, int? maxResults = null, int? skip = null)
+        {
+            _searchSelector = searchSelector ?? throw new ArgumentNullException(nameof(searchSelector));
+            _maxResults = maxResults;
+            _client = client;
+            _indexName = indexName;
+            _sortDescriptor = GetSortDescriptor(sortFields);
+            
+            lastskip = skip ?? 0;
+            results = DoSearch(skip).ConvertResult();
+        }
         public ElasticSearchSearchResults(ElasticClient client, QueryContainer queryContainer, string indexName, List<SortField> sortFields, int? maxResults = null, int? skip = null)
         {
             _queryContainer = queryContainer ?? throw new ArgumentNullException(nameof(queryContainer));
@@ -77,6 +100,7 @@ namespace Novicell.Examine.ElasticSearch
                     
                 });
             }
+            if(_queryContainer != null){
             SearchDescriptor<Document> searchDescriptor = new SearchDescriptor<Document>();
             searchDescriptor.Index(_indexName)
                 .Skip(skip)
@@ -87,7 +111,14 @@ namespace Novicell.Examine.ElasticSearch
 
             var json = _client.RequestResponseSerializer.SerializeToString(searchDescriptor);
             searchResult = _client.Search<Document>(searchDescriptor);
-
+            }else if (_searchRequest != null)
+            {
+                searchResult = _client.Search<Document>(_searchRequest);
+            }
+            else
+            {
+                searchResult = _client.Search<Document>(_searchSelector);
+            }
             //TODO: Get filtering/range working
             //TODO: We need to escape the resulting query
 

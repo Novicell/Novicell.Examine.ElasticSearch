@@ -276,10 +276,9 @@ namespace Novicell.Examine.ElasticSearch.Indexers
             {
                 return;
             }
-            if(!_isUmbraco)
-            {
+ 
                 EnsureIndex(false);
-            }
+       
 
             var indexesMappedToAlias = _client.Value.GetAlias(descriptor => descriptor.Name(indexAlias))
                 .Indices.Select(x => x.Key).ToList();

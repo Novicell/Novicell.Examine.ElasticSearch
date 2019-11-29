@@ -17,6 +17,7 @@ namespace Novicell.Examine.ElasticSearch.Indexers
     public class ElasticSearchBaseIndex : BaseIndexProvider, IDisposable
     {
         public readonly ElasticSearchConfig _connectionConfiguration;
+        private bool? _exists;
         private bool isReindexing = false;
         private bool _isUmbraco = false;
         public readonly Lazy<ElasticClient> _client;
@@ -177,6 +178,7 @@ namespace Novicell.Examine.ElasticSearch.Indexers
 
         public void EnsureIndex(bool forceOverwrite)
         {
+            if (!forceOverwrite && _exists.HasValue && _exists.Value) return;
 
             var indexExists = IndexExists();
             if (indexExists && !forceOverwrite) return;
@@ -214,7 +216,8 @@ namespace Novicell.Examine.ElasticSearch.Indexers
                         .Add(add => add.Index(indexName).Alias(tempindexAlias))
                     );
                 }
-             
+                
+                _exists = true;
             }
         }
 
@@ -272,17 +275,10 @@ namespace Novicell.Examine.ElasticSearch.Indexers
 
         protected override void PerformIndexItems(IEnumerable<ValueSet> op, Action<IndexOperationEventArgs> onComplete)
         {
-            if (!IndexExists() && !TempIndexExists() && _isUmbraco)
-            {
-                return;
-            }
- 
-                EnsureIndex(false);
-       
-
+            
             var indexesMappedToAlias = _client.Value.GetAlias(descriptor => descriptor.Name(indexAlias))
                 .Indices.Select(x => x.Key).ToList();
-           
+            EnsureIndex(false);
           
             var indexTarget = isReindexing ? tempindexAlias : indexAlias;
         

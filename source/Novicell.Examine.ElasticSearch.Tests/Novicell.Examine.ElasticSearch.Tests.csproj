@@ -1,114 +1,135 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <Import Project="..\packages\NUnit.3.12.0\build\NUnit.props" Condition="Exists('..\packages\NUnit.3.12.0\build\NUnit.props')" />
-    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <Import Project="..\packages\NUnit.3.12.0\build\NUnit.props" Condition="Exists('..\packages\NUnit.3.12.0\build\NUnit.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E5A3666B-3361-4062-B1D5-D896A77B5C85}</ProjectGuid>
+    <ProjectTypeGuids>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Novicell.Examine.ElasticSearch.Tests</RootNamespace>
+    <AssemblyName>Novicell.Examine.ElasticSearch.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Elasticsearch.Net, Version=7.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d">
+      <HintPath>..\packages\Elasticsearch.Net.7.4.1\lib\net461\Elasticsearch.Net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ElasticsearchInside, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\elasticsearch-inside.6.6.1\lib\net461\ElasticsearchInside.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Examine, Version=1.0.1.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\Examine.1.0.1\lib\net452\Examine.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Lucene.Net, Version=3.0.3.0, Culture=neutral, PublicKeyToken=85089178b9ac3181">
+      <HintPath>..\packages\Lucene.Net.3.0.3\lib\NET40\Lucene.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="mscorlib" />
+    <Reference Include="Nest, Version=7.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d">
+      <HintPath>..\packages\NEST.7.4.1\lib\net461\Nest.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="nunit.framework, Version=3.12.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb">
+      <HintPath>..\packages\NUnit.3.12.0\lib\net45\nunit.framework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51">
+      <HintPath>..\packages\System.Buffers.4.5.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.7.0\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51">
+      <HintPath>..\packages\System.Memory.4.5.3\lib\netstandard2.0\System.Memory.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.5.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <HintPath>..\packages\System.Numerics.Vectors.4.6.0-preview5.19224.8\lib\net46\System.Numerics.Vectors.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.7.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="Umbraco.Core, Version=8.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\UmbracoCms.Core.8.1.2\lib\net472\Umbraco.Core.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DataServices\TestContentService.cs" />
+    <Compile Include="IndexInitializer.cs" />
+    <Compile Include="Index\ElasticIndexTests.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Search\FluentApiTests.cs" />
+    <Compile Include="SimpleDataProviderTest.cs" />
+    <Compile Include="TestHelper.cs" />
+    <Compile Include="TestBaseIndex.cs" />
+    <Compile Include="UmbracoExamine\IndexTypes.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App.config" />
+    <Content Include="App_Data\media.xml" />
+    <Content Include="App_Data\PDFStandards.PDF" />
+    <Content Include="App_Data\StringTheory.pdf" />
+    <Content Include="App_Data\TemplateIndex\segments.gen" />
+    <Content Include="App_Data\TemplateIndex\segments_2" />
+    <Content Include="App_Data\TemplateIndex\_0.cfs" />
+    <Content Include="App_Data\umbraco.config" />
+    <Content Include="App_Data\UmbracoContour.pdf" />
+    <Content Include="App_Data\VS2010CSharp.pdf" />
+    <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Novicell.Examine.ElasticSearch\Novicell.Examine.ElasticSearch.csproj">
+      <Project>{dcfcb1d2-9614-4b87-ab44-4a77b7e0ac12}</Project>
+      <Name>Novicell.Examine.ElasticSearch</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
-        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-        <ProjectGuid>{E5A3666B-3361-4062-B1D5-D896A77B5C85}</ProjectGuid>
-        <ProjectTypeGuids>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-        <OutputType>Library</OutputType>
-        <AppDesignerFolder>Properties</AppDesignerFolder>
-        <RootNamespace>Novicell.Examine.ElasticSearch.Tests</RootNamespace>
-        <AssemblyName>Novicell.Examine.ElasticSearch.Tests</AssemblyName>
-        <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-        <FileAlignment>512</FileAlignment>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105.The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-        <PlatformTarget>AnyCPU</PlatformTarget>
-        <DebugSymbols>true</DebugSymbols>
-        <DebugType>full</DebugType>
-        <Optimize>false</Optimize>
-        <OutputPath>bin\Debug\</OutputPath>
-        <DefineConstants>DEBUG;TRACE</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-        <PlatformTarget>AnyCPU</PlatformTarget>
-        <DebugType>pdbonly</DebugType>
-        <Optimize>true</Optimize>
-        <OutputPath>bin\Release\</OutputPath>
-        <DefineConstants>TRACE</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-    </PropertyGroup>
-    <ItemGroup>
-        <Reference Include="Elasticsearch.Net, Version=6.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d">
-          <HintPath>..\packages\Elasticsearch.Net.6.7.0\lib\net461\Elasticsearch.Net.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
-        <Reference Include="ElasticsearchInside, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\packages\elasticsearch-inside.6.6.1\lib\net461\ElasticsearchInside.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
-        <Reference Include="Examine, Version=1.0.1.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\packages\Examine.1.0.1\lib\net452\Examine.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
-        <Reference Include="Lucene.Net, Version=3.0.3.0, Culture=neutral, PublicKeyToken=85089178b9ac3181">
-          <HintPath>..\packages\Lucene.Net.3.0.3\lib\NET40\Lucene.Net.dll</HintPath>
-        </Reference>
-        <Reference Include="Nest, Version=6.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d">
-          <HintPath>..\packages\NEST.6.7.0\lib\net461\Nest.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
-        <Reference Include="nunit.framework, Version=3.12.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb">
-          <HintPath>..\packages\NUnit.3.12.0\lib\net45\nunit.framework.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
-        <Reference Include="System" />
-        <Reference Include="System.Core" />
-        <Reference Include="System.Data" />
-        <Reference Include="System.Xml" />
-        <Reference Include="System.Xml.Linq" />
-        <Reference Include="Umbraco.Core, Version=8.0.0.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\packages\UmbracoCms.Core.8.1.2\lib\net472\Umbraco.Core.dll</HintPath>
-        </Reference>
-    </ItemGroup>
-    <ItemGroup>
-        <Compile Include="DataServices\TestContentService.cs" />
-        <Compile Include="IndexInitializer.cs" />
-        <Compile Include="Index\ElasticIndexTests.cs" />
-        <Compile Include="Properties\AssemblyInfo.cs" />
-        <Compile Include="Search\FluentApiTests.cs" />
-        <Compile Include="SimpleDataProviderTest.cs" />
-        <Compile Include="TestHelper.cs" />
-        <Compile Include="TestBaseIndex.cs" />
-        <Compile Include="UmbracoExamine\IndexTypes.cs" />
-    </ItemGroup>
-    <ItemGroup>
-      <Content Include="App.config" />
-      <Content Include="App_Data\media.xml" />
-      <Content Include="App_Data\PDFStandards.PDF" />
-      <Content Include="App_Data\StringTheory.pdf" />
-      <Content Include="App_Data\TemplateIndex\segments.gen" />
-      <Content Include="App_Data\TemplateIndex\segments_2" />
-      <Content Include="App_Data\TemplateIndex\_0.cfs" />
-      <Content Include="App_Data\umbraco.config" />
-      <Content Include="App_Data\UmbracoContour.pdf" />
-      <Content Include="App_Data\VS2010CSharp.pdf" />
-      <Content Include="packages.config" />
-    </ItemGroup>
-    <ItemGroup>
-      <ProjectReference Include="..\Novicell.Examine.ElasticSearch\Novicell.Examine.ElasticSearch.csproj">
-        <Project>{dcfcb1d2-9614-4b87-ab44-4a77b7e0ac12}</Project>
-        <Name>Novicell.Examine.ElasticSearch</Name>
-      </ProjectReference>
-    </ItemGroup>
-    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-    <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-      <PropertyGroup>
-        <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105.The missing file is {0}.</ErrorText>
-      </PropertyGroup>
-      <Error Condition="!Exists('..\packages\NUnit.3.12.0\build\NUnit.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit.3.12.0\build\NUnit.props'))" />
-    </Target>
-    <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+    <Error Condition="!Exists('..\packages\NUnit.3.12.0\build\NUnit.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit.3.12.0\build\NUnit.props'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
          Other similar extension points exist, see Microsoft.Common.targets.
     <Target Name="BeforeBuild">
     </Target>
     <Target Name="AfterBuild">
     </Target>
     -->
-
 </Project>

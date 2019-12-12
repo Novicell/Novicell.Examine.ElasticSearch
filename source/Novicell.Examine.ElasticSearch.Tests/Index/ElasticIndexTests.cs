@@ -40,7 +40,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
                 {
                     indexer.CreateIndex();
                     indexer.IndexItems(indexer.AllData());
-                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
+                    indexer._client.Value.Indices.Refresh(Indices.Index(indexer.indexAlias));
                     Assert.AreEqual(100, indexer.DocumentCount);
                 }
             }
@@ -59,7 +59,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
                 using (var indexer = new TestBaseIndex(config,  new FieldDefinitionCollection(new FieldDefinition("item2", "number"))))
                 {
                     indexer.EnsureIndex(true);
-                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
+                    indexer._client.Value.Indices.Refresh(Indices.Index(indexer.indexAlias));
                     Assert.IsTrue(indexer.IndexExists());
                 }
             
@@ -85,7 +85,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
                             {"item2", new List<object>(new[] {"value2"})}
                         }));
 
-                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
+                    indexer._client.Value.Indices.Refresh(Indices.Index(indexer.indexAlias));
                     Assert.AreEqual(1, indexer.DocumentCount);
                 }
             }
@@ -112,7 +112,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
                     indexer.IndexItem(value);
                     indexer.IndexItem(value);
 
-                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
+                    indexer._client.Value.Indices.Refresh(Indices.Index(indexer.indexAlias));
                     Assert.AreEqual(1, indexer.DocumentCount);
                 }
             }
@@ -138,7 +138,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
                                 {"item2", new List<object>(new[] {"value2"})}
                             }));
                     }
-                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
+                    indexer._client.Value.Indices.Refresh(Indices.Index(indexer.indexAlias));
                     Assert.AreEqual(10, indexer.DocumentCount);
                 }
             }
@@ -167,7 +167,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
 
                     indexer.DeleteFromIndex("9");
 
-                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
+                    indexer._client.Value.Indices.Refresh(Indices.Index(indexer.indexAlias));
                     Assert.AreEqual(9, indexer.DocumentCount);
                 }
             }

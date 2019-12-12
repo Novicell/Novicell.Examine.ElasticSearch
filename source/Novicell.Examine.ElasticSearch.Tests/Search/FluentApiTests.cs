@@ -57,7 +57,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     });
 
 
-                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
+                    indexer._client.Value.Indices.Refresh(Indices.Index(indexer.indexAlias));
                     var searcher = indexer.GetSearcher();
 
                     var numberSortedCriteria = searcher.CreateQuery()
@@ -115,7 +115,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                         new {item1 = "value3", item2 = "Scotch scotch scotch, i love scotch"}));
                     indexer1.IndexItem(ValueSet.FromObject("6", "content",
                         new {item1 = "value4", item2 = "60% of the time, it works everytime"}));
-                    indexer1._client.Value.Refresh(Indices.Index(indexer1.indexAlias));
+                    indexer1._client.Value.Indices.Refresh(Indices.Index(indexer1.indexAlias));
                     var searcher = indexer1.GetSearcher();
 
                     var result = searcher.Search("darkness");
@@ -182,7 +182,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                         new {item1 = "value3", item2 = "Scotch scotch scotch, i love scotch"}));
                     indexer1.IndexItem(ValueSet.FromObject("6", "content",
                         new {item1 = "value4", item2 = "60% of the time, it works everytime"}));
-                    indexer1._client.Value.Refresh(Indices.Index(indexer1.indexAlias));
+                    indexer1._client.Value.Indices.Refresh(Indices.Index(indexer1.indexAlias));
                     var searcher = indexer1.GetSearcher();
 
                     var qry = searcher.CreateQuery().ManagedQuery("darkness").And().Field("item1", "value1");
@@ -252,7 +252,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                             })
                     });
 
-                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
+                    indexer._client.Value.Indices.Refresh(Indices.Index(indexer.indexAlias));
                     var searcher = indexer.GetSearcher();
 
                     var numberSortedCriteria = searcher.CreateQuery()
@@ -304,7 +304,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                             })
                     });
 
-                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
+                    indexer._client.Value.Indices.Refresh(Indices.Index(indexer.indexAlias));
                     var searcher = indexer.GetSearcher();
 
                     var numberSortedCriteria = searcher.CreateQuery()
@@ -363,7 +363,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                             })
                     });
 
-                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
+                    indexer._client.Value.Indices.Refresh(Indices.Index(indexer.indexAlias));
                     var searcher = indexer.GetSearcher();
 
                     //paths contain punctuation, we'll escape it and ensure an exact match
@@ -591,7 +591,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                             })
                     });
 
-                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
+                    indexer._client.Value.Indices.Refresh(Indices.Index(indexer.indexAlias));
                     var searcher = indexer.GetSearcher();
 
                     //paths contain punctuation, we'll escape it and ensure an exact match
@@ -639,7 +639,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     });
 
 
-                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
+                    indexer._client.Value.Indices.Refresh(Indices.Index(indexer.indexAlias));
                     var searcher = (ElasticSearchSearcher)indexer.GetSearcher();
 
                     //paths contain punctuation, we'll escape it and ensure an exact match
@@ -694,7 +694,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     });
 
 
-                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
+                    indexer._client.Value.Indices.Refresh(Indices.Index(indexer.indexAlias));
                     var searcher = indexer.GetSearcher();
 
                     var criteria = searcher.CreateQuery("content");
@@ -746,7 +746,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     });
 
 
-                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
+                    indexer._client.Value.Indices.Refresh(Indices.Index(indexer.indexAlias));
                     var searcher = indexer.GetSearcher();
 
                     var criteria = searcher.CreateQuery("content");
@@ -797,7 +797,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                             })
                     });
 
-                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
+                    indexer._client.Value.Indices.Refresh(Indices.Index(indexer.indexAlias));
                     var searcher = indexer.GetSearcher();
 
                     var criteria = searcher.CreateQuery();
@@ -852,7 +852,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                             })
                     });
 
-                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
+                    indexer._client.Value.Indices.Refresh(Indices.Index(indexer.indexAlias));
                     var searcher = indexer.GetSearcher();
 
                     var criteria = searcher.CreateQuery("content");
@@ -892,7 +892,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                         ValueSet.FromObject(3.ToString(), "media",
                             new {nodeName = "my name 3", bodyText = "lorem ipsum", nodeTypeAlias = "file"})
                     });
-                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
+                    indexer._client.Value.Indices.Refresh(Indices.Index(indexer.indexAlias));
                     var searcher = indexer.GetSearcher();
 
                     var criteria = searcher.CreateQuery("media");
@@ -931,7 +931,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                         ValueSet.FromObject(4.ToString(), "other",
                             new {nodeName = "my name 4", bodyText = "lorem ipsum", nodeTypeAlias = "file"})
                     });
-                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
+                    indexer._client.Value.Indices.Refresh(Indices.Index(indexer.indexAlias));
                     var searcher = indexer.GetSearcher();
 
                     var criteria = searcher.CreateQuery(defaultOperation: BooleanOperation.Or);
@@ -975,7 +975,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                         ValueSet.FromObject(4.ToString(), "content",
                             new {nodeName = "my name 4", bodyText = "lorem ipsum", parentID = "2222"})
                     });
-                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
+                    indexer._client.Value.Indices.Refresh(Indices.Index(indexer.indexAlias));
                     var searcher = indexer.GetSearcher();
 
                     var sc = searcher.CreateQuery("content");
@@ -1032,7 +1032,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                         ValueSet.FromObject(4.ToString(), "content",
                             new {nodeName = "my name 4", updateDate = now, parentID = "2222"})
                     });
-                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
+                    indexer._client.Value.Indices.Refresh(Indices.Index(indexer.indexAlias));
                     var searcher = indexer.GetSearcher();
 
                     var sc = searcher.CreateQuery("content");
@@ -1081,7 +1081,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                             new {nodeName = "my name 4", writerName = "writer", parentID = "2222"})
                     });
 
-                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
+                    indexer._client.Value.Indices.Refresh(Indices.Index(indexer.indexAlias));
                     var searcher = indexer.GetSearcher();
 
                     var sc = searcher.CreateQuery("content");
@@ -1127,7 +1127,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                         ValueSet.FromObject(4.ToString(), "content",
                             new {nodeName = "hello", headerText = "world", bodyText = "blah"})
                     });
-                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
+                    indexer._client.Value.Indices.Refresh(Indices.Index(indexer.indexAlias));
                     var searcher = indexer.GetSearcher();
 
                     var sc = searcher.CreateQuery("content", BooleanOperation.Or);
@@ -1178,7 +1178,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                         ValueSet.FromObject(4.ToString(), "content",
                             new {nodeName = "hello", headerText = "world", writerName = "blah"})
                     });
-                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
+                    indexer._client.Value.Indices.Refresh(Indices.Index(indexer.indexAlias));
                     var searcher = indexer.GetSearcher();
 
                     //Arrange
@@ -1218,7 +1218,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                         ValueSet.FromObject(4.ToString(), "content",
                             new {nodeName = "codegarden 090", headerText = "world", writerName = "blah"})
                     });
-                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
+                    indexer._client.Value.Indices.Refresh(Indices.Index(indexer.indexAlias));
                     var searcher = indexer.GetSearcher();
 
                     //Arrange
@@ -1259,7 +1259,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                         ValueSet.FromObject(4.ToString(), "content",
                             new {nodeName = "Always consider this", nodeTypeAlias = "CWS_World"})
                     });
-                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
+                    indexer._client.Value.Indices.Refresh(Indices.Index(indexer.indexAlias));
                     var searcher = indexer.GetSearcher();
 
                     //Arrange
@@ -1313,7 +1313,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                                 metaKeywords = "Warren is a very talented individual and quite creative"
                             })
                     });
-                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
+                    indexer._client.Value.Indices.Refresh(Indices.Index(indexer.indexAlias));
                     var searcher = indexer.GetSearcher();
 
                     //Arrange
@@ -1362,7 +1362,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                         ValueSet.FromObject(4.ToString(), "content",
                             new {nodeName = "Always consider this", SomeFloat = 25})
                     });
-                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
+                    indexer._client.Value.Indices.Refresh(Indices.Index(indexer.indexAlias));
                     var searcher = indexer.GetSearcher();
 
                     //all numbers should be between 0 and 100 based on the data source
@@ -1414,7 +1414,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                         ValueSet.FromObject(4.ToString(), "content",
                             new {nodeName = "Always consider this", SomeNumber = 25})
                     });
-                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
+                    indexer._client.Value.Indices.Refresh(Indices.Index(indexer.indexAlias));
                     var searcher = indexer.GetSearcher();
 
                     //all numbers should be between 0 and 100 based on the data source
@@ -1467,7 +1467,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                         ValueSet.FromObject(4.ToString(), "content",
                             new {nodeName = "Always consider this", SomeDouble = 25d})
                     });
-                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
+                    indexer._client.Value.Indices.Refresh(Indices.Index(indexer.indexAlias));
                     var searcher = indexer.GetSearcher();
 
                     //all numbers should be between 0 and 100 based on the data source
@@ -1518,7 +1518,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                         ValueSet.FromObject(4.ToString(), "content",
                             new {nodeName = "Always consider this", SomeLong = 25L})
                     });
-                    indexer._client.Value.Refresh(Indices.Index(indexer.indexAlias));
+                    indexer._client.Value.Indices.Refresh(Indices.Index(indexer.indexAlias));
                     var searcher = indexer.GetSearcher();
 
                     //all numbers should be between 0 and 100 based on the data source

@@ -22,6 +22,7 @@ namespace Novicell.Examine.ElasticSearch
         private ISearchRequest _searchRequest;
         private Func<SearchDescriptor<Document>, ISearchRequest> _searchSelector;
         private SortDescriptor<Document> _sortDescriptor;
+        public AggregateDictionary Aggregation;
         private readonly string _indexName;
         private IEnumerable<ISearchResult> results;
         private int lastskip = 0;
@@ -119,13 +120,14 @@ namespace Novicell.Examine.ElasticSearch
             {
                 searchResult = _client.Search<Document>(_searchSelector);
             }
-            //TODO: Get filtering/range working
-            //TODO: We need to escape the resulting query
 
             TotalItemCount = searchResult.Total;
-
+            Aggregation = searchResult.Aggregations;
             return searchResult;
         }
+
+
+
         [Obsolete("Method is redundant as now ElasticSearchSearchResults could get skip as additional paramater")]
         public IEnumerable<ISearchResult> Skip(int skip)
         {

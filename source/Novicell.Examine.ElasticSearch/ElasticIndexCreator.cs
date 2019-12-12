@@ -17,18 +17,21 @@ namespace Novicell.Examine.ElasticSearch
         private string prefix = ConfigurationManager.AppSettings.AllKeys.Any(s => s == "examine:ElasticSearch.Prefix")
             ? ConfigurationManager.AppSettings["examine:ElasticSearch.Prefix"]
             : "";
+        
         public ElasticIndexCreator(IProfilingLogger profilingLogger,
             ILocalizationService languageService,
-            IPublicAccessService publicAccessService)
+            IPublicAccessService publicAccessService, IUmbracoIndexConfig umbracoIndexConfig)
         {
             ProfilingLogger = profilingLogger ?? throw new System.ArgumentNullException(nameof(profilingLogger));
             LanguageService = languageService ?? throw new System.ArgumentNullException(nameof(languageService));
+            UmbracoIndexConfig = umbracoIndexConfig;
             _publicAccessService =
                 publicAccessService ?? throw new System.ArgumentNullException(nameof(publicAccessService));
         }
 
         protected IProfilingLogger ProfilingLogger { get; }
         protected ILocalizationService LanguageService { get; }
+        protected IUmbracoIndexConfig UmbracoIndexConfig { get; }
 
         public override IEnumerable<IIndex> Create()
         {
@@ -47,7 +50,7 @@ namespace Novicell.Examine.ElasticSearch
                 ProfilingLogger,
                 new UmbracoFieldDefinitionCollection(),
                 "whitespace",
-                GetContentValueSetValidator());
+                UmbracoIndexConfig.GetContentValueSetValidator());
         }
 
         private IIndex CreateExternalIndex()
@@ -58,7 +61,7 @@ namespace Novicell.Examine.ElasticSearch
                 ProfilingLogger,
                 new UmbracoFieldDefinitionCollection(),
                 "standard",
-                GetPublishedContentValueSetValidator());
+                UmbracoIndexConfig.GetPublishedContentValueSetValidator());
         }
 
         private IIndex CreateMemberIndex()
@@ -68,26 +71,7 @@ namespace Novicell.Examine.ElasticSearch
                 ProfilingLogger,
                 new UmbracoFieldDefinitionCollection(),
                 "standard",
-                GetMemberValueSetValidator());
-        }
-
-        public virtual IContentValueSetValidator GetContentValueSetValidator()
-        {
-            return new ContentValueSetValidator(false, true, _publicAccessService);
-        }
-
-        public virtual IContentValueSetValidator GetPublishedContentValueSetValidator()
-        {
-            return new ContentValueSetValidator(true, false, _publicAccessService);
-        }
-
-        /// <summary>
-        /// Returns the <see cref="IValueSetValidator"/> for the member indexer
-        /// </summary>
-        /// <returns></returns>
-        public virtual IValueSetValidator GetMemberValueSetValidator()
-        {
-            return new MemberValueSetValidator();
+                UmbracoIndexConfig.GetMemberValueSetValidator());
         }
     }
 }

@@ -24,13 +24,6 @@ namespace Novicell.Examine.ElasticSearch
             }
 
             base.Compose(composition);
-            composition.Register<Novicell.Examine.ElasticSearch.Populators.ContentIndexPopulator>(Lifetime.Singleton);
-
-            composition.Register<Novicell.Examine.ElasticSearch.Populators.PublishedContentIndexPopulator>(
-                Lifetime.Singleton);
-            composition.Register<Novicell.Examine.ElasticSearch.Populators.MediaIndexPopulator>(Lifetime.Singleton);
-            // the container can inject IEnumerable<IIndexPopulator> and get them all
-            composition.Register<Novicell.Examine.ElasticSearch.Populators.MemberIndexPopulator>(Lifetime.Singleton);
             //   composition.RegisterUnique<IUmbracoIndexesCreator, UmbracoIndexesCreator>();
             composition.RegisterUnique<IUmbracoIndexesCreator, ElasticIndexCreator>();
         }

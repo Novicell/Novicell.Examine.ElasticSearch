@@ -28,11 +28,11 @@ Keeping in mind the above, we needed something to index into elastic using exami
 # Basic Information:
 
 Dependencies:
-Umbraco 8.1.2
+Umbraco 8.4.0
 
-Elasticsearch 6.7
+Elasticsearch 7.4.1
 
-Nest 6.7
+Nest 7.4.1
 
 Demo solution:
 Umbraco Site:
@@ -57,4 +57,3 @@ Instruction of instalation and configuration is available on wiki:
 # Features:
 
 - 0 downtime reindexing
-

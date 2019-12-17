@@ -16,8 +16,11 @@ branches:
 environment:
   # Version Suffix
   version_suffix: alpha
+  nuget_user: bielu@bielu.pl
+  nuget_password: 6eH!uvA8h*Mg7YhnL@wAKPIP
 
 install:
+  - nuget sources add -Name MyAccountFeed -Source <feed-url> -UserName %nuget_user% -Password %nuget_password%
   - ps: .\build\appveyor-semver.ps1
   - ps: .\build\check-release-version.ps1
   - ps: Update-AppveyorBuild -Version $Env:appveyor_version

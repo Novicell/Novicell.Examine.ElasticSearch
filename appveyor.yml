@@ -1,8 +1,8 @@
 # version format
 version: 0.5.0.{build}
 nuget:
-  account_feed: true
-  project_feed: true
+  account_feed: false
+  project_feed: false
 image: Visual Studio 2019
 
 cache:
@@ -20,6 +20,7 @@ environment:
   version_suffix: alpha
 
 install:
+  - nuget sources add -Name MyAccountFeed -Source https://ci.appveyor.com/nuget/bielu-s77m8i59ehlc/ -UserName %nuget_user% -Password %nuget_password%
   - ps: .\build\appveyor-semver.ps1
   - ps: .\build\check-release-version.ps1
   - ps: Update-AppveyorBuild -Version $Env:appveyor_version

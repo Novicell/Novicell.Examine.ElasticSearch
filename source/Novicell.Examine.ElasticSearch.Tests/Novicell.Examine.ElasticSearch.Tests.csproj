@@ -39,8 +39,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="ElasticsearchInside, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\ElasticsearchInside.7.1.2\lib\netstandard2.0\ElasticsearchInside.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\..\..\Elasticsearch-Inside\source\ElasticsearchInside\bin\Debug\netstandard2.0\ElasticsearchInside.dll</HintPath>
     </Reference>
     <Reference Include="Examine, Version=1.0.1.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\Examine.1.0.1\lib\net452\Examine.dll</HintPath>

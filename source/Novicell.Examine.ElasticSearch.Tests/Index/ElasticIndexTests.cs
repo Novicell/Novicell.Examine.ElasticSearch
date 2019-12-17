@@ -32,6 +32,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
         {
             using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
                 .EnableLogging()
+                .SetPort(9200)
                 .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
@@ -51,6 +52,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
         {
             using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
                 .EnableLogging()
+                .SetPort(9200)
                 .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
@@ -70,6 +72,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
         {
             using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
                 .EnableLogging()
+                .SetPort(9200)
                 .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
@@ -120,6 +123,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
             using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
                 .EnableLogging()
 
+                .SetPort(9200)
                 .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
@@ -146,6 +150,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Index
             using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
                 .EnableLogging()
 
+                .SetPort(9200)
                 .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));

@@ -22,7 +22,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
                 .EnableLogging()
-
+                .SetPort(9200)
                 .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
@@ -76,7 +76,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
                 .EnableLogging()
-
+                .SetPort(9200)
                 .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
@@ -143,7 +143,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
                 .EnableLogging()
-
+                .SetPort(9200)
                 .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
@@ -218,7 +218,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
                 .EnableLogging()
-
+                .SetPort(9200)
                 .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
@@ -270,7 +270,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
                 .EnableLogging()
-
+                .SetPort(9200)
                 .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
@@ -323,15 +323,15 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
                 .EnableLogging()
-
+                .SetPort(9200)
                 .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
                 using (var indexer = new TestBaseIndex(config,
-                    new FieldDefinitionCollection(
-                        new FieldDefinition("nodeName", "text"),
-                                        new FieldDefinition("bodyText", "text"),
-                                        new FieldDefinition("nodeTypeAlias", "text")
+                        new FieldDefinitionCollection(
+                            new FieldDefinition("nodeName", "text"),
+                            new FieldDefinition("bodyText", "text"),
+                            new FieldDefinition("nodeTypeAlias", "text")
                         )
                     )
                 )
@@ -386,7 +386,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
                 .EnableLogging()
-
+                .SetPort(9200)
                 .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
@@ -449,7 +449,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
                 .EnableLogging()
-
+                .SetPort(9200)
                 .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
@@ -507,7 +507,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
                 .EnableLogging()
-
+                .SetPort(9200)
                 .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
@@ -564,7 +564,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
                 .EnableLogging()
-
+                .SetPort(9200)
                 .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
@@ -608,10 +608,13 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         [Test]
         public void Match_By_Path()
         {
-            using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
-                .EnableLogging()
-
-                .SetElasticsearchStartTimeout(180)).ReadySync())
+            using (var elasticsearch = new ElasticsearchInside.Elasticsearch(
+                    settings => settings
+                        .EnableLogging()
+                        .SetPort(9200)
+                        .SetElasticsearchStartTimeout(180))
+                .ReadySync()
+            )
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
                 using (var indexer = new TestBaseIndex(config,
@@ -640,7 +643,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
 
 
                     indexer._client.Value.Indices.Refresh(Indices.Index(indexer.indexAlias));
-                    var searcher = (ElasticSearchSearcher)indexer.GetSearcher();
+                    var searcher = (ElasticSearchSearcher) indexer.GetSearcher();
 
                     //paths contain punctuation, we'll escape it and ensure an exact match
                     var criteria = searcher.CreateQuery("content");
@@ -673,7 +676,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
                 .EnableLogging()
-
+                .SetPort(9200)
                 .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
@@ -712,7 +715,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
                 .EnableLogging()
-
+                .SetPort(9200)
                 .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
@@ -759,6 +762,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                 }
             }
         }
+
         /* TODO: Figure out if we need that test
         [Test]
         public void Search_With_Stop_Words()
@@ -816,7 +820,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
                 .EnableLogging()
-
+                .SetPort(9200)
                 .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
@@ -869,11 +873,11 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
                 .EnableLogging()
-
+                .SetPort(9200)
                 .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
-                using (var indexer = new TestBaseIndex(config, 
+                using (var indexer = new TestBaseIndex(config,
                     new FieldDefinitionCollection(
                         new FieldDefinition("nodeName", "text"),
                         new FieldDefinition("bodyText", "text"),
@@ -910,7 +914,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
                 .EnableLogging()
-
+                .SetPort(9200)
                 .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
@@ -952,7 +956,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
                 .EnableLogging()
-
+                .SetPort(9200)
                 .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
@@ -1000,7 +1004,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
                 .EnableLogging()
-
+                .SetPort(9200)
                 .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
@@ -1052,60 +1056,61 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                 }
             }
         }
- /* TODO: As elastic doesn't support sorting on text fields by default figure out if should be added multifields defintion on every text field
-        [Test]
-        public void Sort_Result_By_Single_Field()
-        {
-            using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
-                .EnableLogging()
 
-                .SetElasticsearchStartTimeout(180)).ReadySync())
-            {
-                ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
-                using (var indexer = new TestBaseIndex(config,
-                    //Ensure it's set to a fulltextsortable, otherwise it's not sortable
-                    new FieldDefinitionCollection(new FieldDefinition("nodeName", "fulltextsortable"))))
-
-
-                {
-                    indexer.CreateIndex();
-                    indexer.IndexItems(new[]
-                    {
-                        ValueSet.FromObject(1.ToString(), "content",
-                            new {nodeName = "my name 1", writerName = "administrator", parentID = "1143"}),
-                        ValueSet.FromObject(2.ToString(), "content",
-                            new {nodeName = "my name 2", writerName = "administrator", parentID = "1143"}),
-                        ValueSet.FromObject(3.ToString(), "content",
-                            new {nodeName = "my name 3", writerName = "administrator", parentID = "1143"}),
-                        ValueSet.FromObject(4.ToString(), "content",
-                            new {nodeName = "my name 4", writerName = "writer", parentID = "2222"})
-                    });
-
-                    indexer._client.Value.Indices.Refresh(Indices.Index(indexer.indexAlias));
-                    var searcher = indexer.GetSearcher();
-
-                    var sc = searcher.CreateQuery("content");
-                    var sc1 = sc.Field("writerName", "administrator")
-                        .OrderBy(new SortableField("nodeName", SortType.String));
-
-                    sc = searcher.CreateQuery("content");
-                    var sc2 = sc.Field("writerName", "administrator")
-                        .OrderByDescending(new SortableField("nodeName", SortType.String));
-
-                    var results1 = sc1.Execute();
-                    var results2 = sc2.Execute();
-
-                    Assert.AreNotEqual(results1.First().Id, results2.First().Id);
-                }
-            }
-        }
-*/
+        /* TODO: As elastic doesn't support sorting on text fields by default figure out if should be added multifields defintion on every text field
+               [Test]
+               public void Sort_Result_By_Single_Field()
+               {
+                   using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
+                       .EnableLogging()
+       
+                       .SetElasticsearchStartTimeout(180)).ReadySync())
+                   {
+                       ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
+                       using (var indexer = new TestBaseIndex(config,
+                           //Ensure it's set to a fulltextsortable, otherwise it's not sortable
+                           new FieldDefinitionCollection(new FieldDefinition("nodeName", "fulltextsortable"))))
+       
+       
+                       {
+                           indexer.CreateIndex();
+                           indexer.IndexItems(new[]
+                           {
+                               ValueSet.FromObject(1.ToString(), "content",
+                                   new {nodeName = "my name 1", writerName = "administrator", parentID = "1143"}),
+                               ValueSet.FromObject(2.ToString(), "content",
+                                   new {nodeName = "my name 2", writerName = "administrator", parentID = "1143"}),
+                               ValueSet.FromObject(3.ToString(), "content",
+                                   new {nodeName = "my name 3", writerName = "administrator", parentID = "1143"}),
+                               ValueSet.FromObject(4.ToString(), "content",
+                                   new {nodeName = "my name 4", writerName = "writer", parentID = "2222"})
+                           });
+       
+                           indexer._client.Value.Indices.Refresh(Indices.Index(indexer.indexAlias));
+                           var searcher = indexer.GetSearcher();
+       
+                           var sc = searcher.CreateQuery("content");
+                           var sc1 = sc.Field("writerName", "administrator")
+                               .OrderBy(new SortableField("nodeName", SortType.String));
+       
+                           sc = searcher.CreateQuery("content");
+                           var sc2 = sc.Field("writerName", "administrator")
+                               .OrderByDescending(new SortableField("nodeName", SortType.String));
+       
+                           var results1 = sc1.Execute();
+                           var results2 = sc2.Execute();
+       
+                           Assert.AreNotEqual(results1.First().Id, results2.First().Id);
+                       }
+                   }
+               }
+       */
         [Test]
         public void Standard_Results_Sorted_By_Score()
         {
             using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
                 .EnableLogging()
-
+                .SetPort(9200)
                 .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
@@ -1158,7 +1163,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
                 .EnableLogging()
-
+                .SetPort(9200)
                 .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
@@ -1198,7 +1203,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
                 .EnableLogging()
-
+                .SetPort(9200)
                 .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
@@ -1239,7 +1244,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
                 .EnableLogging()
-
+                .SetPort(9200)
                 .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
@@ -1285,7 +1290,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
                 .EnableLogging()
-
+                .SetPort(9200)
                 .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
@@ -1326,7 +1331,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     var results = filter.Execute();
 
                     //Assert - 
-                    
+
                     Assert.AreEqual(2, results.TotalItemCount);
                 }
             }
@@ -1340,7 +1345,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
                 .EnableLogging()
-
+                .SetPort(9200)
                 .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
@@ -1391,7 +1396,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
                 .EnableLogging()
-
+                .SetPort(9200)
                 .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
@@ -1427,7 +1432,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                     //Act
                     var results1 = filter1.Execute();
                     var results2 = filter2.Execute();
-              
+
                     //Assert
                     Assert.AreEqual(3, results1.TotalItemCount);
                     Assert.AreEqual(1, results2.TotalItemCount);
@@ -1443,7 +1448,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
                 .EnableLogging()
-
+                .SetPort(9200)
                 .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
@@ -1487,7 +1492,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
                 }
             }
         }
-        
+
         /// <summary>
         /// test range query with a Double structure
         /// </summary>
@@ -1496,7 +1501,7 @@ namespace Novicell.Examine.ElasticSearch.Tests.Search
         {
             using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
                 .EnableLogging()
-
+                .SetPort(9200)
                 .SetElasticsearchStartTimeout(180)).ReadySync())
             {
                 ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));

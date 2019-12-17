@@ -53,11 +53,15 @@ namespace Novicell.Examine.ElasticSearch
         {
             get
             {
-                var indexesMappedToAlias = _client.Value.GetIndicesPointingToAlias(indexAlias).ToList();
-                if (indexesMappedToAlias.Count > 0)
+                var aliasExists = _client.Value.Indices.Exists(indexAlias).Exists;
+                if (aliasExists)
                 {
-                    _exists = true;
-                    return true;
+                    var indexesMappedToAlias = _client.Value.GetIndicesPointingToAlias(indexAlias).ToList();
+                    if (indexesMappedToAlias.Count > 0)
+                    {
+                        _exists = true;
+                        return true;
+                    }
                 }
 
                 _exists = false;
@@ -88,7 +92,7 @@ namespace Novicell.Examine.ElasticSearch
 
                 var indexesMappedToAlias = _client.Value.GetIndicesPointingToAlias(indexAlias).ToList();
                 GetMappingResponse response =
-                    _client.Value.Indices.GetMapping(new GetMappingRequest {IncludeTypeName = true});
+                    _client.Value.Indices.GetMapping(new GetMappingRequest {IncludeTypeName = false});
                 _fieldsMapping = response.GetMappingFor(indexesMappedToAlias[0]).Properties;
                 return _fieldsMapping;
             }

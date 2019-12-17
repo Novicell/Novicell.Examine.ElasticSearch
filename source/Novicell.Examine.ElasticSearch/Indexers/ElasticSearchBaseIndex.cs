@@ -203,8 +203,11 @@ namespace Novicell.Examine.ElasticSearch.Indexers
                             .Properties(ps => CreateFieldsMapping(ps, FieldDefinitionCollection))
                     ))
                 );
-                var indexesMappedToAlias = _client.Value.GetIndicesPointingToAlias(indexAlias).ToList();
-                if (!indexExists || indexesMappedToAlias.Count == 0)
+                var aliasExists = _client.Value.Indices.Exists(indexAlias).Exists;
+              
+                   
+                var indexesMappedToAlias = aliasExists? _client.Value.GetIndicesPointingToAlias(indexAlias).ToList() : new List<String>();
+                if (!indexExists || (aliasExists && indexesMappedToAlias?.Count == 0))
                 {
                     var bulkAliasResponse = _client.Value.Indices.BulkAlias(ba => ba
                         .Add(add => add.Index(indexName).Alias(indexAlias))
@@ -275,7 +278,8 @@ namespace Novicell.Examine.ElasticSearch.Indexers
 
         protected override void PerformIndexItems(IEnumerable<ValueSet> op, Action<IndexOperationEventArgs> onComplete)
         {
-            var indexesMappedToAlias = _client.Value.GetIndicesPointingToAlias(indexAlias).ToList();
+            var aliasExists = _client.Value.Indices.Exists(indexAlias).Exists;
+            var indexesMappedToAlias = aliasExists ?  _client.Value.GetIndicesPointingToAlias(indexAlias).ToList() : new List<String>();
             EnsureIndex(false);
 
             var indexTarget = isReindexing ? tempindexAlias : indexAlias;
@@ -336,11 +340,15 @@ namespace Novicell.Examine.ElasticSearch.Indexers
 
         public override bool IndexExists()
         {
-            var indexesMappedToAlias = _client.Value.GetIndicesPointingToAlias(indexAlias).ToList();
-            if (indexesMappedToAlias.Count > 0)
+            var aliasExists = _client.Value.Indices.Exists(indexAlias).Exists;
+            if (aliasExists)
             {
-                indexName = indexesMappedToAlias.FirstOrDefault();
-                return true;
+                var indexesMappedToAlias = _client.Value.GetIndicesPointingToAlias(indexAlias).ToList();
+                if (indexesMappedToAlias.Count > 0)
+                {
+                    indexName = indexesMappedToAlias.FirstOrDefault();
+                    return true;
+                }
             }
 
             return false;
@@ -348,12 +356,16 @@ namespace Novicell.Examine.ElasticSearch.Indexers
 
         public bool TempIndexExists()
         {
-            var indexesMappedToAlias = _client.Value.GetIndicesPointingToAlias(indexAlias).ToList();
+            var aliasExists = _client.Value.Indices.Exists(tempindexAlias).Exists;
+            if (aliasExists)
+            {
+            var indexesMappedToAlias = _client.Value.GetIndicesPointingToAlias(tempindexAlias).ToList();
             if (indexesMappedToAlias.Count > 0)
             {
                 indexName = indexesMappedToAlias.FirstOrDefault();
                 isReindexing = true;
                 return true;
+            }
             }
 
             return false;

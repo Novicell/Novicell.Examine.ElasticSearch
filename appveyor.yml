@@ -29,7 +29,9 @@ assembly_info:
   assembly_file_version: '$(appveyor_file_version)'
   assembly_informational_version: '$(mssemver)'
 
-
+nuget:
+  account_feed: true
+  project_feed: true
 
 build_script:
 - cmd: >-

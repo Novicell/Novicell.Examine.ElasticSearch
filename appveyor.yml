@@ -1,5 +1,5 @@
 # version format
-version: 0.5.0.{build}
+version: 0.5.1.{build}
 nuget:
   account_feed: false
   project_feed: false

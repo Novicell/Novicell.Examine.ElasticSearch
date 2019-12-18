@@ -17,8 +17,8 @@
     <tags></tags>
     <dependencies>
       <dependency id="UmbracoCms.Core" version="0.0.0" />
-	  <dependency id="NEST" version="6.7.0" />
-	  <dependency id="Elasticsearch.Net" version="6.7.0" />
+	  <dependency id="NEST" version="7.4.1" />
+	  <dependency id="Elasticsearch.Net" version="7.4.1" />
 	  
     </dependencies>
   </metadata>

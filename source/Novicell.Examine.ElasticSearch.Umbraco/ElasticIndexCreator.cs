@@ -3,13 +3,14 @@ using System.Configuration;
 using System.Linq;
 using Examine;
 using Novicell.Examine.ElasticSearch.Indexers;
+using Novicell.Examine.ElasticSearch.Umbraco.Indexers;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Services;
 using Umbraco.Examine;
 using Umbraco.Web.Search;
 
-namespace Novicell.Examine.ElasticSearch
+namespace Novicell.Examine.ElasticSearch.Umbraco
 {
     public class ElasticIndexCreator : LuceneIndexCreator, IUmbracoIndexesCreator
     {

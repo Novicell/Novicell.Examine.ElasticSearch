@@ -1,4 +1,5 @@
 using Examine;
+using Novicell.Examine.ElasticSearch.Umbraco.Indexers;
 using Umbraco.Core.Logging;
 using Umbraco.Examine;
 

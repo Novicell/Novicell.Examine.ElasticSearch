@@ -99,6 +99,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ContentTypes\ContentTypeChangeExtensions.cs" />
     <Compile Include="DataServices\TestContentService.cs" />
     <Compile Include="IndexInitializer.cs" />
     <Compile Include="Index\ElasticIndexTests.cs" />

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Umbraco.Core.Models;
 using Umbraco.Core.Services.Changes;
 
-namespace Novicell.Examine.ElasticSearch.ContentTypes
+namespace Novicell.Examine.ElasticSearch.Tests.ContentTypes
 {
     internal static class ContentTypeChangeExtensions
     {

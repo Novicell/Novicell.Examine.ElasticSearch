@@ -15,7 +15,6 @@ using Nest;
 using Novicell.Examine.ElasticSearch.Helpers;
 using Novicell.Examine.ElasticSearch.Indexing;
 using Novicell.Examine.ElasticSearch.Model;
-using Umbraco.Core;
 using DateTimeType = Novicell.Examine.ElasticSearch.Indexing.DateTimeType;
 using DoubleType = Novicell.Examine.ElasticSearch.Indexing.DoubleType;
 using FullTextType = Novicell.Examine.ElasticSearch.Indexing.FullTextType;

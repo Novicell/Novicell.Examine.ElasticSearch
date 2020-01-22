@@ -35,7 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Elasticsearch.Net, Version=7.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d">
-      <HintPath>..\packages\Elasticsearch.Net.7.4.1\lib\net461\Elasticsearch.Net.dll</HintPath>
+      <HintPath>..\packages\Elasticsearch.Net.7.5.1\lib\net461\Elasticsearch.Net.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="ElasticsearchInside, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
@@ -66,7 +66,7 @@
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="Nest, Version=7.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d">
-      <HintPath>..\packages\NEST.7.4.1\lib\net461\Nest.dll</HintPath>
+      <HintPath>..\packages\NEST.7.5.1\lib\net461\Nest.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="nunit.framework, Version=3.12.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb">

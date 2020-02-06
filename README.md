@@ -2,15 +2,17 @@
 
 [![Build status](https://ci.appveyor.com/api/projects/status/qrkvmx8jnxg8n2up/branch/master?svg=true)](https://ci.appveyor.com/project/bielu/novicell-examine-elasticsearch/branch/master)
 
-| Nuget Packages | Version                                                                                                                                             |
-| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Release        | Soon                                                                                                                                                |
-| Pre-release    | [![Build status](https://img.shields.io/nuget/vpre/Novicell.Examine.ElasticSearch)](https://www.nuget.org/packages/Novicell.Examine.ElasticSearch/) |
+| Nuget Package                          | Status      | Version                                                                                                                                             |
+| -------------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Novicell.Examine.ElasticSearch         | Release     | Soon                                                                                                                                                |
+|                                        | Pre-release | [![Build status](https://img.shields.io/nuget/vpre/Novicell.Examine.ElasticSearch)](https://www.nuget.org/packages/Novicell.Examine.ElasticSearch/) |
+| Novicell.Examine.ElasticSearch.Umbraco | Release     | Soon                                                                                                                                                |
+|                                        | Pre-release |                                                                                                                                                     |
 
-| Umbraco Packages | Version |
-| ---------------- | ------- |
-| Release          | soon    |
-| Pre-release      | soon    |
+| Umbraco Package | Version |
+| --------------- | ------- |
+| Release         | soon    |
+| Pre-release     | soon    |
 
 # Introduction:
 

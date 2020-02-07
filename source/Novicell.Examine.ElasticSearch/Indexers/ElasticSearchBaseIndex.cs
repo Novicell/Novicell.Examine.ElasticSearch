@@ -9,7 +9,6 @@ using Examine.Providers;
 using Nest;
 using Novicell.Examine.ElasticSearch.EventArgs;
 using Novicell.Examine.ElasticSearch.Model;
-using Umbraco.Core;
 using DocumentWritingEventArgs = Novicell.Examine.ElasticSearch.EventArgs.DocumentWritingEventArgs;
 
 namespace Novicell.Examine.ElasticSearch.Indexers
@@ -204,9 +203,11 @@ namespace Novicell.Examine.ElasticSearch.Indexers
                     ))
                 );
                 var aliasExists = _client.Value.Indices.Exists(indexAlias).Exists;
-              
-                   
-                var indexesMappedToAlias = aliasExists? _client.Value.GetIndicesPointingToAlias(indexAlias).ToList() : new List<String>();
+
+
+                var indexesMappedToAlias = aliasExists
+                    ? _client.Value.GetIndicesPointingToAlias(indexAlias).ToList()
+                    : new List<String>();
                 if (!indexExists || (aliasExists && indexesMappedToAlias?.Count == 0))
                 {
                     var bulkAliasResponse = _client.Value.Indices.BulkAlias(ba => ba
@@ -279,24 +280,17 @@ namespace Novicell.Examine.ElasticSearch.Indexers
         protected override void PerformIndexItems(IEnumerable<ValueSet> op, Action<IndexOperationEventArgs> onComplete)
         {
             var aliasExists = _client.Value.Indices.Exists(indexAlias).Exists;
-            var indexesMappedToAlias = aliasExists ?  _client.Value.GetIndicesPointingToAlias(indexAlias).ToList() : new List<String>();
+            var indexesMappedToAlias = aliasExists
+                ? _client.Value.GetIndicesPointingToAlias(indexAlias).ToList()
+                : new List<String>();
             EnsureIndex(false);
 
             var indexTarget = isReindexing ? tempindexAlias : indexAlias;
-
-
             var indexer = GetIndexClient();
             var totalResults = 0;
-            //batches can only contain 1000 records
-            foreach (var rowGroup in op.InGroupsOf(1))
-            {
-                var batch = ToElasticSearchDocs(rowGroup, indexTarget);
-
-
-                var indexResult = indexer.Bulk(e => batch);
-
-                totalResults += indexResult.Items.Count;
-            }
+            var batch = ToElasticSearchDocs(op, indexTarget);
+            var indexResult = indexer.Bulk(e => batch);
+            totalResults += indexResult.Items.Count;
 
 
             if (isReindexing)
@@ -359,13 +353,13 @@ namespace Novicell.Examine.ElasticSearch.Indexers
             var aliasExists = _client.Value.Indices.Exists(tempindexAlias).Exists;
             if (aliasExists)
             {
-            var indexesMappedToAlias = _client.Value.GetIndicesPointingToAlias(tempindexAlias).ToList();
-            if (indexesMappedToAlias.Count > 0)
-            {
-                indexName = indexesMappedToAlias.FirstOrDefault();
-                isReindexing = true;
-                return true;
-            }
+                var indexesMappedToAlias = _client.Value.GetIndicesPointingToAlias(tempindexAlias).ToList();
+                if (indexesMappedToAlias.Count > 0)
+                {
+                    indexName = indexesMappedToAlias.FirstOrDefault();
+                    isReindexing = true;
+                    return true;
+                }
             }
 
             return false;
@@ -373,9 +367,6 @@ namespace Novicell.Examine.ElasticSearch.Indexers
 
         public void Dispose()
         {
-            _indexer?.DisposeIfDisposable();
-            if (_client.IsValueCreated)
-                _client.Value.DisposeIfDisposable();
         }
 
 

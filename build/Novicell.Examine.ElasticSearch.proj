@@ -14,9 +14,9 @@
 
   <!-- SHARED PROPERTIES -->
   <PropertyGroup>
-    <PackageName>Novicell.Examine.ElasticSearch</PackageName>
+    <PackageName>Novicell.Examine.ElasticSearch.Umbraco</PackageName>
     <MinUmbracoVersion>8.4.0</MinUmbracoVersion>
-    <Readme>Novicell.Examine.ElasticSearch is a Custom Search Provider for Umbraco v8</Readme>
+    <Readme>Novicell.Examine.ElasticSearch is custom Examine provider.</Readme>
     <AuthorName>Arkadiusz Biel</AuthorName>
     <AuthorUrl>https://github.com/novicell/Novicell.Examine.ElasticSearch/graphs/contributors</AuthorUrl>
     <PackageLicenseName>MIT license</PackageLicenseName>
@@ -29,13 +29,15 @@
     <PackageId>Novicell.Examine.ElasticSearch</PackageId>
     <Copyright>Novicell</Copyright>
     <Owners>Novicell,Arkadiusz Biel</Owners>
-    <Description>Novicell.Examine.ElasticSearch is a Custom Search Provider for Umbraco v8</Description>
+    <Description>Novicell.Examine.ElasticSearch is a Custom Search Provider for Examine</Description>
     <IconUrl>https://raw.githubusercontent.com/elastic/elasticsearch/master/server/src/main/resources/config/favicon.ico</IconUrl>
     <Tags>Umbraco, Novicell,Examine,ElasticSearch</Tags>
     <Language>en-GB</Language>
     <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
   </PropertyGroup>
-
+  <PropertyGroup>
+    <DescriptionUmbraco>Novicell.Examine.ElasticSearch.Umbraco is a composer to attach Elastich Search Examine provider to Umbravo v8</DescriptionUmbraco>
+  </PropertyGroup>
   <!-- APPVEYOR PROPERTIES -->
   <PropertyGroup>
     <FileVersion>$(mssemver)</FileVersion>
@@ -48,6 +50,7 @@
     <BuildDir>$(MSBuildProjectDirectory)\_temp</BuildDir>
     <BuildUmbDir>$(BuildDir)\_umbraco</BuildUmbDir>
     <BuildNuGetDir>$(BuildDir)\_nuget</BuildNuGetDir>
+    <BuildNuGetUmbracoDir>$(BuildDir)\umrbaco\_nuget</BuildNuGetUmbracoDir>
     <ArtifactsDir>$(RootDir)\artifacts</ArtifactsDir>
     <CoreProjectDir>$(RootDir)\source\Novicell.Examine.ElasticSearch</CoreProjectDir>
 	<TestProjectDir>$(RootDir)\source\Novicell.Examine.ElasticSearch.Tests</TestProjectDir>
@@ -60,12 +63,14 @@
     <MakeDir Directories="$(BuildDir)" />
     <MakeDir Directories="$(BuildUmbDir)" />
     <MakeDir Directories="$(BuildNuGetDir)" />
+    <MakeDir Directories="$(BuildNuGetUmbracoDir)" />
     <MakeDir Directories="$(ArtifactsDir)" />
   </Target>
 
   <!-- COMPILE -->
   <Target Name="Compile" DependsOnTargets="Clean">
     <MSBuild Projects="$(CoreProjectDir)\Novicell.Examine.ElasticSearch.csproj" Properties="Configuration=$(BuildConfig)" />
+    <MSBuild Projects="$(CoreProjectDir).Umbraco\Novicell.Examine.ElasticSearch.Umbraco.csproj" Properties="Configuration=$(BuildConfig)" />
 	<MSBuild Projects="$(TestProjectDir)\Novicell.Examine.ElasticSearch.Tests.csproj" Properties="Configuration=$(BuildConfig)" />
   </Target>
 
@@ -75,9 +80,11 @@
       <!-- Shared -->
       <BinFiles Include="$(CoreProjectDir)\bin\$(BuildConfig)\Novicell.Examine.ElasticSearch.dll" />
       <PdbFiles Include="$(CoreProjectDir)\bin\$(BuildConfig)\Novicell.Examine.ElasticSearch.pdb" />
-
+      <BinFiles2 Include="$(CoreProjectDir).Umbraco\bin\$(BuildConfig)\Novicell.Examine.ElasticSearch.Umbraco.dll" />
+      <PdbFiles2 Include="$(CoreProjectDir).Umbraco\bin\$(BuildConfig)\Novicell.Examine.ElasticSearch.Umbraco.pdb" />
       <!-- Umbraco specific -->
       <PackageFile Include="$(MSBuildProjectDirectory)\package.xml" />
+      <UmbracoBinFiles Include="$(CoreProjectDir).Umbraco\bin\$(BuildConfig)\Novicell.Examine.ElasticSearch.Umbraco.dll" />
       <UmbracoBinFiles Include="$(CoreProjectDir)\bin\$(BuildConfig)\Elasticsearch.Net.dll" />
 	  <UmbracoBinFiles Include="$(CoreProjectDir)\bin\$(BuildConfig)\Elasticsearch.Net.xml" />
 	  <UmbracoBinFiles Include="$(CoreProjectDir)\bin\$(BuildConfig)\Nest.dll" />
@@ -86,6 +93,7 @@
       <!-- NuGet specific -->
       <SrcFiles Include="$(CoreProjectDir)\**\*.cs" Exclude="$(CoreProjectDir)\obj\**"/>
       <NuSpecFile Include="$(MSBuildProjectDirectory)\package.nuspec" />
+      <NuSpecFile2 Include="$(MSBuildProjectDirectory)\Umbraco\package.nuspec" />
       <!--<NugetReadme Include="$(MSBuildProjectDirectory)\readme.txt" />-->
     </ItemGroup>
 
@@ -102,7 +110,10 @@
   <Copy SourceFiles="@(SrcFiles)" DestinationFiles="@(SrcFiles->'$(BuildNuGetDir)\src\%(RecursiveDir)%(Filename)%(Extension)')" />
   <Copy SourceFiles="@(NuSpecFile)" DestinationFolder="$(BuildNuGetDir)" />
   <Copy SourceFiles="@(NugetReadme)" DestinationFolder="$(BuildNuGetDir)" />
-
+  <!-- Umbraco Nuget Package -->
+    <Copy SourceFiles="@(BinFiles2)" DestinationFolder="$(BuildNuGetUmbracoDir)\lib\net45" />
+    <Copy SourceFiles="@(PdbFiles2)" DestinationFolder="$(BuildNuGetUmbracoDir)\lib\net45" />
+    <Copy SourceFiles="@(NuSpecFile2)" DestinationFolder="$(BuildNuGetUmbracoDir)" />
   </Target>
 
   <!-- MANIFEST UMBRACO -->
@@ -151,9 +162,33 @@
       Tags="$(Tags)"
       Files="@(ManifestFiles)" />
   </Target>
-
+  <!-- MANIFEST FOR Umbraco NUGET PACKAGE -->
+  <Target Name="ManifestNuGetUmbraco" DependsOnTargets="PrepareFiles">
+    <ItemGroup>
+      <ManifestFiles Include="$(BuildNuGetUmbracoDir)\**\*" Exclude="$(BuildNuGetUmbracoDir)\package.nuspec" />
+    </ItemGroup>
+    <MSBuild.NuGet.Tasks.ManifestUpdate
+            ManifestFile="$(BuildNuGetUmbracoDir)\package.nuspec"
+            WorkingDirectory="$(BuildNuGetUmbracoDir)"
+            Title="$(PackageName)"
+            Description="$(DescriptionUmbraco)"
+            Summary="$(Readme)"
+            Version="$(FileVersion)"
+            MinimumRequiredUmbracoVersion ="$(MinUmbracoVersion)"
+            Authors="$(AuthorName)"
+            Owners="$(Owners)"
+            Copyright="$(Copyright)"
+            LicenseUrl="$(PackageLicenseUrl)"
+            ProjectUrl="$(ProjectUrl)"
+            Id="$(PackageId).Umbraco"
+            IconUrl="$(IconUrl)"
+            Language="$(Language)"
+            RequireLicenseAcceptance="$(RequireLicenseAcceptance)"
+            Tags="$(Tags)"
+            Files="@(ManifestFiles)" />
+  </Target>
   <!-- PACKAGE -->
-  <Target Name="Package" DependsOnTargets="ManifestUmbraco; ManifestNuGet">
+  <Target Name="Package" DependsOnTargets="ManifestUmbraco; ManifestNuGet;ManifestNuGetUmbraco">
     <ItemGroup>
       <PackageFiles Include="$(BuildUmbDir)\**\*.*" />
     </ItemGroup>
@@ -169,7 +204,12 @@
       Version="$(FileVersion)"
       OutputDirectory="$(ArtifactsDir)"
       Symbols="true" />
-
+    <MSBuild.NuGet.Tasks.Pack NuGetExePath="NuGet.exe"
+                              ManifestFile="$(BuildNuGetUmbracoDir)\package.nuspec"
+                              BasePath="$(BuildNuGetUmbracoDir)"
+                              Version="$(FileVersion)"
+                              OutputDirectory="$(ArtifactsDir)"
+                              Symbols="true" />
     <RemoveDir Directories="$(BuildDir)" Condition="Exists('$(BuildDir)')" />
 
   </Target>

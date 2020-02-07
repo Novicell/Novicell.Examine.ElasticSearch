@@ -5,13 +5,14 @@ using Elasticsearch.Net;
 using Examine;
 using Examine.LuceneEngine.Providers;
 using Nest;
+using Novicell.Examine.ElasticSearch.Indexers;
 using Novicell.Examine.ElasticSearch.Model;
 using Umbraco.Core;
 using Umbraco.Core.Composing;
 using Umbraco.Core.Logging;
 using Umbraco.Examine;
 
-namespace Novicell.Examine.ElasticSearch.Indexers
+namespace Novicell.Examine.ElasticSearch.Umbraco.Indexers
 {
     public class ElasticSearchUmbracoIndex : ElasticSearchBaseIndex, IUmbracoIndex, IIndexDiagnostics
     {

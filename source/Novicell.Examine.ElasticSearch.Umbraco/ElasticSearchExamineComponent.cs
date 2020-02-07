@@ -1,27 +1,13 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
 using Examine;
-using Umbraco.Core;
-using Umbraco.Core.Cache;
 using Umbraco.Core.Logging;
-using Umbraco.Core.Models;
-using Umbraco.Core.Persistence.DatabaseModelDefinitions;
-using Umbraco.Core.Scoping;
-using Umbraco.Core.Services;
-using Umbraco.Core.Services.Changes;
-using Umbraco.Core.Sync;
-using Umbraco.Examine;
-using Umbraco.Web.Cache;
 using Umbraco.Web.Search;
-using Novicell.Examine.ElasticSearch.ContentTypes;
-using Novicell.Examine.ElasticSearch.Indexers;
 
-namespace Novicell.Examine.ElasticSearch
+namespace Novicell.Examine.ElasticSearch.Umbraco
 {
-    public class ElasticSearchExamineComponent : IComponent, Umbraco.Core.Composing.IComponent
+    public class ElasticSearchExamineComponent : IComponent,global::Umbraco.Core.Composing.IComponent
     {
         private readonly IExamineManager _examineManager;
         private readonly IUmbracoIndexesCreator _indexCreator;

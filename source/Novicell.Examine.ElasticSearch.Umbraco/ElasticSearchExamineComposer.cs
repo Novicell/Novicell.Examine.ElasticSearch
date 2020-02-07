@@ -1,15 +1,9 @@
 using System.Configuration;
-using Examine;
 using Umbraco.Core;
 using Umbraco.Core.Composing;
-using Umbraco.Core.Models;
-using Umbraco.Core.PropertyEditors;
-using Umbraco.Core.Services;
-using Umbraco.Core.Strings;
-using Umbraco.Examine;
 using Umbraco.Web.Search;
 
-namespace Novicell.Examine.ElasticSearch
+namespace Novicell.Examine.ElasticSearch.Umbraco
 {
     [RuntimeLevel(MinLevel = RuntimeLevel.Run)]
     [ComposeAfter(typeof(ExamineComposer))]

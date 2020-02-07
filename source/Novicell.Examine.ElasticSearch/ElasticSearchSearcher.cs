@@ -8,7 +8,6 @@ using Examine.Search;
 using Nest;
 using Novicell.Examine.ElasticSearch.Model;
 using Novicell.Examine.ElasticSearch.Queries;
-using Umbraco.Core;
 using IQuery = Examine.Search.IQuery;
 using SortField = Lucene.Net.Search.SortField;
 
@@ -147,8 +146,7 @@ namespace Novicell.Examine.ElasticSearch
 
         public void Dispose()
         {
-            if (_client.IsValueCreated)
-                _client.Value.DisposeIfDisposable();
+        
         }
     }
 }

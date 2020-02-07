@@ -16,6 +16,8 @@
     <language></language>
     <tags></tags>
     <dependencies>
+      <dependency id="UmbracoCms.Core" version="0.0.0" />
+	  <dependency id="Novicell.Examine.Elasticsearch" version="[1.0,2.0)" />
 	  <dependency id="NEST" version="7.4.1" />
 	  <dependency id="Elasticsearch.Net" version="7.4.1" />
 	  

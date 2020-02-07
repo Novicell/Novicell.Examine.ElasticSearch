@@ -5,7 +5,7 @@ using Examine;
 using Umbraco.Core.Logging;
 using Umbraco.Examine;
 
-namespace Novicell.Examine.ElasticSearch.Indexers
+namespace Novicell.Examine.ElasticSearch.Umbraco.Indexers
 {
     public class ContentElasticSearchIndex : ElasticSearchUmbracoIndex, IUmbracoContentIndex
     {

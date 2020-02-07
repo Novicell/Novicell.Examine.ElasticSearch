@@ -1,5 +1,5 @@
 # version format
-version: 0.5.1.{build}
+version: 1.0.0.{build}
 nuget:
   account_feed: false
   project_feed: false
@@ -17,7 +17,7 @@ branches:
 
 environment:
   # Version Suffix
-  version_suffix: alpha
+  version_suffix: RC
 
 install:
   - nuget sources add -Name MyAccountFeed -Source https://ci.appveyor.com/nuget/bielu-s77m8i59ehlc/ -UserName %nuget_user% -Password %nuget_password%

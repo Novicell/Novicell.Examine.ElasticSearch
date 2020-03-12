@@ -8,11 +8,17 @@
 |                                        | Pre-release | [![Build status](https://img.shields.io/nuget/vpre/Novicell.Examine.ElasticSearch)](https://www.nuget.org/packages/Novicell.Examine.ElasticSearch/) |
 | Novicell.Examine.ElasticSearch.Umbraco | Release     | Soon                                                                                                                                                |
 |                                        | Pre-release |                                                                                                                                                     |
+| Novicell.Examine.SolR                  | Release     | Soon                                                                                                                                                |
+|                                        | Pre-release | Soon                                                                                                                                                |
+| Novicell.Examine.SolR                  | Release     | Soon                                                                                                                                                |
+|                                        | Pre-release | Soon                                                                                                                                                |
 
-| Umbraco Package | Version |
-| --------------- | ------- |
-| Release         | soon    |
-| Pre-release     | soon    |
+| Umbraco Package                        | Status      | Version |
+| -------------------------------------- | ----------- | ------- |
+| Novicell.Examine.ElasticSearch.Umbraco | Release     | Soon    |
+|                                        | Pre-release |         |
+| Novicell.Examine.SolR.Umbraco          | Release     | Soon    |
+|                                        | Pre-release | Soon    |
 
 # Introduction:
 
@@ -59,3 +65,5 @@ Instruction of instalation and configuration is available on wiki:
 # Features:
 
 - 0 downtime reindexing
+
+

@@ -36,13 +36,26 @@ Keeping in mind the above, we needed something to index into elastic using exami
 # Basic Information:
 
 Dependencies:
-Umbraco 8.4.0
 
-Elasticsearch 7.4.1
+**For both packages:**
+    Umbraco 8.4.0
+    Examine 1.0.3
 
-Nest 7.4.1
+**For ElasticSearch**
 
-Demo solution:
+    Elasticsearch 7.4.1
+
+    Nest 7.4.1
+
+**For SolR**
+
+    SolrNet 1.0.19
+
+
+
+
+
+**Demo solution for elasticsearch:**
 Umbraco Site:
 https://umbracoelasticsearchdemo.novicell.london/
 

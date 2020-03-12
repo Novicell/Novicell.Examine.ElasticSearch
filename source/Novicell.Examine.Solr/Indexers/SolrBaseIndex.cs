@@ -2,10 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using CommonServiceLocator;
 using Examine;
 using Examine.LuceneEngine.Providers;
 using Examine.Providers;
 using Novicell.Examine.Solr.Model;
+using SolrNet;
+using SolrNet.Mapping;
 using DocumentWritingEventArgs = Novicell.Examine.ElasticSearch.EventArgs.DocumentWritingEventArgs;
 
 namespace Novicell.Examine.Solr.Indexers
@@ -16,8 +19,7 @@ namespace Novicell.Examine.Solr.Indexers
         private bool? _exists;
         private bool isReindexing = false;
         private bool _isUmbraco = false;
-        public readonly Lazy<ElasticClient> _client;
-        private ElasticClient _indexer;
+        public readonly Lazy<ISolrOperations<Document>> _client;
         private static readonly object ExistsLocker = new object();
         public readonly Lazy<ElasticSearchSearcher> _searcher;
         public event EventHandler<MappingOperationEventArgs> Mapping;
@@ -50,75 +52,20 @@ namespace Novicell.Examine.Solr.Indexers
             _isUmbraco = isUmbraco;
             Analyzer = analyzer;
             ElasticURL = ConfigurationManager.AppSettings[$"examine:ElasticSearch[{name}].Url"];
-            _searcher = new Lazy<ElasticSearchSearcher>(CreateSearcher);
-            _client = new Lazy<ElasticClient>(CreateElasticSearchClient);
+            _searcher = new Lazy<SolrSearcher>(CreateSearcher);
+            _client = new Lazy<ISolrOperations<Document>>(CreateSolrConnectionOperation);
             indexAlias = prefix + Name;
             tempindexAlias = indexAlias + "temp";
         }
 
-        private ElasticClient CreateElasticSearchClient()
+        private ISolrOperations<Document> CreateSolrConnectionOperation()
         {
-            var serviceClient = new ElasticClient(ConnectionConfiguration.ConnectionConfiguration);
-            return serviceClient;
+            
+            return ServiceLocator.Current.GetInstance<ISolrOperations<Document>>();
         }
 
         public string Analyzer { get; }
-
-        private PropertiesDescriptor<Document> CreateFieldsMapping(PropertiesDescriptor<Document> descriptor,
-            FieldDefinitionCollection fieldDefinitionCollection)
-        {
-            descriptor.Keyword(s => s.Name("Id"));
-            descriptor.Keyword(s => s.Name(FormatFieldName(LuceneIndex.ItemIdFieldName)));
-            descriptor.Keyword(s => s.Name(FormatFieldName(LuceneIndex.ItemTypeFieldName)));
-            descriptor.Keyword(s => s.Name(FormatFieldName(LuceneIndex.CategoryFieldName)));
-
-            foreach (FieldDefinition field in fieldDefinitionCollection)
-            {
-                FromExamineType(descriptor, field);
-            }
-
-   
-
-            return descriptor;
-        }
-
-        private void FromExamineType(PropertiesDescriptor<Document> descriptor, FieldDefinition field)
-        {
-            switch (field.Type.ToLowerInvariant())
-            {
-                case "date":
-                case "datetimeoffset":
-                case "datetime":
-                    descriptor.Date(s => s.Name(field.Name));
-                    break;
-                case "double":
-                    descriptor.Number(s => s.Name(field.Name).Type(NumberType.Double));
-                    break;
-                case "float":
-                    descriptor.Number(s => s.Name(field.Name).Type(NumberType.Float));
-                    break;
-
-                case "long":
-                    descriptor.Number(s => s.Name(field.Name).Type(NumberType.Long));
-                    break;
-                case "int":
-                case "number":
-                    descriptor.Number(s => s.Name(field.Name).Type(NumberType.Integer));
-                    break;
-                case "raw":
-                    descriptor.Text(s => s.Name(field.Name).Analyzer("keyword"));
-                    break;
-                default:
-                    descriptor.Text(s => s.Name(field.Name).Analyzer(FromLuceneAnalyzer(Analyzer)));
-                    break;
-            }
-        }
-
-        protected virtual void onMapping(MappingOperationEventArgs mappingArgs)
-        {
-            Mapping?.Invoke(this, mappingArgs);
-        }
-
+        
         protected virtual void OnDocumentWriting(DocumentWritingEventArgs docArgs)
         {
             DocumentWriting?.Invoke(this, docArgs);
@@ -222,7 +169,7 @@ namespace Novicell.Examine.Solr.Indexers
             }
         }
 
-        private ElasticSearchSearcher CreateSearcher()
+        private SolrSearcher CreateSearcher()
         {
             return new ElasticSearchSearcher(ConnectionConfiguration, Name, indexName);
         }

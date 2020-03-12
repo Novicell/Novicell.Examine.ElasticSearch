@@ -1,6 +1,10 @@
 using System;
 using System.Configuration;
 using System.Linq;
+using HttpWebAdapters;
+using Lucene.Net.Documents;
+using SolrNet;
+using SolrNet.Impl;
 
 namespace Novicell.Examine.Solr
 {
@@ -11,6 +15,7 @@ namespace Novicell.Examine.Solr
         internal string Username { get; private set; }
         internal string Password { get; private set; }
         internal string IndexName { get; private set; }
+        public SolrConnection Connection;
 
         public string SolrCoreIndexUrl
         {
@@ -55,6 +60,9 @@ namespace Novicell.Examine.Solr
                         Convert.ToInt32(ConfigurationManager.AppSettings[$"examine:Solr[{indexName}].PageSize"]);
                 }
             }
+            Connection=  new SolrConnection(SolrCoreIndexUrl);
+            Connection.HttpWebRequestFactory = new BasicAuthHttpWebRequestFactory(Username, Password);
+            Startup.Init<Document>(Connection);
         }
     }
 }

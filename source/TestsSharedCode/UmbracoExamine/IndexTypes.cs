@@ -1,4 +1,4 @@
-﻿namespace Novicell.Examine.ElasticSearch.Tests.UmbracoExamine
+﻿namespace TestsSharedCode.UmbracoExamine
 {
     /// <summary>
     /// The index types stored in the Lucene Index

@@ -2,7 +2,7 @@
 using System.IO;
 using System.Reflection;
 
-namespace Novicell.Examine.ElasticSearch.Tests
+namespace TestsSharedCode
 {
     public static class TestHelper
     {

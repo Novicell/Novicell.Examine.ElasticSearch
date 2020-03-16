@@ -4,8 +4,11 @@ using System.Configuration;
 using System.Linq;
 using CommonServiceLocator;
 using Examine;
+using Examine.LuceneEngine;
+using Examine.LuceneEngine.Search;
 using Examine.Providers;
 using Examine.Search;
+using Lucene.Net.Search;
 using Novicell.Examine.Solr.Model;
 using SolrNet;
 using IQuery = Examine.Search.IQuery;
@@ -19,7 +22,7 @@ namespace Novicell.Examine.Solr
         public readonly Lazy<ISolrOperations<Document>> _client;
         internal readonly List<SortField> _sortFields = new List<SortField>();
         private string[] _allFields;
-        private IProperties _fieldsMapping;
+     //   private IProperties _fieldsMapping;
         private bool? _exists;
         private string _indexName;
         private string IndexName;
@@ -48,18 +51,22 @@ namespace Novicell.Examine.Solr
         {
             get
             {
-                var aliasExists = _client.Value.Indices.Exists(indexAlias).Exists;
-                if (aliasExists)
-                {
-                    var indexesMappedToAlias = _client.Value.GetIndicesPointingToAlias(indexAlias).ToList();
-                    if (indexesMappedToAlias.Count > 0)
-                    {
-                        _exists = true;
-                        return true;
-                    }
-                }
+                /* 
+                      var aliasExists = _client.Value.Indices.Exists(indexAlias).Exists;
+                      if (aliasExists)
+                      {
+                          var indexesMappedToAlias = _client.Value.GetIndicesPointingToAlias(indexAlias).ToList();
+                          if (indexesMappedToAlias.Count > 0)
+                          {
+                              _exists = true;
+                              return true;
+                          }
+                      }
+      
+                      _exists = false;
+                      return false;
+                  }*/
 
-                _exists = false;
                 return false;
             }
         }
@@ -69,75 +76,34 @@ namespace Novicell.Examine.Solr
         {
             get
             {
-                if (!IndexExists) return EmptyFields;
+               /* if (!IndexExists) return EmptyFields;
 
                 IEnumerable<PropertyName> keys = AllProperties.Keys;
 
                 _allFields = keys.Select(x => x.Name).ToArray();
-                return _allFields;
+                return _allFields;*/
+               return new string[0];
             }
         }
 
-        public IProperties AllProperties
-        {
-            get
-            {
-                if (!IndexExists) return null;
-                if (_fieldsMapping != null) return _fieldsMapping;
-
-                var indexesMappedToAlias = _client.Value.GetIndicesPointingToAlias(indexAlias).ToList();
-                GetMappingResponse response =
-                    _client.Value.Indices.GetMapping(new GetMappingRequest {IncludeTypeName = false});
-                _fieldsMapping = response.GetMappingFor(indexesMappedToAlias[0]).Properties;
-                return _fieldsMapping;
-            }
-        }
+       
 
         public ISearchResults Search(string searchText, int maxResults = 500, int page = 1)
         {
-            var query = new MultiMatchQuery
-            {
-                Query = searchText,
-                Analyzer = "standard",
-                Slop = 2,
-                Type = TextQueryType.Phrase
-            };
-
-            return new ElasticSearchSearchResults(_client.Value, query, indexAlias, _sortFields, maxResults,
-                maxResults * (page - 1));
+             return LuceneSearchResults.Empty();
         }
 
         public override ISearchResults Search(string searchText, int maxResults = 500)
         {
-            var query = new MultiMatchQuery
-            {
-                Query = searchText,
-                Analyzer = "standard",
-                Slop = 2,
-                Type = TextQueryType.Phrase
-            };
-            return new ElasticSearchSearchResults(_client.Value, query, indexAlias, _sortFields, maxResults);
+            return LuceneSearchResults.Empty();
         }
 
-        public ISearchResults Search(QueryContainer queryContainer, int maxResults = 500)
-        {
-            return new ElasticSearchSearchResults(_client.Value, queryContainer, indexAlias, _sortFields, maxResults);
-        }
-
-        public ISearchResults Search(ISearchRequest searchRequest)
-        {
-            return new ElasticSearchSearchResults(_client.Value, searchRequest, indexAlias, _sortFields);
-        }
-
-        public ISearchResults Search(Func<SearchDescriptor<Document>, ISearchRequest> searchSelector)
-        {
-            return new ElasticSearchSearchResults(_client.Value, searchSelector, indexAlias, _sortFields);
-        }
-
+      
         public override IQuery CreateQuery(string category = null,
             BooleanOperation defaultOperation = BooleanOperation.And)
         {
-            return new ElasticSearchQuery(this, category, AllFields, defaultOperation, indexAlias);
+            return default;
+            //    return new ElasticSearchQuery(this, category, AllFields, defaultOperation, indexAlias);
         }
         private ISolrOperations<Document> CreateSolrConnectionOperation()
         {

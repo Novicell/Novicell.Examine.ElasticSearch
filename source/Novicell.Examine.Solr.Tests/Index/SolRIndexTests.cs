@@ -1,52 +1,31 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using ElasticsearchInside;
-using ElasticsearchInside.Config;
 using Examine;
-using Examine.LuceneEngine;
-using Examine.LuceneEngine.Indexing;
-using Examine.LuceneEngine.Providers;
-using Examine.Search;
-using Nest;
-using Novicell.Examine.ElasticSearch.Tests.DataServices;
-using Novicell.Examine.ElasticSearch.Tests.UmbracoExamine;
 using NUnit.Framework;
 
-namespace Novicell.Examine.ElasticSearch.Tests.Index
+namespace Novicell.Examine.Solr.Tests.Index
 {
     /// <summary>
     /// Tests the standard indexing capabilities
     /// </summary>
     [TestFixture]
-    public class ElasticIndexTests
+    public class SolRIndexTests
     {
         [Test]
-        public void Rebuild_Index()
+        public void Can_Create_Index()
         {
-            using (var elasticsearch = new ElasticsearchInside.Elasticsearch(settings => settings
-                .EnableLogging()
-                .SetPort(9200)
-                .SetElasticsearchStartTimeout(180)).ReadySync())
-            {
-                ElasticSearchConfig config = new ElasticSearchConfig(new ConnectionSettings(elasticsearch.Url));
+       
+                SolrConfig config = new SolrConfig("TestIndex");
                 using (var indexer = new TestBaseIndex(config,  new FieldDefinitionCollection()))
                 {
                     indexer.CreateIndex();
-                    indexer.IndexItems(indexer.AllData());
-                    indexer._client.Value.Indices.Refresh(Indices.Index(indexer.indexAlias));
-                    Assert.AreEqual(100, indexer.DocumentCount);
+                 
+                    Assert.AreEqual(true, indexer.IndexExists());
                 }
-            }
+            
         }
 
-
+        /*
         [Test]
         public void Index_Exists()
         {

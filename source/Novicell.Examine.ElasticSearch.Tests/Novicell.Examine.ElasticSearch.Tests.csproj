@@ -189,16 +189,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ContentTypes\ContentTypeChangeExtensions.cs" />
-    <Compile Include="DataServices\TestContentService.cs" />
-    <Compile Include="IndexInitializer.cs" />
-    <Compile Include="Index\ElasticIndexTests.cs" />
+    <Compile Include="Index\SolRIndexTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Search\FluentApiTests.cs" />
     <Compile Include="SimpleDataProviderTest.cs" />
-    <Compile Include="TestHelper.cs" />
     <Compile Include="TestBaseIndex.cs" />
-    <Compile Include="UmbracoExamine\IndexTypes.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.config" />
@@ -217,6 +212,10 @@
     <ProjectReference Include="..\Novicell.Examine.ElasticSearch\Novicell.Examine.ElasticSearch.csproj">
       <Project>{dcfcb1d2-9614-4b87-ab44-4a77b7e0ac12}</Project>
       <Name>Novicell.Examine.ElasticSearch</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TestsSharedCode\TestsSharedCode.csproj">
+      <Project>{4958ed9c-2b2f-4086-a07e-df7db3029a5a}</Project>
+      <Name>TestsSharedCode</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

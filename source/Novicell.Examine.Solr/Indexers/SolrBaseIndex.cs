@@ -49,6 +49,7 @@ namespace Novicell.Examine.Solr.Indexers
             : base(name.ToLowerInvariant(), //TODO: Need to 'clean' the name according to Azure Search rules
                 fieldDefinitions ?? new FieldDefinitionCollection(), validator)
         {
+            indexName = name;
             ConnectionConfiguration = connectionConfiguration;
             _isUmbraco = isUmbraco;
             Analyzer = analyzer;
@@ -58,7 +59,7 @@ namespace Novicell.Examine.Solr.Indexers
             indexAlias = prefix + Name;
             var headerParser = ServiceLocator.Current.GetInstance<ISolrHeaderResponseParser>();
             var statusParser = ServiceLocator.Current.GetInstance<ISolrStatusResponseParser>();
-            _solrCoreAdmin = new SolrCoreAdmin(ConnectionConfiguration.Connection, headerParser, statusParser);
+            _solrCoreAdmin = new SolrCoreAdmin(ConnectionConfiguration.AdminConnection, headerParser, statusParser);
         }
 
 
@@ -133,7 +134,7 @@ namespace Novicell.Examine.Solr.Indexers
         {
             lock (ExistsLocker)
             {
-                _solrCoreAdmin.Create(coreName: indexName, instanceDir: indexName);
+                _solrCoreAdmin.Create(indexName,indexName,"solrconfig.xml","schema.xml","data");
 
 
                 isReindexing = true;
@@ -232,7 +233,12 @@ namespace Novicell.Examine.Solr.Indexers
         public override bool IndexExists()
         {
             var coreStatus = _solrCoreAdmin.Status(indexName);
-          
+            if (coreStatus.Name == null)
+            {
+                return false;
+            }
+
+            return true;
             return false;
         }
 

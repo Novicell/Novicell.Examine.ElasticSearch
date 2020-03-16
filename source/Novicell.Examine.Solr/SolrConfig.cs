@@ -25,6 +25,15 @@ namespace Novicell.Examine.Solr
                 return $"{coreUrl}/{IndexName}";
             }
         }
+        public string SolrCoreAdminUrl
+        {
+            get
+            {
+                var coreUrl = SolrCoreUrl.TrimEnd('/');
+                return $"{coreUrl}/solr";
+            }
+        }
+        public ISolrConnection AdminConnection { get; set; }
 
         public static SolrConfig GetConfig(string indexName)
         {
@@ -49,7 +58,7 @@ namespace Novicell.Examine.Solr
                 }
             }
 
-            else
+            else  if (ConfigurationManager.AppSettings.AllKeys.Contains($"examine:Solr[{indexName}].Url"))
             {
                 SolrCoreUrl = ConfigurationManager.AppSettings[$"examine:Solr[{indexName}].Url"];
                 Username = ConfigurationManager.AppSettings[$"examine:Solr[{indexName}].Username"];
@@ -60,7 +69,13 @@ namespace Novicell.Examine.Solr
                         Convert.ToInt32(ConfigurationManager.AppSettings[$"examine:Solr[{indexName}].PageSize"]);
                 }
             }
+            else
+            {
+                SolrCoreUrl = "http://localhost:8983/";
+            }
+
             Connection=  new SolrConnection(SolrCoreIndexUrl);
+            AdminConnection=  new SolrConnection(SolrCoreAdminUrl);
             Connection.HttpWebRequestFactory = new BasicAuthHttpWebRequestFactory(Username, Password);
             Startup.Init<Document>(Connection);
         }

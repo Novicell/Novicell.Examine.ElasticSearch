@@ -73,6 +73,7 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="SolRBase.cs" />
         <Compile Include="SolrSearcher.cs" />
         <Compile Include="EventArgs\DocumentWritingEventArgs.cs" />
         <Compile Include="Model\Document.cs" />

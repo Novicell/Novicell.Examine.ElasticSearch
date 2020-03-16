@@ -8,6 +8,7 @@ using Examine.LuceneEngine.Providers;
 using Examine.Providers;
 using Novicell.Examine.Solr.Model;
 using SolrNet;
+using SolrNet.Impl;
 using SolrNet.Mapping;
 using DocumentWritingEventArgs = Novicell.Examine.ElasticSearch.EventArgs.DocumentWritingEventArgs;
 
@@ -21,8 +22,9 @@ namespace Novicell.Examine.Solr.Indexers
         private bool _isUmbraco = false;
         public readonly Lazy<ISolrOperations<Document>> _client;
         private static readonly object ExistsLocker = new object();
-        public readonly Lazy<ElasticSearchSearcher> _searcher;
-        public event EventHandler<MappingOperationEventArgs> Mapping;
+        public readonly Lazy<SolrSearcher> _searcher;
+        private ISolrOperations<Document> _indexer;
+        private readonly ISolrCoreAdmin _solrCoreAdmin;
 
         /// <summary>
         /// Occurs when [document writing].
@@ -36,8 +38,7 @@ namespace Novicell.Examine.Solr.Indexers
             : "";
 
         public string indexAlias { get; set; }
-        private string tempindexAlias { get; set; }
-        public string ElasticURL { get; set; }
+        public string SolRURL { get; set; }
 
 
         public SolrBaseIndex(string name,
@@ -51,21 +52,18 @@ namespace Novicell.Examine.Solr.Indexers
             ConnectionConfiguration = connectionConfiguration;
             _isUmbraco = isUmbraco;
             Analyzer = analyzer;
-            ElasticURL = ConfigurationManager.AppSettings[$"examine:ElasticSearch[{name}].Url"];
+            SolRURL = connectionConfiguration.SolrCoreIndexUrl;
             _searcher = new Lazy<SolrSearcher>(CreateSearcher);
             _client = new Lazy<ISolrOperations<Document>>(CreateSolrConnectionOperation);
             indexAlias = prefix + Name;
-            tempindexAlias = indexAlias + "temp";
+            var headerParser = ServiceLocator.Current.GetInstance<ISolrHeaderResponseParser>();
+            var statusParser = ServiceLocator.Current.GetInstance<ISolrStatusResponseParser>();
+            _solrCoreAdmin = new SolrCoreAdmin(ConnectionConfiguration.Connection, headerParser, statusParser);
         }
 
-        private ISolrOperations<Document> CreateSolrConnectionOperation()
-        {
-            
-            return ServiceLocator.Current.GetInstance<ISolrOperations<Document>>();
-        }
 
         public string Analyzer { get; }
-        
+
         protected virtual void OnDocumentWriting(DocumentWritingEventArgs docArgs)
         {
             DocumentWriting?.Invoke(this, docArgs);
@@ -135,35 +133,10 @@ namespace Novicell.Examine.Solr.Indexers
         {
             lock (ExistsLocker)
             {
-                _client.Value.Indices.BulkAlias(ba => ba
-                    .Remove(remove => remove.Index("*").Alias(tempindexAlias)));
-                indexName = prefix + Name + "_" +
-                            DateTime.Now.ToString("dd_MM_yyyy_HH_mm_ss");
-                var index = _client.Value.Indices.Create(indexName, c => c
-                    .Mappings(ms => ms.Map<Document>(
-                        m => m.AutoMap()
-                            .Properties(ps => CreateFieldsMapping(ps, FieldDefinitionCollection))
-                    ))
-                );
-                var aliasExists = _client.Value.Indices.Exists(indexAlias).Exists;
+                _solrCoreAdmin.Create(coreName: indexName, instanceDir: indexName);
 
 
-                var indexesMappedToAlias = aliasExists
-                    ? _client.Value.GetIndicesPointingToAlias(indexAlias).ToList()
-                    : new List<String>();
-                if (!indexExists || (aliasExists && indexesMappedToAlias?.Count == 0))
-                {
-                    var bulkAliasResponse = _client.Value.Indices.BulkAlias(ba => ba
-                        .Add(add => add.Index(indexName).Alias(indexAlias))
-                    );
-                }
-                else
-                {
-                    isReindexing = true;
-                    _client.Value.Indices.BulkAlias(ba => ba
-                        .Add(add => add.Index(indexName).Alias(tempindexAlias))
-                    );
-                }
+                isReindexing = true;
 
                 _exists = true;
             }
@@ -171,10 +144,11 @@ namespace Novicell.Examine.Solr.Indexers
 
         private SolrSearcher CreateSearcher()
         {
-            return new ElasticSearchSearcher(ConnectionConfiguration, Name, indexName);
+            return default(SolrSearcher);
+            // return new ElasticSearchSearcher(ConnectionConfiguration, Name, indexName);
         }
 
-        private ElasticClient GetIndexClient()
+        private ISolrOperations<Document> GetIndexClient()
         {
             return _indexer ?? (_indexer = _client.Value);
         }
@@ -184,11 +158,29 @@ namespace Novicell.Examine.Solr.Indexers
             return $"{fieldName.Replace(".", "_")}";
         }
 
-        private BulkDescriptor ToElasticSearchDocs(IEnumerable<ValueSet> docs, string indexTarget)
+
+        protected override void PerformIndexItems(IEnumerable<ValueSet> op, Action<IndexOperationEventArgs> onComplete)
         {
-            var descriptor = new BulkDescriptor();
+            EnsureIndex(false);
 
+            var indexTarget = indexAlias;
+            var indexer = GetIndexClient();
+            var totalResults = 0;
+            IEnumerable<Document> documents;
 
+            if (isReindexing)
+            {
+            }
+
+            documents = ToSolRDocuments(op);
+            _client.Value.AddRange(documents);
+            _client.Value.Commit();
+            onComplete(new IndexOperationEventArgs(this, totalResults));
+        }
+
+        private IEnumerable<Document> ToSolRDocuments(IEnumerable<ValueSet> docs)
+        {
+            List<Document> documents = new List<Document>();
             foreach (var d in docs)
             {
                 try
@@ -210,59 +202,21 @@ namespace Novicell.Examine.Solr.Indexers
 
                     var docArgs = new DocumentWritingEventArgs(d, ad);
                     OnDocumentWriting(docArgs);
-                    descriptor.Index<Document>(op => op.Index(indexTarget).Document(ad).Id(d.Id));
+                    documents.Add(ad);
                 }
                 catch (Exception e)
                 {
                 }
             }
 
-            return descriptor;
-        }
-
-        protected override void PerformIndexItems(IEnumerable<ValueSet> op, Action<IndexOperationEventArgs> onComplete)
-        {
-            var aliasExists = _client.Value.Indices.Exists(indexAlias).Exists;
-            var indexesMappedToAlias = aliasExists
-                ? _client.Value.GetIndicesPointingToAlias(indexAlias).ToList()
-                : new List<String>();
-            EnsureIndex(false);
-
-            var indexTarget = isReindexing ? tempindexAlias : indexAlias;
-            var indexer = GetIndexClient();
-            var totalResults = 0;
-            var batch = ToElasticSearchDocs(op, indexTarget);
-            var indexResult = indexer.Bulk(e => batch);
-            totalResults += indexResult.Items.Count;
-
-
-            if (isReindexing)
-            {
-                indexer.Indices.BulkAlias(ba => ba
-                    .Remove(remove => remove.Index("*").Alias(indexAlias))
-                    .Add(add => add.Index(indexName).Alias(indexAlias))
-                );
-
-
-                indexesMappedToAlias.Where(e => e != indexName).ToList()
-                    .ForEach(e => _client.Value.Indices.Delete(new DeleteIndexRequest(e)));
-            }
-
-
-            onComplete(new IndexOperationEventArgs(this, totalResults));
+            return documents;
         }
 
         protected override void PerformDeleteFromIndex(IEnumerable<string> itemIds,
             Action<IndexOperationEventArgs> onComplete)
         {
-            var descriptor = new BulkDescriptor();
-
-            foreach (var id in itemIds.Where(x => !string.IsNullOrWhiteSpace(x)))
-                descriptor.Index(indexAlias).Delete<Document>(x => x
-                        .Id(id))
-                    .Refresh(Refresh.WaitFor);
-
-            var response = _client.Value.Bulk(descriptor);
+            _client.Value.DeleteAsync(itemIds);
+            _client.Value.Commit();
         }
 
         public override ISearcher GetSearcher()
@@ -277,33 +231,14 @@ namespace Novicell.Examine.Solr.Indexers
 
         public override bool IndexExists()
         {
-            var aliasExists = _client.Value.Indices.Exists(indexAlias).Exists;
-            if (aliasExists)
-            {
-                var indexesMappedToAlias = _client.Value.GetIndicesPointingToAlias(indexAlias).ToList();
-                if (indexesMappedToAlias.Count > 0)
-                {
-                    indexName = indexesMappedToAlias.FirstOrDefault();
-                    return true;
-                }
-            }
-
+            var coreStatus = _solrCoreAdmin.Status(indexName);
+          
             return false;
         }
 
         public bool TempIndexExists()
         {
-            var aliasExists = _client.Value.Indices.Exists(tempindexAlias).Exists;
-            if (aliasExists)
-            {
-                var indexesMappedToAlias = _client.Value.GetIndicesPointingToAlias(tempindexAlias).ToList();
-                if (indexesMappedToAlias.Count > 0)
-                {
-                    indexName = indexesMappedToAlias.FirstOrDefault();
-                    isReindexing = true;
-                    return true;
-                }
-            }
+          
 
             return false;
         }
@@ -315,13 +250,19 @@ namespace Novicell.Examine.Solr.Indexers
 
         public IEnumerable<string> GetFields()
         {
-            return _searcher.Value.AllFields;
+            return new List<string>();
+            // return _searcher.Value.AllFields;
+        }
+
+        private ISolrOperations<Document> CreateSolrConnectionOperation()
+        {
+            return ServiceLocator.Current.GetInstance<ISolrOperations<Document>>();
         }
 
         #region IIndexDiagnostics
 
         public int DocumentCount =>
-            (int) (IndexExists() ? _client.Value.Count<Document>(e => e.Index(indexAlias)).Count : 0);
+            (int) (IndexExists() ? _solrCoreAdmin.Status(indexName).Index.TotalDocumentCount : 0);
 
         public int FieldCount => IndexExists() ? _searcher.Value.AllFields.Length : 0;
 

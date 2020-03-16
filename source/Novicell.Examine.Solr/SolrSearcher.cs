@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using CommonServiceLocator;
 using Examine;
 using Examine.Providers;
 using Examine.Search;
 using Novicell.Examine.Solr.Model;
+using SolrNet;
 using IQuery = Examine.Search.IQuery;
 using SortField = Lucene.Net.Search.SortField;
 
@@ -14,7 +16,7 @@ namespace Novicell.Examine.Solr
     public class SolrSearcher : BaseSearchProvider, IDisposable
     {
         private readonly SolrConfig _connectionConfiguration;
-        public readonly Lazy<ElasticClient> _client;
+        public readonly Lazy<ISolrOperations<Document>> _client;
         internal readonly List<SortField> _sortFields = new List<SortField>();
         private string[] _allFields;
         private IProperties _fieldsMapping;
@@ -35,16 +37,12 @@ namespace Novicell.Examine.Solr
         {
             _connectionConfiguration = connectionConfiguration;
             _indexName = name;
-            _client = new Lazy<ElasticClient>(CreateElasticSearchClient);
+            _client = new Lazy<ISolrOperations<Document>>(CreateSolrConnectionOperation);
             indexAlias = prefix + Name;
             IndexName = indexName;
         }
 
-        private ElasticClient CreateElasticSearchClient()
-        {
-            var serviceClient = new ElasticClient(_connectionConfiguration.ConnectionConfiguration);
-            return serviceClient;
-        }
+ 
 
         public bool IndexExists
         {
@@ -141,7 +139,11 @@ namespace Novicell.Examine.Solr
         {
             return new ElasticSearchQuery(this, category, AllFields, defaultOperation, indexAlias);
         }
-
+        private ISolrOperations<Document> CreateSolrConnectionOperation()
+        {
+            
+            return ServiceLocator.Current.GetInstance<ISolrOperations<Document>>();
+        }
         public void Dispose()
         {
         

@@ -23,7 +23,16 @@
     <PackageLicenseUrl>http://www.opensource.org/licenses/mit-license.php</PackageLicenseUrl>
     <ProjectUrl>https://github.com/novicell/Novicell.Examine.ElasticSearch</ProjectUrl>
   </PropertyGroup>
-
+  <PropertyGroup>
+    <PackageName>Novicell.Examine.ElasticSearch.Umbraco.PDF/PackageName>
+    <MinUmbracoVersion>8.4.0</MinUmbracoVersion>
+    <Readme>Novicell.Examine.ElasticSearch.PDF is custom Examine provider, for PDF INDEXER</Readme>
+    <AuthorName>Arkadiusz Biel</AuthorName>
+    <AuthorUrl>https://github.com/novicell/Novicell.Examine.ElasticSearch/graphs/contributors</AuthorUrl>
+    <PackageLicenseName>MIT license</PackageLicenseName>
+    <PackageLicenseUrl>http://www.opensource.org/licenses/mit-license.php</PackageLicenseUrl>
+    <ProjectUrl>https://github.com/novicell/Novicell.Examine.ElasticSearch</ProjectUrl>
+  </PropertyGroup>
   <!-- NUGET ONLY PROPERTIES -->
   <PropertyGroup>
     <PackageId>Novicell.Examine.ElasticSearch</PackageId>

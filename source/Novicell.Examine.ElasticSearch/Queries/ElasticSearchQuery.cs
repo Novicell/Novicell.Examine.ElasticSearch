@@ -19,6 +19,7 @@ using DateTimeType = Novicell.Examine.ElasticSearch.Indexing.DateTimeType;
 using DoubleType = Novicell.Examine.ElasticSearch.Indexing.DoubleType;
 using FullTextType = Novicell.Examine.ElasticSearch.Indexing.FullTextType;
 using IIndexFieldValueType = Novicell.Examine.ElasticSearch.Indexing.IIndexFieldValueType;
+using IIndexRangeValueType = Novicell.Examine.ElasticSearch.Indexing.IIndexRangeValueType;
 using Int32Type = Novicell.Examine.ElasticSearch.Indexing.Int32Type;
 using Int64Type = Novicell.Examine.ElasticSearch.Indexing.Int64Type;
 using IQuery = Examine.Search.IQuery;

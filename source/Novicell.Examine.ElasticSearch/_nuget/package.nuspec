@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>Novicell.Examine.ElasticSearch</id>
+    <version>1.0.0-alpha-000105</version>
+    <title>Novicell.Examine.ElasticSearch.Umbraco</title>
+    <authors>Arkadiusz Biel</authors>
+    <owners>Novicell,Arkadiusz Biel</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
+    <projectUrl>https://github.com/novicell/Novicell.Examine.ElasticSearch</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/elastic/elasticsearch/master/server/src/main/resources/config/favicon.ico</iconUrl>
+    <description>Novicell.Examine.ElasticSearch is a Custom Search Provider for Examine</description>
+    <summary>Novicell.Examine.ElasticSearch is custom Examine provider.</summary>
+    <copyright>Novicell</copyright>
+    <language>en-GB</language>
+    <tags>Umbraco, Novicell,Examine,ElasticSearch</tags>
+    <dependencies>
+      <dependency id="NEST" version="7.4.1" />
+      <dependency id="Elasticsearch.Net" version="7.4.1" />
+    </dependencies>
+  </metadata>
+</package>

@@ -36,8 +36,8 @@
           <HintPath>..\packages\EPPlus.4.5.3.2\lib\net40\EPPlus.dll</HintPath>
           <Private>True</Private>
         </Reference>
-        <Reference Include="Examine, Version=1.0.1.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\packages\Examine.1.0.1\lib\net452\Examine.dll</HintPath>
+        <Reference Include="Examine, Version=1.0.5.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\packages\Examine.1.0.5\lib\net452\Examine.dll</HintPath>
           <Private>True</Private>
         </Reference>
         <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73">
@@ -183,23 +183,23 @@
         <Reference Include="System.Web.Extensions" />
         <Reference Include="System.Xml" />
         <Reference Include="Umbraco.Core, Version=8.0.0.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\packages\UmbracoCms.Core.8.1.0\lib\net472\Umbraco.Core.dll</HintPath>
+          <HintPath>..\packages\UmbracoCms.Core.8.9.0\lib\net472\Umbraco.Core.dll</HintPath>
           <Private>True</Private>
         </Reference>
-        <Reference Include="Umbraco.Forms.Core, Version=8.4.0.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\packages\UmbracoForms.Core.8.4.0\lib\net472\Umbraco.Forms.Core.dll</HintPath>
+        <Reference Include="Umbraco.Forms.Core, Version=8.5.4.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\packages\UmbracoForms.Core.8.5.4\lib\net472\Umbraco.Forms.Core.dll</HintPath>
           <Private>True</Private>
         </Reference>
-        <Reference Include="Umbraco.Forms.Core.Providers, Version=8.4.0.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\packages\UmbracoForms.Core.8.4.0\lib\net472\Umbraco.Forms.Core.Providers.dll</HintPath>
+        <Reference Include="Umbraco.Forms.Core.Providers, Version=8.5.4.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\packages\UmbracoForms.Core.8.5.4\lib\net472\Umbraco.Forms.Core.Providers.dll</HintPath>
           <Private>True</Private>
         </Reference>
-        <Reference Include="Umbraco.Forms.Web, Version=8.4.0.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\packages\UmbracoForms.Core.8.4.0\lib\net472\Umbraco.Forms.Web.dll</HintPath>
+        <Reference Include="Umbraco.Forms.Web, Version=8.5.4.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\packages\UmbracoForms.Core.8.5.4\lib\net472\Umbraco.Forms.Web.dll</HintPath>
           <Private>True</Private>
         </Reference>
         <Reference Include="Umbraco.Licensing, Version=2.0.33.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\packages\UmbracoForms.Core.8.4.0\lib\net472\Umbraco.Licensing.dll</HintPath>
+          <HintPath>..\packages\UmbracoForms.Core.8.5.4\lib\net472\Umbraco.Licensing.dll</HintPath>
           <Private>True</Private>
         </Reference>
     </ItemGroup>

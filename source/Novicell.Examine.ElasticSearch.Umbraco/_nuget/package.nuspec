@@ -17,6 +17,7 @@
     <tags>Umbraco, Novicell,Examine,ElasticSearch</tags>
     <dependencies>
       <dependency id="Novicell.Examine.ElasticSearch" version="[1.0.0-alpha, 2.0.0)" />
+      <dependency id="UmbracoCms.Core" version="[8.4.0, 9.0.0)" />
     </dependencies>
   </metadata>
 </package>

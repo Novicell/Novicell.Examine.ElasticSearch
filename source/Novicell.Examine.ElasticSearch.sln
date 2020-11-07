@@ -6,6 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Novicell.Examine.ElasticSea
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Novicell.Examine.ElasticSearch.Umbraco", "Novicell.Examine.ElasticSearch.Umbraco\Novicell.Examine.ElasticSearch.Umbraco.csproj", "{CA988FFF-B9B4-47A7-AC35-A03CED9F9E52}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Novicell.Examine.ElasticSearch.Umbraco.Forms", "Novicell.Examine.ElasticSearch.Umbraco.Forms\Novicell.Examine.ElasticSearch.Umbraco.Forms.csproj", "{B1AA24B7-2DAA-4D65-A7EF-95ED7FAD3204}"
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Novicell.Examine.ElasticSearch.Umbraco.PDF", "Novicell.Examine.ElasticSearch.Umbraco.PDF\Novicell.Examine.ElasticSearch.Umbraco.PDF.csproj", "{D3FDA12F-8059-4901-A666-19799C302228}"
 EndProject
 Global
@@ -26,6 +27,10 @@ Global
 		{CA988FFF-B9B4-47A7-AC35-A03CED9F9E52}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA988FFF-B9B4-47A7-AC35-A03CED9F9E52}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA988FFF-B9B4-47A7-AC35-A03CED9F9E52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1AA24B7-2DAA-4D65-A7EF-95ED7FAD3204}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1AA24B7-2DAA-4D65-A7EF-95ED7FAD3204}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1AA24B7-2DAA-4D65-A7EF-95ED7FAD3204}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1AA24B7-2DAA-4D65-A7EF-95ED7FAD3204}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D3FDA12F-8059-4901-A666-19799C302228}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D3FDA12F-8059-4901-A666-19799C302228}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3FDA12F-8059-4901-A666-19799C302228}.Release|Any CPU.ActiveCfg = Release|Any CPU

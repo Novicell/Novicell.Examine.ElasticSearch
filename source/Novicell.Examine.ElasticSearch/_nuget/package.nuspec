@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>Novicell.Examine.ElasticSearch</id>
-    <version>1.0.0-alpha-000105</version>
+    <version></version>
     <title>Novicell.Examine.ElasticSearch.Umbraco</title>
     <authors>Arkadiusz Biel</authors>
     <owners>Novicell,Arkadiusz Biel</owners>

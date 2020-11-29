@@ -30,8 +30,8 @@ stages:
       inputs:
         command: 'restore'
         restoreSolution: '**/*.sln'
-        feedsToUse: 'select'
-        includeNuGetOrg: true
+        feedsToUse: 'config'
+        nugetConfigPath: '$(System.DefaultWorkingDirectory)\NuGet.config'
     - task: VSBuild@1
       inputs:
         solution: '$(solution)'

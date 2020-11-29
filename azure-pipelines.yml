@@ -1,0 +1,98 @@
+# ASP.NET
+# Build and test ASP.NET projects.
+# Add steps that publish symbols, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
+
+trigger:
+ branches:
+    include:
+      - master
+
+# no PR triggers
+pr: none
+pool: 'DotNetStack-Production'
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+stages:
+- stage: build
+  displayName: Build
+  jobs:
+  - job: Build
+    pool: 'DotNetStack-Production'
+    steps:
+    - checkout: self
+      persistCredentials: true
+    - task: NuGetToolInstaller@1
+    - task: NuGetCommand@2
+      inputs:
+        command: 'restore'
+        restoreSolution: '**/*.sln'
+        feedsToUse: 'select'
+        includeNuGetOrg: true
+    - task: VSBuild@1
+      inputs:
+        solution: '$(solution)'
+        configuration: '$(buildConfiguration)'
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: |
+        
+          $version = Get-ChildItem ".\sem.ver" |  Get-Content
+          $nuspecs =  Get-ChildItem -Path ..\*\*.nuspec -Recurse -Force;
+          $nuspecs | Foreach-Object { 
+          
+          [xml]$xml = Get-Content -path  $_.FullName -Raw
+          $ns = [System.Xml.XmlNamespaceManager]::new($xml.NameTable)
+              $ns.AddNamespace('nuspec', 'http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd')
+              
+              write-host [xml]$xml
+              $xml.package.metadata.version= $version.ToString();
+              
+              [xml]$xml.Save($_.FullName)
+          }
+          cd $(Build.SourcesDirectory)
+          git config --global user.email "nuggetintegration@novicell.dk"
+          git config --global user.name "DEVOPS" 
+          git tag -a $version -m 'tag message'
+          git push --tags -q
+          Write-Host "##vso[build.updatebuildnumber]$version"
+        workingDirectory: '$(System.DefaultWorkingDirectory)'
+    - task: NuGetCommand@2
+      inputs:
+        command: 'pack'
+        packagesToPack: '**/*.nuspec'
+        versioningScheme: 'off'
+        includeSymbols: false
+
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'publish artifacts'
+        publishLocation: 'Container'
+- stage: deploy
+  displayName: Stable Deployment
+  pool: 'DotNetStack-Production'
+  dependsOn: build
+  jobs:
+  - job: Deploy
+    pool: 'DotNetStack-Production'
+    steps:
+    - task: DeleteFiles@1
+      inputs:
+        SourceFolder: '$(Pipeline.Workspace)/publish artifacts/'
+        Contents: '**/*'
+        RemoveSourceFolder: true
+    - download: current
+      artifact: 'publish artifacts'
+    - task: NuGetToolInstaller@1
+    - task: NuGetCommand@2
+      displayName: Push to DK feed
+      inputs:
+        command: 'push'
+        packagesToPush: '$(Pipeline.Workspace)/publish artifacts/**/*.nupkg'
+        nuGetFeedType: 'external'
+        publishFeedCredentials: 'Nuget'

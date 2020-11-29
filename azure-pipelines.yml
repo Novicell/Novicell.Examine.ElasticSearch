@@ -10,7 +10,7 @@ trigger:
 
 # no PR triggers
 pr: none
-pool: 'DotNetStack-Production'
+pool: 'Umbraco-UK-Staging'
 
 variables:
   solution: '**/*.sln'
@@ -21,7 +21,7 @@ stages:
   displayName: Build
   jobs:
   - job: Build
-    pool: 'DotNetStack-Production'
+    pool: 'Umbraco-UK-Staging'
     steps:
     - checkout: self
       persistCredentials: true
@@ -75,11 +75,11 @@ stages:
         publishLocation: 'Container'
 - stage: deploy
   displayName: Stable Deployment
-  pool: 'DotNetStack-Production'
+  pool: 'Umbraco-UK-Staging'
   dependsOn: build
   jobs:
   - job: Deploy
-    pool: 'DotNetStack-Production'
+    pool: 'Umbraco-UK-Staging'
     steps:
     - task: DeleteFiles@1
       inputs:

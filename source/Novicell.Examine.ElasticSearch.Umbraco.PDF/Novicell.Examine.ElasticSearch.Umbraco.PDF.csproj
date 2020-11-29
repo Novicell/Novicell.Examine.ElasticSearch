@@ -289,6 +289,34 @@
           <Private>True</Private>
         </Reference>
         <Reference Include="System.Xml" />
+        <Reference Include="UglyToad.PdfPig, Version=0.1.3.0, Culture=neutral, PublicKeyToken=605d367334e74123">
+          <HintPath>..\packages\PdfPig.0.1.3\lib\net47\UglyToad.PdfPig.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="UglyToad.PdfPig.Core, Version=0.1.3.0, Culture=neutral, PublicKeyToken=605d367334e74123">
+          <HintPath>..\packages\PdfPig.0.1.3\lib\net47\UglyToad.PdfPig.Core.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="UglyToad.PdfPig.DocumentLayoutAnalysis, Version=0.1.3.0, Culture=neutral, PublicKeyToken=605d367334e74123">
+          <HintPath>..\packages\PdfPig.0.1.3\lib\net47\UglyToad.PdfPig.DocumentLayoutAnalysis.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="UglyToad.PdfPig.Fonts, Version=0.1.3.0, Culture=neutral, PublicKeyToken=605d367334e74123">
+          <HintPath>..\packages\PdfPig.0.1.3\lib\net47\UglyToad.PdfPig.Fonts.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="UglyToad.PdfPig.Package, Version=0.1.1.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\packages\PdfPig.0.1.3\lib\net47\UglyToad.PdfPig.Package.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="UglyToad.PdfPig.Tokenization, Version=0.1.3.0, Culture=neutral, PublicKeyToken=605d367334e74123">
+          <HintPath>..\packages\PdfPig.0.1.3\lib\net47\UglyToad.PdfPig.Tokenization.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="UglyToad.PdfPig.Tokens, Version=0.1.3.0, Culture=neutral, PublicKeyToken=605d367334e74123">
+          <HintPath>..\packages\PdfPig.0.1.3\lib\net47\UglyToad.PdfPig.Tokens.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
         <Reference Include="Umbraco.Core, Version=8.0.0.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\packages\UmbracoCms.Core.8.9.0\lib\net472\Umbraco.Core.dll</HintPath>
           <Private>True</Private>
@@ -309,8 +337,8 @@
           <HintPath>..\packages\UmbracoCms.Web.8.9.0\lib\net472\Umbraco.Web.UI.dll</HintPath>
           <Private>True</Private>
         </Reference>
-        <Reference Include="UmbracoExamine.PDF, Version=0.8.7153.30865, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\packages\UmbracoCms.UmbracoExamine.PDF.2.0.2\lib\net472\UmbracoExamine.PDF.dll</HintPath>
+        <Reference Include="UmbracoExamine.PDF, Version=0.8.7634.9991, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\packages\UmbracoCms.UmbracoExamine.PDF.2.1.0\lib\net472\UmbracoExamine.PDF.dll</HintPath>
           <Private>True</Private>
         </Reference>
     </ItemGroup>

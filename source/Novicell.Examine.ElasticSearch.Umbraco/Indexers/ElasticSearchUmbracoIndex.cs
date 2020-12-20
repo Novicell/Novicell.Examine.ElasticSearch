@@ -59,8 +59,7 @@ namespace Novicell.Examine.ElasticSearch.Umbraco.Indexers
         /// When set to true Umbraco will keep the index in sync with Umbraco data automatically
         /// </summary>
 
-        public bool PublishedValuesOnly { get; protected set; } = false;
-
+        public bool PublishedValuesOnly { get; internal set; }
         /// <inheritdoc />
         public new IEnumerable<string> GetFields()
         {
@@ -120,8 +119,6 @@ namespace Novicell.Examine.ElasticSearch.Umbraco.Indexers
 
         protected override void OnTransformingIndexValues(IndexingItemEventArgs e)
         {
-            base.OnTransformingIndexValues(e);
-
             //ensure special __Path field
             var path = e.ValueSet.GetValue("path");
             if (path != null)
@@ -135,6 +132,7 @@ namespace Novicell.Examine.ElasticSearch.Umbraco.Indexers
             {
                 e.ValueSet.Values[IconFieldName] = icon;
             }
+            base.OnTransformingIndexValues(e);
         }
 
 

@@ -7,13 +7,14 @@ using Umbraco.Examine;
 
 namespace Novicell.Examine.ElasticSearch.Umbraco.Indexers
 {
-    public class ContentElasticSearchIndex : ElasticSearchUmbracoIndex, IUmbracoContentIndex
+    public class ContentElasticSearchIndex : ElasticSearchUmbracoIndex, IUmbracoContentIndex2
     {
         public ContentElasticSearchIndex(string name, ElasticSearchConfig connectionConfiguration, IProfilingLogger profilingLogger,  
             FieldDefinitionCollection fieldDefinitions = null, string analyzer = null,
-            IValueSetValidator validator = null) : base(name, connectionConfiguration,
+            IValueSetValidator validator = null, bool publishedValuesOnly = false) : base(name, connectionConfiguration,
             profilingLogger, fieldDefinitions, analyzer, validator)
         {
+            PublishedValuesOnly = publishedValuesOnly;
         }
         protected override void PerformIndexItems(IEnumerable<ValueSet> values, Action<IndexOperationEventArgs> onComplete)
         {

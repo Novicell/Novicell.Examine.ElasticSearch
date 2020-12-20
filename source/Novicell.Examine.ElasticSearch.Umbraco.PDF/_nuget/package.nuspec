@@ -20,4 +20,7 @@
       <dependency id="UmbracoCms.UmbracoExamine.PDF" version="[2.0.0, 3.0.0)" />
     </dependencies>
   </metadata>
+  <files>
+    <file src="..\bin\Release\Novicell.Examine.ElasticSearch.Umbraco.Pdf.dll" target="lib\net45" />
+  </files>
 </package>

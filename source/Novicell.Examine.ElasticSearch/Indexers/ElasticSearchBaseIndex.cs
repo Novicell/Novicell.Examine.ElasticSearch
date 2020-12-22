@@ -250,6 +250,8 @@ namespace Novicell.Examine.ElasticSearch.Indexers
             {
                 try
                 {
+                    var indexingNodeDataArgs = new IndexingItemEventArgs(this, d);
+                    OnTransformingIndexValues(indexingNodeDataArgs);
                     //this is just a dictionary
                     var ad = new Document
                     {

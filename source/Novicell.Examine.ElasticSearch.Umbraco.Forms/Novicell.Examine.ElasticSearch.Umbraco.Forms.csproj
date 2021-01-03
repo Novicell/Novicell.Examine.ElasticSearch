@@ -32,6 +32,22 @@
         <WarningLevel>4</WarningLevel>
     </PropertyGroup>
     <ItemGroup>
+        <Reference Include="AngleSharp, Version=0.9.9.0, Culture=neutral, PublicKeyToken=e83494dcdc6d31ea">
+          <HintPath>..\packages\AngleSharp.0.9.11\lib\net45\AngleSharp.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="ClientDependency.Core, Version=1.9.9.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\packages\ClientDependency.1.9.9\lib\net45\ClientDependency.Core.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="ClientDependency.Core.Mvc, Version=1.9.3.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\packages\ClientDependency-Mvc5.1.9.3\lib\net45\ClientDependency.Core.Mvc.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="CSharpTest.Net.Collections, Version=14.906.1403.1082, Culture=neutral, PublicKeyToken=06aee00cce822474">
+          <HintPath>..\packages\CSharpTest.Net.Collections.14.906.1403.1082\lib\net40\CSharpTest.Net.Collections.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
         <Reference Include="EPPlus, Version=4.5.3.2, Culture=neutral, PublicKeyToken=ea159fdaa78159a1">
           <HintPath>..\packages\EPPlus.4.5.3.2\lib\net40\EPPlus.dll</HintPath>
           <Private>True</Private>
@@ -40,8 +56,20 @@
           <HintPath>..\packages\Examine.1.0.5\lib\net452\Examine.dll</HintPath>
           <Private>True</Private>
         </Reference>
+        <Reference Include="HtmlAgilityPack, Version=1.8.14.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a">
+          <HintPath>..\packages\HtmlAgilityPack.1.8.14\lib\Net45\HtmlAgilityPack.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="HtmlSanitizer, Version=4.0.0.0, Culture=neutral, PublicKeyToken=61c49a1a9e79cc28">
+          <HintPath>..\packages\HtmlSanitizer.4.0.217\lib\net45\HtmlSanitizer.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
         <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73">
           <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="ImageProcessor, Version=2.7.0.100, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\packages\ImageProcessor.2.7.0.100\lib\net452\ImageProcessor.dll</HintPath>
           <Private>True</Private>
         </Reference>
         <Reference Include="LightInject, Version=5.4.0.0, Culture=neutral, PublicKeyToken=null">
@@ -52,16 +80,36 @@
           <HintPath>..\packages\LightInject.Annotation.1.1.0\lib\net46\LightInject.Annotation.dll</HintPath>
           <Private>True</Private>
         </Reference>
+        <Reference Include="LightInject.Mvc, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\packages\LightInject.Mvc.2.0.0\lib\net46\LightInject.Mvc.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
         <Reference Include="LightInject.Web, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\packages\LightInject.Web.2.0.0\lib\net46\LightInject.Web.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="LightInject.WebApi, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\packages\LightInject.WebApi.2.0.0\lib\net46\LightInject.WebApi.dll</HintPath>
           <Private>True</Private>
         </Reference>
         <Reference Include="Lucene.Net, Version=3.0.3.0, Culture=neutral, PublicKeyToken=85089178b9ac3181">
           <HintPath>..\packages\Lucene.Net.3.0.3\lib\NET40\Lucene.Net.dll</HintPath>
           <Private>True</Private>
         </Reference>
+        <Reference Include="Markdown, Version=2.0.0.0, Culture=neutral, PublicKeyToken=1b320cc08ad5aa89">
+          <HintPath>..\packages\Markdown.2.2.1\lib\net451\Markdown.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
         <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
           <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.2\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="Microsoft.AspNet.Identity.Owin, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+          <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.2\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="Microsoft.AspNet.SignalR.Core, Version=2.4.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+          <HintPath>..\packages\Microsoft.AspNet.SignalR.Core.2.4.0\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
           <Private>True</Private>
         </Reference>
         <Reference Include="Microsoft.CSharp" />
@@ -71,6 +119,26 @@
         </Reference>
         <Reference Include="Microsoft.Owin, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
           <HintPath>..\packages\Microsoft.Owin.4.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+          <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.4.0.1\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="Microsoft.Owin.Security, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+          <HintPath>..\packages\Microsoft.Owin.Security.4.0.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="Microsoft.Owin.Security.Cookies, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+          <HintPath>..\packages\Microsoft.Owin.Security.Cookies.4.0.1\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="Microsoft.Owin.Security.OAuth, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+          <HintPath>..\packages\Microsoft.Owin.Security.OAuth.4.0.1\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+          <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
           <Private>True</Private>
         </Reference>
         <Reference Include="MiniProfiler, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b44f9351044011a3">
@@ -174,6 +242,10 @@
         <Reference Include="System.Runtime.Serialization" />
         <Reference Include="System.Security" />
         <Reference Include="System.Threading.Tasks" />
+        <Reference Include="System.Threading.Tasks.Dataflow, Version=4.6.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+          <HintPath>..\packages\System.Threading.Tasks.Dataflow.4.9.0\lib\netstandard2.0\System.Threading.Tasks.Dataflow.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
         <Reference Include="System.Transactions" />
         <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51">
           <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
@@ -181,9 +253,45 @@
         </Reference>
         <Reference Include="System.Web" />
         <Reference Include="System.Web.Extensions" />
+        <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+          <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.Helpers.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="System.Web.Http, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+          <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.7\lib\net45\System.Web.Http.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="System.Web.Http.WebHost, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+          <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.7\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="System.Web.Mvc, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+          <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.7\lib\net45\System.Web.Mvc.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+          <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.7\lib\net45\System.Web.Razor.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+          <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+          <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+          <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
         <Reference Include="System.Xml" />
         <Reference Include="Umbraco.Core, Version=8.0.0.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\packages\UmbracoCms.Core.8.9.1\lib\net472\Umbraco.Core.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="Umbraco.Examine, Version=8.0.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\packages\UmbracoCms.Web.8.9.1\lib\net472\Umbraco.Examine.dll</HintPath>
           <Private>True</Private>
         </Reference>
         <Reference Include="Umbraco.Forms.Core, Version=8.5.4.0, Culture=neutral, PublicKeyToken=null">
@@ -202,9 +310,22 @@
           <HintPath>..\packages\UmbracoForms.Core.8.5.4\lib\net472\Umbraco.Licensing.dll</HintPath>
           <Private>True</Private>
         </Reference>
+        <Reference Include="Umbraco.ModelsBuilder.Embedded, Version=8.0.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\packages\UmbracoCms.Web.8.9.1\lib\net472\Umbraco.ModelsBuilder.Embedded.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="Umbraco.Web, Version=8.0.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\packages\UmbracoCms.Web.8.9.1\lib\net472\Umbraco.Web.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="Umbraco.Web.UI, Version=8.0.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\packages\UmbracoCms.Web.8.9.1\lib\net472\Umbraco.Web.UI.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
     </ItemGroup>
     <ItemGroup>
         <Compile Include="ElasticSearchExamineUmbracoFormsComposer.cs" />
+        <Compile Include="IndexPopulators\ElasticFormsIndexPopulator.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="UmbracoFormsElasticIndex.cs" />
         <Compile Include="UmbracoFormsElasticIndexCreator.cs" />

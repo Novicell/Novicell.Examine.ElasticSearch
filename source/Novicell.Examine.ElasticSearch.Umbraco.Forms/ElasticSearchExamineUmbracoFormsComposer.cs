@@ -1,4 +1,5 @@
-﻿using Umbraco.Core;
+﻿using Novicell.Examine.ElasticSearch.Umbraco.Forms.IndexPopulators;
+using Umbraco.Core;
 using Umbraco.Core.Composing;
 using Umbraco.Forms.Core.Components;
 using Umbraco.Forms.Core.Data.RecordIndex;
@@ -12,6 +13,7 @@ namespace Novicell.Examine.ElasticSearch.Umbraco.Forms
         public void Compose(Composition composition)
         {
             composition.Register<IFormsIndexCreator, UmbracoFormsElasticIndexCreator>(Lifetime.Singleton);
+            composition.Register<IFormsIndexPopulator, ElasticFormsIndexPopulator>(Lifetime.Singleton);
         }
     }
 }

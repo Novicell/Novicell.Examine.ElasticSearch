@@ -345,6 +345,7 @@
     <ItemGroup>
         <Compile Include="ElasticPdfIndexComposer.cs" />
         <Compile Include="ElasticPdfIndexCreator.cs" />
+        <Compile Include="IndexPopulators\ElasticFormsIndexPopulator.cs" />
         <Compile Include="PdfElasticIndex.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>

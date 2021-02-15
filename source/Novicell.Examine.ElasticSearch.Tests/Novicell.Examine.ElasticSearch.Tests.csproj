@@ -184,7 +184,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Umbraco.Core, Version=8.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\UmbracoCms.Core.8.9.1\lib\net472\Umbraco.Core.dll</HintPath>
+      <HintPath>..\packages\UmbracoCms.Core.8.11.1\lib\net472\Umbraco.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>

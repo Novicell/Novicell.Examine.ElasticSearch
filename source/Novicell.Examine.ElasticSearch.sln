@@ -1,5 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30804.86
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Novicell.Examine.ElasticSearch", "Novicell.Examine.ElasticSearch\Novicell.Examine.ElasticSearch.csproj", "{DCFCB1D2-9614-4B87-AB44-4A77B7E0AC12}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Novicell.Examine.ElasticSearch.Tests", "Novicell.Examine.ElasticSearch.Tests\Novicell.Examine.ElasticSearch.Tests.csproj", "{E5A3666B-3361-4062-B1D5-D896A77B5C85}"
@@ -11,9 +14,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Novicell.Examine.ElasticSearch.Umbraco.PDF", "Novicell.Examine.ElasticSearch.Umbraco.PDF\Novicell.Examine.ElasticSearch.Umbraco.PDF.csproj", "{D3FDA12F-8059-4901-A666-19799C302228}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Versioning", "Versioning", "{11F19B63-F0DA-4695-A2B9-FDC1F82F98EB}"
-ProjectSection(SolutionItems) = preProject
-	..\sem.ver = ..\sem.ver
-EndProjectSection
+	ProjectSection(SolutionItems) = preProject
+		..\sem.ver = ..\sem.ver
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Novicell.Examine.ElasticSearch.Umbraco.TestProject", "Novicell.Examine.ElasticSearch.Umbraco.TestProject\Novicell.Examine.ElasticSearch.Umbraco.TestProject.csproj", "{5E2ABCDA-8D5A-4F1C-9609-BB1557FEE6BB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,5 +46,15 @@ Global
 		{D3FDA12F-8059-4901-A666-19799C302228}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3FDA12F-8059-4901-A666-19799C302228}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3FDA12F-8059-4901-A666-19799C302228}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E2ABCDA-8D5A-4F1C-9609-BB1557FEE6BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E2ABCDA-8D5A-4F1C-9609-BB1557FEE6BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E2ABCDA-8D5A-4F1C-9609-BB1557FEE6BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E2ABCDA-8D5A-4F1C-9609-BB1557FEE6BB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F2E26388-BDE4-47BA-9A40-5E5132472FF3}
 	EndGlobalSection
 EndGlobal

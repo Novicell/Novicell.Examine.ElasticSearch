@@ -303,23 +303,23 @@
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Umbraco.Core, Version=8.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\UmbracoCms.Core.8.9.1\lib\net472\Umbraco.Core.dll</HintPath>
+      <HintPath>..\packages\UmbracoCms.Core.8.11.1\lib\net472\Umbraco.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Umbraco.Examine, Version=8.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\UmbracoCms.Web.8.9.1\lib\net472\Umbraco.Examine.dll</HintPath>
+      <HintPath>..\packages\UmbracoCms.Web.8.11.1\lib\net472\Umbraco.Examine.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Umbraco.ModelsBuilder.Embedded, Version=8.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\UmbracoCms.Web.8.9.1\lib\net472\Umbraco.ModelsBuilder.Embedded.dll</HintPath>
+      <HintPath>..\packages\UmbracoCms.Web.8.11.1\lib\net472\Umbraco.ModelsBuilder.Embedded.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Umbraco.Web, Version=8.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\UmbracoCms.Web.8.9.1\lib\net472\Umbraco.Web.dll</HintPath>
+      <HintPath>..\packages\UmbracoCms.Web.8.11.1\lib\net472\Umbraco.Web.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Umbraco.Web.UI, Version=8.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\UmbracoCms.Web.8.9.1\lib\net472\Umbraco.Web.UI.dll</HintPath>
+      <HintPath>..\packages\UmbracoCms.Web.8.11.1\lib\net472\Umbraco.Web.UI.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>

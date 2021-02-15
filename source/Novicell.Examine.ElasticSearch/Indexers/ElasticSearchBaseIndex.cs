@@ -253,24 +253,27 @@ namespace Novicell.Examine.ElasticSearch.Indexers
                 {
                     var indexingNodeDataArgs = new IndexingItemEventArgs(this, d);
                     OnTransformingIndexValues(indexingNodeDataArgs);
-                    //this is just a dictionary
-                    var ad = new Document
-                    {
-                        ["Id"] = d.Id,
-                        [FormatFieldName(LuceneIndex.ItemIdFieldName)] = d.Id,
-                        [FormatFieldName(LuceneIndex.ItemTypeFieldName)] = d.ItemType,
-                        [FormatFieldName(LuceneIndex.CategoryFieldName)] = d.Category
-                    };
+                    
+                    if (!indexingNodeDataArgs.Cancel) {
+                        //this is just a dictionary
+                        var ad = new Document
+                        {
+                            ["Id"] = d.Id,
+                            [FormatFieldName(LuceneIndex.ItemIdFieldName)] = d.Id,
+                            [FormatFieldName(LuceneIndex.ItemTypeFieldName)] = d.ItemType,
+                            [FormatFieldName(LuceneIndex.CategoryFieldName)] = d.Category
+                        };
 
-                    foreach (var i in d.Values)
-                    {
-                        if (i.Value.Count > 0)
-                            ad[FormatFieldName(i.Key)] = i.Value.Count == 1 ? i.Value[0] : i.Value;
+                        foreach (var i in d.Values)
+                        {
+                            if (i.Value.Count > 0)
+                                ad[FormatFieldName(i.Key)] = i.Value.Count == 1 ? i.Value[0] : i.Value;
+                        }
+
+                        var docArgs = new DocumentWritingEventArgs(d, ad);
+                        OnDocumentWriting(docArgs);
+                        descriptor.Index<Document>(op => op.Index(indexTarget).Document(ad).Id(d.Id));
                     }
-
-                    var docArgs = new DocumentWritingEventArgs(d, ad);
-                    OnDocumentWriting(docArgs);
-                    descriptor.Index<Document>(op => op.Index(indexTarget).Document(ad).Id(d.Id));
                 }
                 catch (Exception e)
                 {

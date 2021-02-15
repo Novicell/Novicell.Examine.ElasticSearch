@@ -67,7 +67,7 @@ namespace Novicell.Examine.ElasticSearch.Indexers
 
         public string Analyzer { get; }
 
-        private PropertiesDescriptor<Document> CreateFieldsMapping(PropertiesDescriptor<Document> descriptor,
+        public virtual PropertiesDescriptor<Document> CreateFieldsMapping(PropertiesDescriptor<Document> descriptor,
             FieldDefinitionCollection fieldDefinitionCollection)
         {
             descriptor.Keyword(s => s.Name("Id"));
@@ -86,8 +86,9 @@ namespace Novicell.Examine.ElasticSearch.Indexers
             return descriptor;
         }
 
-        private void FromExamineType(PropertiesDescriptor<Document> descriptor, FieldDefinition field)
+        protected virtual void FromExamineType(PropertiesDescriptor<Document> descriptor, FieldDefinition field)
         {
+         
             switch (field.Type.ToLowerInvariant())
             {
                 case "date":

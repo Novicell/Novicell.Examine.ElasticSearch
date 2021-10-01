@@ -41,8 +41,8 @@
     <Reference Include="ElasticsearchInside, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\..\..\Elasticsearch-Inside\source\ElasticsearchInside\bin\Debug\netstandard2.0\ElasticsearchInside.dll</HintPath>
     </Reference>
-    <Reference Include="Examine, Version=1.0.5.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\Examine.1.0.5\lib\net452\Examine.dll</HintPath>
+    <Reference Include="Examine, Version=1.2.2.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\Examine.1.2.2\lib\net452\Examine.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="K4os.Compression.LZ4, Version=1.1.11.0, Culture=neutral, PublicKeyToken=2186fa9121ef231d">
@@ -110,6 +110,14 @@
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10">
+      <HintPath>..\packages\Serilog.2.11.0-dev-01367\lib\net46\Serilog.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Serilog.Enrichers.Process, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10">
+      <HintPath>..\packages\Serilog.Enrichers.Process.2.0.2\lib\net45\Serilog.Enrichers.Process.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Serilog.Enrichers.Thread, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10">
       <HintPath>..\packages\Serilog.Enrichers.Thread.3.2.0-dev-00747\lib\net45\Serilog.Enrichers.Thread.dll</HintPath>
       <Private>True</Private>
@@ -122,24 +130,24 @@
       <HintPath>..\packages\Serilog.Formatting.Compact.1.1.0\lib\net452\Serilog.Formatting.Compact.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Serilog.Formatting.Compact.Reader, Version=1.0.3.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10">
-      <HintPath>..\packages\Serilog.Formatting.Compact.Reader.1.0.3\lib\net45\Serilog.Formatting.Compact.Reader.dll</HintPath>
+    <Reference Include="Serilog.Formatting.Compact.Reader, Version=1.0.5.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10">
+      <HintPath>..\packages\Serilog.Formatting.Compact.Reader.1.0.5\lib\net45\Serilog.Formatting.Compact.Reader.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Serilog.Settings.AppSettings, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10">
       <HintPath>..\packages\Serilog.Settings.AppSettings.2.2.2\lib\net45\Serilog.Settings.AppSettings.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Serilog.Sinks.Async, Version=1.4.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10">
-      <HintPath>..\packages\Serilog.Sinks.Async.1.4.1-dev-00071\lib\net461\Serilog.Sinks.Async.dll</HintPath>
+    <Reference Include="Serilog.Sinks.Async, Version=1.5.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10">
+      <HintPath>..\packages\Serilog.Sinks.Async.1.5.0\lib\net461\Serilog.Sinks.Async.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Serilog.Sinks.File, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10">
       <HintPath>..\packages\Serilog.Sinks.File.4.1.0\lib\net45\Serilog.Sinks.File.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Serilog.Sinks.Map, Version=1.0.1.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10">
-      <HintPath>..\packages\Serilog.Sinks.Map.1.0.1-dev-00025\lib\netstandard2.0\Serilog.Sinks.Map.dll</HintPath>
+    <Reference Include="Serilog.Sinks.Map, Version=1.0.2.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10">
+      <HintPath>..\packages\Serilog.Sinks.Map.1.0.2\lib\netstandard2.0\Serilog.Sinks.Map.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Superpower, Version=1.0.0.0, Culture=neutral, PublicKeyToken=aec39280ded1b3a7">
@@ -184,7 +192,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Umbraco.Core, Version=8.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\UmbracoCms.Core.8.11.1\lib\net472\Umbraco.Core.dll</HintPath>
+      <HintPath>..\packages\UmbracoCms.Core.8.16.0\lib\net472\Umbraco.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>

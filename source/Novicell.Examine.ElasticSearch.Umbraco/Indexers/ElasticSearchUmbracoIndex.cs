@@ -5,6 +5,7 @@ using Elasticsearch.Net;
 using Examine;
 using Examine.LuceneEngine.Providers;
 using Nest;
+using Novicell.Examine.ElasticSearch.EventArgs;
 using Novicell.Examine.ElasticSearch.Indexers;
 using Novicell.Examine.ElasticSearch.Model;
 using Umbraco.Core;
@@ -22,6 +23,11 @@ namespace Novicell.Examine.ElasticSearch.Umbraco.Indexers
         public const string NodeKeyFieldName = SpecialFieldPrefix + "Key";
         public const string IconFieldName = SpecialFieldPrefix + "Icon";
         public const string PublishedFieldName = SpecialFieldPrefix + "Published";
+
+        public List<string> KeywordFields = new List<string>()
+        {
+            IndexPathFieldName
+        };
         private readonly IProfilingLogger _logger;
         public bool EnableDefaultEventHandler { get; set; } = true;
 
@@ -59,8 +65,7 @@ namespace Novicell.Examine.ElasticSearch.Umbraco.Indexers
         /// When set to true Umbraco will keep the index in sync with Umbraco data automatically
         /// </summary>
 
-        public bool PublishedValuesOnly { get; protected set; } = false;
-
+        public bool PublishedValuesOnly { get; internal set; }
         /// <inheritdoc />
         public new IEnumerable<string> GetFields()
         {
@@ -95,7 +100,33 @@ namespace Novicell.Examine.ElasticSearch.Umbraco.Indexers
             ProfilingLogger.Error(GetType(), ex.InnerException, ex.Message);
             base.OnIndexingError(ex);
         }
+        public override PropertiesDescriptor<Document> CreateFieldsMapping(PropertiesDescriptor<Document> descriptor,
+            FieldDefinitionCollection fieldDefinitionCollection)
+        {
+            descriptor.Keyword(s => s.Name("Id"));
+            descriptor.Keyword(s => s.Name(FormatFieldName(LuceneIndex.ItemIdFieldName)));
+            descriptor.Keyword(s => s.Name(FormatFieldName(LuceneIndex.ItemTypeFieldName)));
+            descriptor.Keyword(s => s.Name(FormatFieldName(LuceneIndex.CategoryFieldName)));
+            foreach (FieldDefinition field in fieldDefinitionCollection)
+            {
+                FromExamineType(descriptor, field);
+            }
 
+            var docArgs = new MappingOperationEventArgs(descriptor);
+            onMapping(docArgs);
+
+            return descriptor;
+        }
+        protected override void FromExamineType(PropertiesDescriptor<Document> descriptor, FieldDefinition field)
+        {
+
+            if (KeywordFields.Contains(field.Name))
+            {
+                descriptor.Keyword(s => s.Name(field.Name));
+             return;   
+            }
+            base.FromExamineType(descriptor,field);
+        }
         protected override void PerformDeleteFromIndex(IEnumerable<string> itemIds,
             Action<IndexOperationEventArgs> onComplete)
         {
@@ -120,8 +151,6 @@ namespace Novicell.Examine.ElasticSearch.Umbraco.Indexers
 
         protected override void OnTransformingIndexValues(IndexingItemEventArgs e)
         {
-            base.OnTransformingIndexValues(e);
-
             //ensure special __Path field
             var path = e.ValueSet.GetValue("path");
             if (path != null)
@@ -135,6 +164,7 @@ namespace Novicell.Examine.ElasticSearch.Umbraco.Indexers
             {
                 e.ValueSet.Values[IconFieldName] = icon;
             }
+            base.OnTransformingIndexValues(e);
         }
 
 

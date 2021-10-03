@@ -62,7 +62,7 @@ namespace Novicell.Examine.ElasticSearch.Umbraco
                 ProfilingLogger,
                 new UmbracoFieldDefinitionCollection(),
                 "standard",
-                UmbracoIndexConfig.GetPublishedContentValueSetValidator());
+                UmbracoIndexConfig.GetPublishedContentValueSetValidator(), true);
         }
 
         private IIndex CreateMemberIndex()

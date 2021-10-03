@@ -17,7 +17,10 @@
     <tags>Umbraco, Novicell,Examine,ElasticSearch</tags>
     <dependencies>
       <dependency id="Novicell.Examine.ElasticSearch" version="[1.0.0-alpha, 2.0.0)" />
-      <dependency id="UmbracoCms.UmbracoExamine.PDF" version="[2.0.0, 3.0.0)" />
+      <dependency id="UmbracoCms.Core" version="[8.9.1, 9.0.0)" />
     </dependencies>
   </metadata>
+  <files>
+    <file src="..\bin\Release\Novicell.Examine.ElasticSearch.Umbraco.dll" target="lib\net45" />
+  </files>
 </package>

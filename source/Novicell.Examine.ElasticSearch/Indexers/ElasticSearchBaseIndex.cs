@@ -67,7 +67,7 @@ namespace Novicell.Examine.ElasticSearch.Indexers
 
         public string Analyzer { get; }
 
-        private PropertiesDescriptor<Document> CreateFieldsMapping(PropertiesDescriptor<Document> descriptor,
+        public virtual PropertiesDescriptor<Document> CreateFieldsMapping(PropertiesDescriptor<Document> descriptor,
             FieldDefinitionCollection fieldDefinitionCollection)
         {
             descriptor.Keyword(s => s.Name("Id"));
@@ -86,8 +86,9 @@ namespace Novicell.Examine.ElasticSearch.Indexers
             return descriptor;
         }
 
-        private void FromExamineType(PropertiesDescriptor<Document> descriptor, FieldDefinition field)
+        protected virtual void FromExamineType(PropertiesDescriptor<Document> descriptor, FieldDefinition field)
         {
+         
             switch (field.Type.ToLowerInvariant())
             {
                 case "date":
@@ -250,24 +251,29 @@ namespace Novicell.Examine.ElasticSearch.Indexers
             {
                 try
                 {
-                    //this is just a dictionary
-                    var ad = new Document
-                    {
-                        ["Id"] = d.Id,
-                        [FormatFieldName(LuceneIndex.ItemIdFieldName)] = d.Id,
-                        [FormatFieldName(LuceneIndex.ItemTypeFieldName)] = d.ItemType,
-                        [FormatFieldName(LuceneIndex.CategoryFieldName)] = d.Category
-                    };
+                    var indexingNodeDataArgs = new IndexingItemEventArgs(this, d);
+                    OnTransformingIndexValues(indexingNodeDataArgs);
+                    
+                    if (!indexingNodeDataArgs.Cancel) {
+                        //this is just a dictionary
+                        var ad = new Document
+                        {
+                            ["Id"] = d.Id,
+                            [FormatFieldName(LuceneIndex.ItemIdFieldName)] = d.Id,
+                            [FormatFieldName(LuceneIndex.ItemTypeFieldName)] = d.ItemType,
+                            [FormatFieldName(LuceneIndex.CategoryFieldName)] = d.Category
+                        };
 
-                    foreach (var i in d.Values)
-                    {
-                        if (i.Value.Count > 0)
-                            ad[FormatFieldName(i.Key)] = i.Value.Count == 1 ? i.Value[0] : i.Value;
+                        foreach (var i in d.Values)
+                        {
+                            if (i.Value.Count > 0)
+                                ad[FormatFieldName(i.Key)] = i.Value.Count == 1 ? i.Value[0] : i.Value;
+                        }
+
+                        var docArgs = new DocumentWritingEventArgs(d, ad);
+                        OnDocumentWriting(docArgs);
+                        descriptor.Index<Document>(op => op.Index(indexTarget).Document(ad).Id(d.Id));
                     }
-
-                    var docArgs = new DocumentWritingEventArgs(d, ad);
-                    OnDocumentWriting(docArgs);
-                    descriptor.Index<Document>(op => op.Index(indexTarget).Document(ad).Id(d.Id));
                 }
                 catch (Exception e)
                 {

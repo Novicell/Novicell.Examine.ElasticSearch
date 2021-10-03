@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Examine;
@@ -520,5 +521,47 @@ namespace Novicell.Examine.ElasticSearch.Queries
              return phraseQuery;
          }
         #endregion
+        private static readonly HashSet<string> EmptyHashSet = new HashSet<string>();
+        internal IBooleanOperation SelectFieldsInternal(ISet<string> loadedFieldNames)
+        {
+            Selector = new SetBasedFieldSelector(loadedFieldNames, EmptyHashSet);
+            return CreateOp();
+        }
+
+        internal IBooleanOperation SelectFieldsInternal(Hashtable loadedFieldNames)
+        {
+            HashSet<string> hs = new HashSet<string>();
+            foreach (string item in loadedFieldNames.Keys)
+            {
+                hs.Add(item);
+            }
+            Selector = new SetBasedFieldSelector(hs, EmptyHashSet);
+            return CreateOp();
+        }
+
+        internal IBooleanOperation SelectFieldsInternal(params string[] loadedFieldNames)
+        {
+            ISet<string> loaded = new HashSet<string>(loadedFieldNames);
+            Selector = new SetBasedFieldSelector(loaded, EmptyHashSet);
+            return CreateOp();
+        }
+
+        internal IBooleanOperation SelectFieldInternal(string fieldName)
+        {
+            ISet<string> loaded = new HashSet<string>(new string[] { fieldName });
+            Selector = new SetBasedFieldSelector(loaded, EmptyHashSet);
+            return CreateOp();
+        }
+
+        public IBooleanOperation SelectFirstFieldOnlyInternal()
+        {
+            Selector = new LoadFirstFieldSelector();
+            return CreateOp();
+        }
+        public IBooleanOperation SelectAllFieldsInternal()
+        {
+            Selector = null;
+            return CreateOp();
+        }
     }
 }

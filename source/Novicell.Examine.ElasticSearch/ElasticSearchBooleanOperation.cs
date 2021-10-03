@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Examine;
 using Examine.LuceneEngine.Search;
 using Examine.Search;
@@ -46,6 +47,19 @@ namespace Novicell.Examine.ElasticSearch
 
         public override IOrdering OrderByDescending(params SortableField[] fields) => _search.OrderByDescending(fields);
         
+        #endregion
+        #region Select Fields
+
+        public override IOrdering SelectFields(params string[] fieldNames) => _search.SelectFieldsInternal(fieldNames);
+
+        public override IOrdering SelectFields(ISet<string> fieldNames) => _search.SelectFieldsInternal(fieldNames);
+
+        public override IOrdering SelectField(string fieldName) => _search.SelectFieldInternal(fieldName);
+
+        public override IOrdering SelectFirstFieldOnly() => _search.SelectFirstFieldOnlyInternal();
+
+        public override IOrdering SelectAllFields() => _search.SelectAllFieldsInternal();
+
         #endregion
         public override string ToString() => _search.ToString();
         protected internal new LuceneBooleanOperationBase Op(

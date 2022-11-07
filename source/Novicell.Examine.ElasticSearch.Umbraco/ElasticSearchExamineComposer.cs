@@ -1,4 +1,5 @@
 using System.Configuration;
+using Nest;
 using Umbraco.Core;
 using Umbraco.Core.Composing;
 using Umbraco.Web.Search;
@@ -14,7 +15,7 @@ namespace Novicell.Examine.ElasticSearch.Umbraco
             if (ConfigurationManager.AppSettings["examine:ElasticSearch.Debug"] == "True")
             {
                 if (ElasticSearchConfig.DebugConnectionConfiguration == null)
-                    ElasticSearchConfig.DebugConnectionConfiguration = new ElasticSearchConfig();
+                    ElasticSearchConfig.DebugConnectionConfiguration = new ElasticSearchConfig( new ConnectionSettings());
             }
 
             base.Compose(composition);

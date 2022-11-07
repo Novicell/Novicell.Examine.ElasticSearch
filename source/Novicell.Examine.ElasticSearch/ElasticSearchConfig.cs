@@ -10,7 +10,6 @@ namespace Novicell.Examine.ElasticSearch
     {
         public ConnectionSettings ConnectionConfiguration { get; }
         public static ElasticSearchConfig DebugConnectionConfiguration;
-        public static ElasticsearchInside.Elasticsearch ElasticSearch;
 
     
         public static ElasticSearchConfig GetConfig(string indexName)
@@ -37,28 +36,6 @@ namespace Novicell.Examine.ElasticSearch
         {
             var connectionUrl = new Uri(ConfigurationManager.AppSettings[$"examine:ElasticSearch[{indexName}].Url"]);
             ConnectionConfiguration= new ConnectionSettings(connectionUrl);
-        }
-        public ElasticSearchConfig()
-        {
-            try
-            {
-                
-                ElasticSearch = new ElasticsearchInside.Elasticsearch(
-                        settings => settings
-                            .EnableLogging()
-                            .SetElasticsearchStartTimeout(180))
-                    .ReadySync();
-                ConnectionConfiguration = new ConnectionSettings(ElasticSearch.Url);
-            }
-            catch (DllNotFoundException)
-            {
-                
-            }
-
-            ////Arrange
-               
-            
-         
         }
         public ElasticSearchConfig(ConnectionSettings connectionConfiguration)
         {

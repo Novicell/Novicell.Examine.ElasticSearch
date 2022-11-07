@@ -52,10 +52,6 @@
       <HintPath>..\packages\Elasticsearch.Net.7.5.1\lib\net461\Elasticsearch.Net.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="ElasticsearchInside, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\ElasticsearchInside.7.1.2\lib\netstandard2.0\ElasticsearchInside.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Examine, Version=1.2.2.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\Examine.1.2.2\lib\net452\Examine.dll</HintPath>
       <Private>True</Private>

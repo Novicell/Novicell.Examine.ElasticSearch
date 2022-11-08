@@ -36,6 +36,8 @@ namespace Novicell.Examine.ElasticSearch.Indexers
             ? ConfigurationManager.AppSettings["examine:ElasticSearch.Prefix"]
             : "";
 
+        public readonly string ElasticID;
+
         public string indexAlias { get; set; }
         private string tempindexAlias { get; set; }
         public string ElasticURL { get; set; }
@@ -53,6 +55,7 @@ namespace Novicell.Examine.ElasticSearch.Indexers
             _isUmbraco = isUmbraco;
             Analyzer = analyzer;
             ElasticURL = ConfigurationManager.AppSettings[$"examine:ElasticSearch[{name}].Url"];
+            ElasticID = ConfigurationManager.AppSettings[$"examine:ElasticSearch[{name}].CloudId"];
             _searcher = new Lazy<ElasticSearchSearcher>(CreateSearcher);
             _client = new Lazy<ElasticClient>(CreateElasticSearchClient);
             indexAlias = prefix + Name;

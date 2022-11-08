@@ -17,10 +17,12 @@ namespace Novicell.Examine.ElasticSearch.Umbraco
                 if (ElasticSearchConfig.DebugConnectionConfiguration == null)
                     ElasticSearchConfig.DebugConnectionConfiguration = new ElasticSearchConfig( new ConnectionSettings());
             }
-
+          
+         
             base.Compose(composition);
             //   composition.RegisterUnique<IUmbracoIndexesCreator, UmbracoIndexesCreator>();
             composition.RegisterUnique<IUmbracoIndexesCreator, ElasticIndexCreator>();
         }
+
     }
 }

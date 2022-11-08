@@ -1,14 +1,14 @@
 using System;
 using System.Configuration;
 using System.Linq;
-
+using Elasticsearch.Net;
 using Nest;
 
 namespace Novicell.Examine.ElasticSearch
 {
     public class ElasticSearchConfig
     {
-        public ConnectionSettings ConnectionConfiguration { get; }
+        public ConnectionSettings ConnectionConfiguration { get; } = new ConnectionSettings();
         public static ElasticSearchConfig DebugConnectionConfiguration;
 
     
@@ -34,6 +34,30 @@ namespace Novicell.Examine.ElasticSearch
 
         public ElasticSearchConfig(string indexName)
         {
+            ConnectionSettings connection;
+            CloudConnectionPool pool;
+            string id;
+            switch (ConfigurationManager.AppSettings[$"examine:ElasticSearch[{indexName}].Authentication"])
+            {
+                case "cloud":
+                 id = ConfigurationManager.AppSettings[$"examine:ElasticSearch[{indexName}].CloudId"];
+                    var basicAuthentication = new BasicAuthenticationCredentials(
+                        ConfigurationManager.AppSettings[$"examine:ElasticSearch[{indexName}].UserName"],
+                        ConfigurationManager.AppSettings[$"examine:ElasticSearch[{indexName}].Password"]);
+                 pool = new CloudConnectionPool(id,basicAuthentication);
+                 connection =   new ConnectionSettings(pool);
+                break;
+                case "CloudApi":
+                    id = ConfigurationManager.AppSettings[$"examine:ElasticSearch[{indexName}].CloudId"];
+                    var token = ConfigurationManager.AppSettings[$"examine:ElasticSearch[{indexName}].ApiKey"];
+                    var auth = new ApiKeyAuthenticationCredentials(token);
+                    pool = new CloudConnectionPool(id, auth);
+                    connection =   new ConnectionSettings(pool);
+                    break;
+                default:
+                    connection = new ConnectionSettings();
+                    break;
+            }
             var connectionUrl = new Uri(ConfigurationManager.AppSettings[$"examine:ElasticSearch[{indexName}].Url"]);
             ConnectionConfiguration= new ConnectionSettings(connectionUrl);
         }

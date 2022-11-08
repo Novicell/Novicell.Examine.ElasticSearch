@@ -37,20 +37,20 @@ namespace Novicell.Examine.ElasticSearch
             ConnectionSettings connection;
             CloudConnectionPool pool;
             string id;
-            switch (ConfigurationManager.AppSettings[$"examine:ElasticSearch[{indexName}].Authentication"])
+            switch (ConfigurationManager.AppSettings[$"examine:ElasticSearch:{indexName}.Authentication"])
             {
                 case "cloud":
-                 id = ConfigurationManager.AppSettings[$"examine:ElasticSearch[{indexName}].CloudId"];
+                 id = ConfigurationManager.AppSettings[$"examine:ElasticSearch:{indexName}.CloudId"];
                     var basicAuthentication = new BasicAuthenticationCredentials(
-                        ConfigurationManager.AppSettings[$"examine:ElasticSearch[{indexName}].UserName"],
-                        ConfigurationManager.AppSettings[$"examine:ElasticSearch[{indexName}].Password"]);
+                        ConfigurationManager.AppSettings[$"examine:ElasticSearch:{indexName}.UserName"],
+                        ConfigurationManager.AppSettings[$"examine:ElasticSearch:{indexName}.Password"]);
                  pool = new CloudConnectionPool(id,basicAuthentication);
                  connection =   new ConnectionSettings(pool);
                  
                 break;
                 case "CloudApi":
-                    id = ConfigurationManager.AppSettings[$"examine:ElasticSearch[{indexName}].CloudId"];
-                    var token = ConfigurationManager.AppSettings[$"examine:ElasticSearch[{indexName}].ApiKey"];
+                    id = ConfigurationManager.AppSettings[$"examine:ElasticSearch:{indexName}.CloudId"];
+                    var token = ConfigurationManager.AppSettings[$"examine:ElasticSearch:{indexName}.ApiKey"];
                     var auth = new ApiKeyAuthenticationCredentials(token);
                     pool = new CloudConnectionPool(id, auth);
                     connection =   new ConnectionSettings(pool);

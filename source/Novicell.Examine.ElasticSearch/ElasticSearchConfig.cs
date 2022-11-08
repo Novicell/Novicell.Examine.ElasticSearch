@@ -46,6 +46,7 @@ namespace Novicell.Examine.ElasticSearch
                         ConfigurationManager.AppSettings[$"examine:ElasticSearch[{indexName}].Password"]);
                  pool = new CloudConnectionPool(id,basicAuthentication);
                  connection =   new ConnectionSettings(pool);
+                 
                 break;
                 case "CloudApi":
                     id = ConfigurationManager.AppSettings[$"examine:ElasticSearch[{indexName}].CloudId"];
@@ -58,8 +59,7 @@ namespace Novicell.Examine.ElasticSearch
                     connection = new ConnectionSettings();
                     break;
             }
-            var connectionUrl = new Uri(ConfigurationManager.AppSettings[$"examine:ElasticSearch[{indexName}].Url"]);
-            ConnectionConfiguration= new ConnectionSettings(connectionUrl);
+            ConnectionConfiguration= connection;
         }
         public ElasticSearchConfig(ConnectionSettings connectionConfiguration)
         {

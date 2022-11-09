@@ -63,9 +63,10 @@ namespace Novicell.Examine.ElasticSearch.Umbraco
 
         private IIndex CreateExternalIndex()
         {
-            
+            var config = ElasticSearchConfig.GetConfig(Constants.UmbracoIndexes.ExternalIndexName);
+            _logger.Info<ElasticIndexCreator>($"config {JsonConvert.SerializeObject(config)}");
             return new ContentElasticSearchIndex(Constants.UmbracoIndexes.ExternalIndexName,
-                ElasticSearchConfig.GetConfig(Constants.UmbracoIndexes.ExternalIndexName),
+                config,
                 ProfilingLogger,
                 new UmbracoFieldDefinitionCollection(),
                 "standard",
@@ -74,8 +75,10 @@ namespace Novicell.Examine.ElasticSearch.Umbraco
 
         private IIndex CreateMemberIndex()
         {
+            var config = ElasticSearchConfig.GetConfig(Constants.UmbracoIndexes.ExternalIndexName);
+            _logger.Info<ElasticIndexCreator>($"config {JsonConvert.SerializeObject(config)}");
             return new MemberElasticSearchIndex(Constants.UmbracoIndexes.MembersIndexName,
-                ElasticSearchConfig.GetConfig(Constants.UmbracoIndexes.ExternalIndexName),
+                config,
                 ProfilingLogger,
                 new UmbracoFieldDefinitionCollection(),
                 "standard",

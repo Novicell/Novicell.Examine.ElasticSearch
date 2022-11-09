@@ -10,7 +10,7 @@ namespace Novicell.Examine.ElasticSearch
     public class ElasticSearchConfig
     {
         public static Dictionary<string, ConnectionSettings> ConnectionConfiguration = new Dictionary<string, ConnectionSettings>();
-
+        public DebugData data;
         public static ConnectionSettings GetConnectionString(string indexName)
         {
             if (ConnectionConfiguration.ContainsKey(indexName))
@@ -54,9 +54,16 @@ namespace Novicell.Examine.ElasticSearch
             switch (ConfigurationManager.AppSettings[$"examine:ElasticSearch:{indexName}.Authentication"])
             {
                 case "cloud":
-                 id = ConfigurationManager.AppSettings[$"examine:ElasticSearch:{indexName}.CloudId"];
+                    var user = ConfigurationManager.AppSettings[$"examine:ElasticSearch:{indexName}.UserName"];
+                    id = ConfigurationManager.AppSettings[$"examine:ElasticSearch:{indexName}.CloudId"];
+
+                    data = new DebugData()
+                    {
+                        User = user,
+                        Id = id
+                    };
                     var basicAuthentication = new BasicAuthenticationCredentials(
-                        ConfigurationManager.AppSettings[$"examine:ElasticSearch:{indexName}.UserName"],
+                        ,
                         ConfigurationManager.AppSettings[$"examine:ElasticSearch:{indexName}.Password"]);
                  pool = new CloudConnectionPool(id,basicAuthentication);
                  connection =   new ConnectionSettings(pool);
@@ -86,5 +93,9 @@ namespace Novicell.Examine.ElasticSearch
         }
     }
 
- 
+    public class DebugData
+    {
+        public string User { get; set; }
+        public string Id { get; set; }
+    }
 }

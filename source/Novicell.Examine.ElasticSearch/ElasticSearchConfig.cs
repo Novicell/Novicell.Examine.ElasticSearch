@@ -13,7 +13,6 @@ namespace Novicell.Examine.ElasticSearch
         public static Dictionary<string, ConnectionSettings> ConnectionConfiguration =
             new Dictionary<string, ConnectionSettings>();
 
-        [JsonProperty("Data")] public DebugData Data { get; set; }
 
         public static ConnectionSettings GetConnectionString(string indexName)
         {
@@ -65,13 +64,8 @@ namespace Novicell.Examine.ElasticSearch
                     id = ConfigurationManager.AppSettings[$"examine:ElasticSearch:{indexName}.CloudId"];
                     var password = ConfigurationManager.AppSettings[$"examine:ElasticSearch:{indexName}.Password"];
 
-                    Data = new DebugData()
-                    {
-                        IndexName = indexName,
-                        User = user,
-                        Id = id
-                    };
-                    var basicAuthentication = new BasicAuthenticationCredentials(id
+             
+                    var basicAuthentication = new BasicAuthenticationCredentials(user
                             , password)
                         ;
                     pool = new CloudConnectionPool(id, basicAuthentication);

@@ -62,7 +62,7 @@ namespace Novicell.Examine.ElasticSearch.Indexers
 
         private ElasticClient CreateElasticSearchClient()
         {
-            var serviceClient = new ElasticClient(ElasticSearchConfig.ConnectionConfiguration[Name]);
+            var serviceClient = new ElasticClient(ElasticSearchConfig.GetConnectionString(Name));
             return serviceClient;
         }
 

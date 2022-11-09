@@ -10,7 +10,18 @@ namespace Novicell.Examine.ElasticSearch
     public class ElasticSearchConfig
     {
         public static Dictionary<string, ConnectionSettings> ConnectionConfiguration = new Dictionary<string, ConnectionSettings>();
-    
+
+        public static ConnectionSettings GetConnectionString(string indexName)
+        {
+            if (ConnectionConfiguration.ContainsKey(indexName))
+            {
+                return ConnectionConfiguration[indexName];
+            }
+
+            GetConfig(indexName);
+            return ConnectionConfiguration[indexName];
+        }
+
         public static ElasticSearchConfig GetConfig(string indexName)
         {
           

@@ -62,7 +62,7 @@ namespace Novicell.Examine.ElasticSearch
                         User = user,
                         Id = id
                     };
-                    var basicAuthentication = new BasicAuthenticationCredentials(
+                    var basicAuthentication = new BasicAuthenticationCredentials(id
                         ,
                         ConfigurationManager.AppSettings[$"examine:ElasticSearch:{indexName}.Password"]);
                  pool = new CloudConnectionPool(id,basicAuthentication);

@@ -4,13 +4,15 @@ using System.Configuration;
 using System.Linq;
 using Elasticsearch.Net;
 using Nest;
+using Newtonsoft.Json;
 
 namespace Novicell.Examine.ElasticSearch
 {
     public class ElasticSearchConfig
     {
         public static Dictionary<string, ConnectionSettings> ConnectionConfiguration = new Dictionary<string, ConnectionSettings>();
-        public DebugData data;
+        [JsonProperty("Data")]
+        public DebugData Data { get; set; }
         public static ConnectionSettings GetConnectionString(string indexName)
         {
             if (ConnectionConfiguration.ContainsKey(indexName))
@@ -57,7 +59,7 @@ namespace Novicell.Examine.ElasticSearch
                     var user = ConfigurationManager.AppSettings[$"examine:ElasticSearch:{indexName}.UserName"];
                     id = ConfigurationManager.AppSettings[$"examine:ElasticSearch:{indexName}.CloudId"];
 
-                    data = new DebugData()
+                    Data = new DebugData()
                     {
                         User = user,
                         Id = id
@@ -95,7 +97,9 @@ namespace Novicell.Examine.ElasticSearch
 
     public class DebugData
     {
+        [JsonProperty("User")]
         public string User { get; set; }
+        [JsonProperty("Id")]
         public string Id { get; set; }
     }
 }

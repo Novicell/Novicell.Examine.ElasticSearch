@@ -44,14 +44,12 @@ namespace Novicell.Examine.ElasticSearch.Indexers
 
 
         public ElasticSearchBaseIndex(string name,
-            ElasticSearchConfig connectionConfiguration,
             FieldDefinitionCollection fieldDefinitions = null,
             string analyzer = null,
             IValueSetValidator validator = null, bool isUmbraco = false)
             : base(name.ToLowerInvariant(), //TODO: Need to 'clean' the name according to Azure Search rules
                 fieldDefinitions ?? new FieldDefinitionCollection(), validator)
         {
-            _connectionConfiguration = connectionConfiguration;
             _isUmbraco = isUmbraco;
             Analyzer = analyzer;
             ElasticURL = ConfigurationManager.AppSettings[$"examine:ElasticSearch:{name}.Url"];
@@ -64,7 +62,7 @@ namespace Novicell.Examine.ElasticSearch.Indexers
 
         private ElasticClient CreateElasticSearchClient()
         {
-            var serviceClient = new ElasticClient(_connectionConfiguration.ConnectionConfiguration);
+            var serviceClient = new ElasticClient(ElasticSearchConfig.ConnectionConfiguration[Name]);
             return serviceClient;
         }
 
@@ -232,7 +230,7 @@ namespace Novicell.Examine.ElasticSearch.Indexers
 
         private ElasticSearchSearcher CreateSearcher()
         {
-            return new ElasticSearchSearcher(_connectionConfiguration, Name, indexName);
+            return new ElasticSearchSearcher(Name, indexName);
         }
 
         private ElasticClient GetIndexClient()

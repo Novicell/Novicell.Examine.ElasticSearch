@@ -12,11 +12,7 @@ namespace Novicell.Examine.ElasticSearch.Umbraco
     {
         public override void Compose(Composition composition)
         {
-            if (ConfigurationManager.AppSettings["examine:ElasticSearch.Debug"] == "True")
-            {
-                if (ElasticSearchConfig.DebugConnectionConfiguration == null)
-                    ElasticSearchConfig.DebugConnectionConfiguration = new ElasticSearchConfig( new ConnectionSettings());
-            }
+      
           
          
             base.Compose(composition);

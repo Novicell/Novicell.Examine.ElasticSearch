@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using Elasticsearch.Net;
@@ -8,9 +9,7 @@ namespace Novicell.Examine.ElasticSearch
 {
     public class ElasticSearchConfig
     {
-        public ConnectionSettings ConnectionConfiguration { get; } = new ConnectionSettings();
-        public static ElasticSearchConfig DebugConnectionConfiguration;
-
+        public static Dictionary<string, ConnectionSettings> ConnectionConfiguration;
     
         public static ElasticSearchConfig GetConfig(string indexName)
         {
@@ -19,7 +18,7 @@ namespace Novicell.Examine.ElasticSearch
             if (ConfigurationManager.AppSettings.AllKeys.Any(s=>s=="examine:ElasticSearch.Debug") &&  Convert.ToBoolean(ConfigurationManager.AppSettings["examine:ElasticSearch.Debug"] ))
             {
               
-                return new ElasticSearchConfig(DebugConnectionConfiguration.ConnectionConfiguration);
+                return new ElasticSearchConfig("default",new ConnectionSettings());
             }
             return new ElasticSearchConfig(indexName.ToLower());
             
@@ -28,12 +27,16 @@ namespace Novicell.Examine.ElasticSearch
         {
             if (string.IsNullOrWhiteSpace(indexName)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(indexName));
             if (connectionConfiguration == null) throw new ArgumentException("Value cannot be null or whitespace.", nameof(connectionConfiguration));
-            return new ElasticSearchConfig(connectionConfiguration);
+            return new ElasticSearchConfig(indexName,connectionConfiguration);
             
         }
 
         public ElasticSearchConfig(string indexName)
         {
+            if (ConnectionConfiguration.ContainsKey(indexName))
+            {
+                return;
+            }
             ConnectionSettings connection;
             CloudConnectionPool pool;
             string id;
@@ -59,13 +62,17 @@ namespace Novicell.Examine.ElasticSearch
                     connection = new ConnectionSettings();
                     break;
             }
-            ConnectionConfiguration= connection;
+            ConnectionConfiguration.Add(indexName, connection);
         }
-        public ElasticSearchConfig(ConnectionSettings connectionConfiguration)
+
+        private ElasticSearchConfig(string indexName, ConnectionSettings connectionConfiguration)
         {
-            ConnectionConfiguration = connectionConfiguration;
+            if (ConnectionConfiguration.ContainsKey(indexName))
+            {
+                return;
+            }
+            ConnectionConfiguration.Add(indexName, connectionConfiguration);
         }
-        
     }
 
  

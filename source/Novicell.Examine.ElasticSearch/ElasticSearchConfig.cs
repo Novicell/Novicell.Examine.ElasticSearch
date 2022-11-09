@@ -10,9 +10,11 @@ namespace Novicell.Examine.ElasticSearch
 {
     public class ElasticSearchConfig
     {
-        public static Dictionary<string, ConnectionSettings> ConnectionConfiguration = new Dictionary<string, ConnectionSettings>();
-        [JsonProperty("Data")]
-        public DebugData Data { get; set; }
+        public static Dictionary<string, ConnectionSettings> ConnectionConfiguration =
+            new Dictionary<string, ConnectionSettings>();
+
+        [JsonProperty("Data")] public DebugData Data { get; set; }
+
         public static ConnectionSettings GetConnectionString(string indexName)
         {
             if (ConnectionConfiguration.ContainsKey(indexName))
@@ -26,22 +28,24 @@ namespace Novicell.Examine.ElasticSearch
 
         public static ElasticSearchConfig GetConfig(string indexName)
         {
-          
-            if (string.IsNullOrWhiteSpace(indexName)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(indexName));
-            if (ConfigurationManager.AppSettings.AllKeys.Any(s=>s=="examine:ElasticSearch.Debug") &&  Convert.ToBoolean(ConfigurationManager.AppSettings["examine:ElasticSearch.Debug"] ))
+            if (string.IsNullOrWhiteSpace(indexName))
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(indexName));
+            if (ConfigurationManager.AppSettings.AllKeys.Any(s => s == "examine:ElasticSearch.Debug") &&
+                Convert.ToBoolean(ConfigurationManager.AppSettings["examine:ElasticSearch.Debug"]))
             {
-              
-                return new ElasticSearchConfig("default",new ConnectionSettings());
+                return new ElasticSearchConfig("default", new ConnectionSettings());
             }
+
             return new ElasticSearchConfig(indexName.ToLower());
-            
         }
-        public static ElasticSearchConfig GetConfig(string indexName,ConnectionSettings connectionConfiguration)
+
+        public static ElasticSearchConfig GetConfig(string indexName, ConnectionSettings connectionConfiguration)
         {
-            if (string.IsNullOrWhiteSpace(indexName)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(indexName));
-            if (connectionConfiguration == null) throw new ArgumentException("Value cannot be null or whitespace.", nameof(connectionConfiguration));
-            return new ElasticSearchConfig(indexName,connectionConfiguration);
-            
+            if (string.IsNullOrWhiteSpace(indexName))
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(indexName));
+            if (connectionConfiguration == null)
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(connectionConfiguration));
+            return new ElasticSearchConfig(indexName, connectionConfiguration);
         }
 
         public ElasticSearchConfig(string indexName)
@@ -50,6 +54,7 @@ namespace Novicell.Examine.ElasticSearch
             {
                 return;
             }
+
             ConnectionSettings connection;
             CloudConnectionPool pool;
             string id;
@@ -58,30 +63,33 @@ namespace Novicell.Examine.ElasticSearch
                 case "cloud":
                     var user = ConfigurationManager.AppSettings[$"examine:ElasticSearch:{indexName}.UserName"];
                     id = ConfigurationManager.AppSettings[$"examine:ElasticSearch:{indexName}.CloudId"];
+                    var password = ConfigurationManager.AppSettings[$"examine:ElasticSearch:{indexName}.Password"];
 
                     Data = new DebugData()
                     {
+                        IndexName = indexName,
                         User = user,
                         Id = id
                     };
                     var basicAuthentication = new BasicAuthenticationCredentials(id
-                        ,
-                        ConfigurationManager.AppSettings[$"examine:ElasticSearch:{indexName}.Password"]);
-                 pool = new CloudConnectionPool(id,basicAuthentication);
-                 connection =   new ConnectionSettings(pool);
-                 
-                break;
+                            , password)
+                        ;
+                    pool = new CloudConnectionPool(id, basicAuthentication);
+                    connection = new ConnectionSettings(pool);
+
+                    break;
                 case "CloudApi":
                     id = ConfigurationManager.AppSettings[$"examine:ElasticSearch:{indexName}.CloudId"];
                     var token = ConfigurationManager.AppSettings[$"examine:ElasticSearch:{indexName}.ApiKey"];
                     var auth = new ApiKeyAuthenticationCredentials(token);
                     pool = new CloudConnectionPool(id, auth);
-                    connection =   new ConnectionSettings(pool);
+                    connection = new ConnectionSettings(pool);
                     break;
                 default:
                     connection = new ConnectionSettings();
                     break;
             }
+
             ConnectionConfiguration.Add(indexName, connection);
         }
 
@@ -91,15 +99,17 @@ namespace Novicell.Examine.ElasticSearch
             {
                 return;
             }
+
             ConnectionConfiguration.Add(indexName, connectionConfiguration);
         }
     }
 
     public class DebugData
     {
-        [JsonProperty("User")]
-        public string User { get; set; }
-        [JsonProperty("Id")]
-        public string Id { get; set; }
+        [JsonProperty("User")] public string User { get; set; }
+        [JsonProperty("Id")] public string Id { get; set; }
+        [JsonProperty("IndexName")] public string IndexName { get; set; }
+        [JsonProperty("Password")] public string Password { get; set; }
     }
+
 }

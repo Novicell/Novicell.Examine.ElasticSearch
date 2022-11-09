@@ -9,7 +9,7 @@ namespace Novicell.Examine.ElasticSearch
 {
     public class ElasticSearchConfig
     {
-        public static Dictionary<string, ConnectionSettings> ConnectionConfiguration;
+        public static Dictionary<string, ConnectionSettings> ConnectionConfiguration = new Dictionary<string, ConnectionSettings>();
     
         public static ElasticSearchConfig GetConfig(string indexName)
         {

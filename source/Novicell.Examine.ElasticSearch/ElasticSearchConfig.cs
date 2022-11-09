@@ -21,7 +21,7 @@ namespace Novicell.Examine.ElasticSearch
               
                 return new ElasticSearchConfig(DebugConnectionConfiguration.ConnectionConfiguration);
             }
-            return new ElasticSearchConfig(indexName);
+            return new ElasticSearchConfig(indexName.ToLower());
             
         }
         public static ElasticSearchConfig GetConfig(string indexName,ConnectionSettings connectionConfiguration)

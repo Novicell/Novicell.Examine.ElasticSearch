@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Web.Helpers;
 using Examine;
+using Newtonsoft.Json;
 using Novicell.Examine.ElasticSearch.Indexers;
 using Novicell.Examine.ElasticSearch.Umbraco.Indexers;
 using Umbraco.Core;
@@ -14,6 +16,7 @@ namespace Novicell.Examine.ElasticSearch.Umbraco
 {
     public class ElasticIndexCreator : LuceneIndexCreator, IUmbracoIndexesCreator
     {
+        private readonly ILogger _logger;
         private readonly IPublicAccessService _publicAccessService;
         private string prefix = ConfigurationManager.AppSettings.AllKeys.Any(s => s == "examine:ElasticSearch.Prefix")
             ? ConfigurationManager.AppSettings["examine:ElasticSearch.Prefix"]
@@ -21,11 +24,13 @@ namespace Novicell.Examine.ElasticSearch.Umbraco
         
         public ElasticIndexCreator(IProfilingLogger profilingLogger,
             ILocalizationService languageService,
+            ILogger logger,
             IPublicAccessService publicAccessService, IUmbracoIndexConfig umbracoIndexConfig)
         {
             ProfilingLogger = profilingLogger ?? throw new System.ArgumentNullException(nameof(profilingLogger));
             LanguageService = languageService ?? throw new System.ArgumentNullException(nameof(languageService));
             UmbracoIndexConfig = umbracoIndexConfig;
+            _logger = logger;
             _publicAccessService =
                 publicAccessService ?? throw new System.ArgumentNullException(nameof(publicAccessService));
         }
@@ -46,8 +51,10 @@ namespace Novicell.Examine.ElasticSearch.Umbraco
 
         private IIndex CreateInternalIndex()
         {
+            var config = ElasticSearchConfig.GetConfig(Constants.UmbracoIndexes.InternalIndexName);
+            _logger.Info<ElasticIndexCreator>($"config {JsonConvert.SerializeObject(config)}");
             return new ContentElasticSearchIndex(Constants.UmbracoIndexes.InternalIndexName,
-                ElasticSearchConfig.GetConfig(Constants.UmbracoIndexes.InternalIndexName),
+                config  ,
                 ProfilingLogger,
                 new UmbracoFieldDefinitionCollection(),
                 "whitespace",

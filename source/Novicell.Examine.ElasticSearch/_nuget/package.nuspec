@@ -16,8 +16,8 @@
     <language>en-GB</language>
     <tags>Umbraco, Novicell,Examine,ElasticSearch</tags>
     <dependencies>
-      <dependency id="NEST" version="7.4.1" />
-      <dependency id="Elasticsearch.Net" version="7.4.1" />
+      <dependency id="NEST" version="7.15.5" />
+      <dependency id="Elasticsearch.Net" version="7.15.5" />
     </dependencies>
   </metadata>
   <files>

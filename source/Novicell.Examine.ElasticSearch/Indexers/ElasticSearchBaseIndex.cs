@@ -36,23 +36,24 @@ namespace Novicell.Examine.ElasticSearch.Indexers
             ? ConfigurationManager.AppSettings["examine:ElasticSearch.Prefix"]
             : "";
 
+        public readonly string ElasticID;
+
         public string indexAlias { get; set; }
         private string tempindexAlias { get; set; }
         public string ElasticURL { get; set; }
 
 
         public ElasticSearchBaseIndex(string name,
-            ElasticSearchConfig connectionConfiguration,
             FieldDefinitionCollection fieldDefinitions = null,
             string analyzer = null,
             IValueSetValidator validator = null, bool isUmbraco = false)
             : base(name.ToLowerInvariant(), //TODO: Need to 'clean' the name according to Azure Search rules
                 fieldDefinitions ?? new FieldDefinitionCollection(), validator)
         {
-            _connectionConfiguration = connectionConfiguration;
             _isUmbraco = isUmbraco;
             Analyzer = analyzer;
-            ElasticURL = ConfigurationManager.AppSettings[$"examine:ElasticSearch[{name}].Url"];
+            ElasticURL = ConfigurationManager.AppSettings[$"examine:ElasticSearch:{name}.Url"];
+            ElasticID = ConfigurationManager.AppSettings[$"examine:ElasticSearch:{name}.CloudId"];
             _searcher = new Lazy<ElasticSearchSearcher>(CreateSearcher);
             _client = new Lazy<ElasticClient>(CreateElasticSearchClient);
             indexAlias = prefix + Name;
@@ -61,7 +62,7 @@ namespace Novicell.Examine.ElasticSearch.Indexers
 
         private ElasticClient CreateElasticSearchClient()
         {
-            var serviceClient = new ElasticClient(_connectionConfiguration.ConnectionConfiguration);
+            var serviceClient = new ElasticClient(ElasticSearchConfig.GetConnectionString(Name));
             return serviceClient;
         }
 
@@ -229,7 +230,7 @@ namespace Novicell.Examine.ElasticSearch.Indexers
 
         private ElasticSearchSearcher CreateSearcher()
         {
-            return new ElasticSearchSearcher(_connectionConfiguration, Name, indexName);
+            return new ElasticSearchSearcher(Name, indexName);
         }
 
         private ElasticClient GetIndexClient()

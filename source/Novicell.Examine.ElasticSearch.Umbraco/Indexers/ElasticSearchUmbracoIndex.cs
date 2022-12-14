@@ -52,7 +52,7 @@ namespace Novicell.Examine.ElasticSearch.Umbraco.Indexers
             FieldDefinitionCollection fieldDefinitions = null,
             string analyzer = null,
             IValueSetValidator validator = null)
-            : base(name, connectionConfiguration, fieldDefinitions, analyzer, validator,true)
+            : base(name,  fieldDefinitions, analyzer, validator,true)
         {
             _logger = profilingLogger;
         }
@@ -184,6 +184,7 @@ namespace Novicell.Examine.ElasticSearch.Umbraco.Indexers
                 d[nameof(indexAlias)] = indexAlias;
                 d[nameof(indexName)] = indexName;
                 d[nameof(ElasticURL)] = ElasticURL;
+                d[nameof(ElasticID)] = ElasticID;
                 d[nameof(Analyzer)] = Analyzer;
                 d[nameof(EnableDefaultEventHandler)] = EnableDefaultEventHandler;
                 d[nameof(PublishedValuesOnly)] = PublishedValuesOnly;

@@ -1,4 +1,5 @@
 using System.Configuration;
+using Nest;
 using Umbraco.Core;
 using Umbraco.Core.Composing;
 using Umbraco.Web.Search;
@@ -11,15 +12,13 @@ namespace Novicell.Examine.ElasticSearch.Umbraco
     {
         public override void Compose(Composition composition)
         {
-            if (ConfigurationManager.AppSettings["examine:ElasticSearch.Debug"] == "True")
-            {
-                if (ElasticSearchConfig.DebugConnectionConfiguration == null)
-                    ElasticSearchConfig.DebugConnectionConfiguration = new ElasticSearchConfig();
-            }
-
+      
+          
+         
             base.Compose(composition);
             //   composition.RegisterUnique<IUmbracoIndexesCreator, UmbracoIndexesCreator>();
             composition.RegisterUnique<IUmbracoIndexesCreator, ElasticIndexCreator>();
         }
+
     }
 }

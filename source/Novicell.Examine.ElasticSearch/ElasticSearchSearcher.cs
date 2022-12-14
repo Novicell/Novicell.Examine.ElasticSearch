@@ -32,19 +32,18 @@ namespace Novicell.Examine.ElasticSearch
 
         private static readonly string[] EmptyFields = new string[0];
 
-        public ElasticSearchSearcher(ElasticSearchConfig connectionConfiguration, string name, string indexName) :
+        public ElasticSearchSearcher(string name, string indexName) :
             base(name)
         {
-            _connectionConfiguration = connectionConfiguration;
             _indexName = name;
-            _client = new Lazy<ElasticClient>(CreateElasticSearchClient);
+            _client = new Lazy<ElasticClient>(()=>CreateElasticSearchClient(indexName));
             indexAlias = prefix + Name;
             IndexName = indexName;
         }
 
-        private ElasticClient CreateElasticSearchClient()
+        private ElasticClient CreateElasticSearchClient(string indexName)
         {
-            var serviceClient = new ElasticClient(_connectionConfiguration.ConnectionConfiguration);
+            var serviceClient = new ElasticClient(ElasticSearchConfig.GetConnectionString(Name));
             return serviceClient;
         }
 

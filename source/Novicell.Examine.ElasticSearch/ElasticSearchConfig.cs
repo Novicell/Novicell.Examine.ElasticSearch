@@ -16,6 +16,7 @@ namespace Novicell.Examine.ElasticSearch
 
         public static ConnectionSettings GetConnectionString(string indexName)
         {
+            
             if (ConnectionConfiguration.ContainsKey(indexName))
             {
                 return ConnectionConfiguration[indexName];
@@ -32,7 +33,7 @@ namespace Novicell.Examine.ElasticSearch
             if (ConfigurationManager.AppSettings.AllKeys.Any(s => s == "examine:ElasticSearch.Debug") &&
                 Convert.ToBoolean(ConfigurationManager.AppSettings["examine:ElasticSearch.Debug"]))
             {
-                return new ElasticSearchConfig("default", new ConnectionSettings());
+                return new ElasticSearchConfig(indexName.ToLower(), new ConnectionSettings());
             }
 
             return new ElasticSearchConfig(indexName.ToLower());

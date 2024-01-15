@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Elasticsearch.Net;
 using Examine;
 using Examine.LuceneEngine.Providers;
@@ -152,7 +153,7 @@ namespace Novicell.Examine.ElasticSearch
                 }   
                 _queryContainer = new QueryContainer(new QueryStringQuery()
                 {
-                    Query = _luceneQuery.ToString(),
+                    Query = Regex.Replace(_luceneQuery.ToString(),@"([:,])-","$1\\-"),
                     AnalyzeWildcard = true
                     
                 });
